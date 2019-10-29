@@ -7,6 +7,7 @@ public class Grid : MonoBehaviour
     public static Grid M;
 
     public Vector3[,] GridPos = new Vector3[8,8];
+    public Tile[,] Tiles = new Tile[8, 8];
     public GameObject def;
 
     public Piece Selected;

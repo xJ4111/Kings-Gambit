@@ -103,12 +103,11 @@ GameObject:
   - component: {fileID: 6978138617056332836}
   - component: {fileID: 6978138617056332841}
   - component: {fileID: 6978138617056332842}
-  - component: {fileID: 7937228388436496193}
-  - component: {fileID: 6018722941920712723}
   - component: {fileID: 5921919896064229536}
+  - component: {fileID: 6018722941920712723}
   m_Layer: 0
   m_Name: TileL
-  m_TagString: Untagged
+  m_TagString: Tile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -175,33 +174,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &7937228388436496193
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6978138617056332837}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10, y: 2.220446e-16, z: 10}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6018722941920712723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6978138617056332837}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5e81ad92110e7f448766a6845e3f246, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gridPos: 00
-  l: {fileID: 6023241238108185395}
 --- !u!65 &5921919896064229536
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -215,3 +187,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 10, y: 1, z: 10}
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &6018722941920712723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6978138617056332837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5e81ad92110e7f448766a6845e3f246, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PosX: 0
+  PosY: 0
+  l: {fileID: 6023241238108185395}

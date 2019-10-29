@@ -13,10 +13,9 @@ GameObject:
   - component: {fileID: 4142070901485043044}
   - component: {fileID: 8568446796061190579}
   - component: {fileID: 7906475903534658846}
-  - component: {fileID: 1837504894034751115}
   m_Layer: 0
   m_Name: TileD
-  m_TagString: Untagged
+  m_TagString: Tile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -91,11 +90,11 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4142070901485043047}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10, y: 2.220446e-16, z: 10}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 10, y: 1, z: 10}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &7906475903534658846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,21 +107,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5e81ad92110e7f448766a6845e3f246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridPos: 00
+  PosX: 0
+  PosY: 0
   l: {fileID: 5330622247911953176}
---- !u!65 &1837504894034751115
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4142070901485043047}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10, y: 1, z: 10}
-  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &7371158331516919796
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    public string gridPos = "00";
+    public int PosX, PosY = 0;
     public Light l;
 
     void Start()
@@ -26,20 +26,33 @@ public class Tile : MonoBehaviour
             {
                 if (transform.position == Grid.M.GridPos[i, j])
                 {
-                    Debug.Log(transform.position.ToString("F3") + " : " + Grid.M.GridPos[i, j].ToString("F3") + (transform.position == Grid.M.GridPos[i, j]));
-                    gridPos = i + "" + j;
+                    PosX = i;
+                    PosY = j;
+                    Grid.M.Tiles[i, j] = this;
                 }
             }
         }
     }
 
-    private void OnMouseOver()
+    private void OnTriggerEnter(Collider other)
     {
-        l.enabled = true;
+        Debug.Log(other.name);
+
+        if(other.tag == "Piece")
+        {
+            other.GetComponent<Piece>().SetPos(PosX, PosY);
+        }
     }
 
-    private void OnMouseExit()
+    private void OnMouseOver()
     {
-        l.enabled = false;
+        if(Input.GetMouseButtonDown(0))
+        {
+            if (Game.M.Selected && l.enabled)
+            {
+                Game.M.TargetTile = this;
+            }
+        }
+
     }
 }

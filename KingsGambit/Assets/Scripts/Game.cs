@@ -33,9 +33,4 @@ public class Game : MonoBehaviour
     {
         
     }
-
-    public void PassTarget()
-    {
-        Selected.targetPos = TargetTile.transform.position;
-    }
 }
