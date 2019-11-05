@@ -9,7 +9,6 @@ public class Game : MonoBehaviour
     public Piece Selected;
     public Tile TargetTile;
 
-
     private void Awake()
     {
         if (M == null)
