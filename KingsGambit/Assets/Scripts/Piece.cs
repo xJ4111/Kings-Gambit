@@ -182,7 +182,6 @@ public class Piece : MonoBehaviour
 
             if (Input.GetMouseButtonDown(1) && activeTiles > 0)
             {
-                Debug.Log(activeTiles);
                 Game.M.Selected = this;
             }
         }
