@@ -5,6 +5,7 @@ using UnityEngine;
 public class Piece : MonoBehaviour
 {
     public string Side;
+    public string Type;
 
     private int posX, posY;
     private Tile[,] Tiles;
@@ -15,23 +16,21 @@ public class Piece : MonoBehaviour
 
     private bool toggle;
 
-
     // Start is called before the first frame update
     void Start()
     {
         Tiles = Grid.M.Tiles;
 
-        if (name.Contains("White"))
-            Side = "White";
-        else if (name.Contains("Black"))
-            Side = "Black";
+        string[] names = name.Split(' ');
+
+        Side = names[0];
+        Type = names[1];
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        Movement();
-
         if(Input.GetKeyDown(KeyCode.Escape))
         {
             Restart();
@@ -46,40 +45,38 @@ public class Piece : MonoBehaviour
 
     void Movement()
     {
-        if (Game.M.Selected == this && Game.M.TargetTile)
-        {
-            Highlight(false);
-            Move();
-            Restart();
-        }
+        Highlight(false);
+        Move();
+        Restart();
     }
 
     void Highlight(bool b)
     {
         toggle = b;
 
-        if(name.Contains("Pawn"))
-            Pawn();
-
-        if (name.Contains("Rook"))
-            Rook();
-
-        if (name.Contains("Bishop"))
-            Bishop();
-
-        if (name.Contains("Knight"))
-            Knight();
-
-        if (name.Contains("Queen"))
+        switch (Type)
         {
-            Debug.Log("quenn");
-            Rook();
-            ResetHit();
-            Bishop();
+            case "Pawn":
+                Pawn();
+                break;
+            case "Rook":
+                Rook();
+                break;
+            case "Knight":
+                Knight();
+                break;
+            case "Bishop":
+                Bishop();
+                break;
+            case "Queen":
+                Rook();
+                ResetHit();
+                Bishop();
+                break;
+            case "King":
+                King();
+                break;
         }
-
-        if (name.Contains("King"))
-            King();
     }
     void CheckMove(int posX, int posY)
     {
@@ -142,19 +139,19 @@ public class Piece : MonoBehaviour
         return pos;
     }
 
-    void Move()
+    public void Move()
     {
         //Attack
         if (Game.M.TargetTile.Occupier)
             Destroy(Game.M.TargetTile.Occupier.gameObject);
-
         //Move
         transform.position = Game.M.TargetTile.transform.position;
-
         pawnFirst = false;
+
+        Restart();
     }
 
-    void Restart()
+    public void Restart()
     {
         Highlight(false);
         Game.M.Selected = null;
@@ -176,13 +173,21 @@ public class Piece : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if(!Game.M.Selected)
+        if(Game.M.Turn == Side && !Game.M.Selected)
         {
             Highlight(true);
 
             if (Input.GetMouseButtonDown(1) && activeTiles > 0)
             {
                 Game.M.Selected = this;
+            }
+        }
+
+        if (Game.M.Selected && Game.M.Selected != this)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Game.M.TargetTile = Tiles[posX,posY];
             }
         }
     }
@@ -212,10 +217,12 @@ public class Piece : MonoBehaviour
             CheckMove(Offset(posX, 2), posY);
 
         //Diagonal Left
-        CheckAttack(Offset(posX, 1), Offset(posY, 1));
+        if ((Offset(posX, 1) != posX && Offset(posY, 1) != posY))
+            CheckAttack(Offset(posX, 1), Offset(posY, 1));
 
         //Diagonal Right
-        CheckAttack(Offset(posX, 1), Offset(posY, -1));
+        if ((Offset(posX, 1) != posX && Offset(posY, -1) != posY))
+            CheckAttack(Offset(posX, 1), Offset(posY, -1));
     }
 
     void Rook()
@@ -310,7 +317,6 @@ public class Piece : MonoBehaviour
                 if(Tiles[Offset(posX, x), Offset(posY, y)].Occupier.Side != Side)
                 {
                     CheckMoveAttack(Offset(posX, x), Offset(posY, y));
-                    Debug.Log("Hit");
                     hit = true;
                 }
                 else if(Tiles[Offset(posX, x), Offset(posY, y)].Occupier.Side == Side)
