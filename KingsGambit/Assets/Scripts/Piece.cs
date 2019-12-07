@@ -7,35 +7,14 @@ public class Piece : MonoBehaviour
     public string Side;
     public string Type;
 
-    private int posX, posY;
-    private Tile[,] Tiles;
-    private int activeTiles;
+    protected int posX, posY;
+    protected Tile[,] Tiles;
+    protected int activeTiles;
 
-    private bool pawnFirst = true;
+    protected bool pawnFirst = true;
     public bool[] hit = new bool[4];
 
-    private bool toggle;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        Tiles = Grid.M.Tiles;
-
-        string[] names = name.Split(' ');
-
-        Side = names[0];
-        Type = names[1];
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Escape))
-        {
-            Restart();
-        }
-    }
+    protected bool toggle;
 
     public void SetPos(int x, int y)
     {
@@ -43,42 +22,7 @@ public class Piece : MonoBehaviour
         posY = y;
     }
 
-    void Movement()
-    {
-        Highlight(false);
-        Move();
-        Restart();
-    }
-
-    void Highlight(bool b)
-    {
-        toggle = b;
-
-        switch (Type)
-        {
-            case "Pawn":
-                Pawn();
-                break;
-            case "Rook":
-                Rook();
-                break;
-            case "Knight":
-                Knight();
-                break;
-            case "Bishop":
-                Bishop();
-                break;
-            case "Queen":
-                Rook();
-                ResetHit();
-                Bishop();
-                break;
-            case "King":
-                King();
-                break;
-        }
-    }
-    void CheckMove(int posX, int posY)
+    protected void CheckMove(int posX, int posY)
     {
         if (InRange(posX, posY))
         {
@@ -90,7 +34,7 @@ public class Piece : MonoBehaviour
             }
         }
     }
-    void CheckAttack(int posX, int posY)
+    protected void CheckAttack(int posX, int posY)
     {
         if (InRange(posX, posY))
         {
@@ -103,7 +47,7 @@ public class Piece : MonoBehaviour
         }
     }
 
-    void CheckMoveAttack(int posX, int posY)
+    protected void CheckMoveAttack(int posX, int posY)
     {
         if (InRange(posX, posY))
         {
@@ -123,7 +67,7 @@ public class Piece : MonoBehaviour
         }
     }
 
-    int Offset(int pos, int offset)
+    protected int Offset(int pos, int offset)
     {
         if(Side == "White")
         {
@@ -139,72 +83,20 @@ public class Piece : MonoBehaviour
         return pos;
     }
 
-    public void Move()
-    {
-        //Attack
-        if (Game.M.TargetTile.Occupier)
-            Destroy(Game.M.TargetTile.Occupier.gameObject);
-        //Move
-        transform.position = Game.M.TargetTile.transform.position;
-        pawnFirst = false;
 
-        Restart();
-    }
-
-    public void Restart()
-    {
-        Highlight(false);
-        Game.M.Selected = null;
-        Game.M.TargetTile = null;
-        ResetHit();
-        activeTiles = 0;
-    }
-
-    bool InRange(int posX, int posY)
+    protected bool InRange(int posX, int posY)
     {
         return posX < 8 && posX >= 0 && posY < 8 && posY >= 0;
     }
 
-    void ResetHit()
+    protected void ResetHit()
     {
         for (int i = 0; i < 4; i++)
             hit[i] = false;
     }
 
-    private void OnMouseOver()
-    {
-        if(Game.M.Turn == Side && !Game.M.Selected)
-        {
-            Highlight(true);
-
-            if (Input.GetMouseButtonDown(1) && activeTiles > 0)
-            {
-                Game.M.Selected = this;
-            }
-        }
-
-        if (Game.M.Selected && Game.M.Selected != this)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Game.M.TargetTile = Tiles[posX,posY];
-            }
-        }
-    }
-
-    private void OnMouseExit()
-    {
-        if(Game.M.Selected != this)
-        {
-            Highlight(false);
-
-            for (int i = 0; i < 4; i++)
-                hit[i] = false;
-        }
-    }
-
     #region Piece Movement
-    void Pawn()
+    protected virtual void Pawn()
     {
         //Front 2 Spaces
         CheckMove(Offset(posX, 1), posY);
@@ -225,7 +117,7 @@ public class Piece : MonoBehaviour
             CheckAttack(Offset(posX, 1), Offset(posY, -1));
     }
 
-    void Rook()
+    protected virtual void Rook()
     {
         
         for (int i = 1; i < 8; i++)
@@ -244,7 +136,7 @@ public class Piece : MonoBehaviour
         }
     }
 
-    void RookMovementX(int i, ref bool hit)
+    protected virtual void RookMovementX(int i, ref bool hit)
     {
         if (toggle && !hit)
         {
@@ -267,7 +159,7 @@ public class Piece : MonoBehaviour
             CheckMoveAttack(Offset(posX, i), posY);
     }
 
-    void RookMovementY(int i, ref bool hit)
+    protected virtual void RookMovementY(int i, ref bool hit)
     {
         if (toggle && !hit)
         {
@@ -290,7 +182,7 @@ public class Piece : MonoBehaviour
             CheckMoveAttack(posX, Offset(posY, i));
     }
 
-    void Bishop()
+    protected virtual void Bishop()
     {
         for (int i = 1; i < 8; i++)
         {
@@ -308,7 +200,7 @@ public class Piece : MonoBehaviour
         } 
     }
 
-    void BishopMovement(int x, int y, ref bool hit)
+    protected virtual void BishopMovement(int x, int y, ref bool hit)
     {
         if(toggle && !hit && (Offset(posX, x) != posX && Offset(posY, y) != posY))
         {
@@ -332,7 +224,7 @@ public class Piece : MonoBehaviour
             CheckMoveAttack(Offset(posX, x), Offset(posY, y));
     }
 
-    void Knight()
+    protected virtual void Knight()
     {
         KnightMove(1, 2);
         KnightMove(1, -2);
@@ -347,7 +239,7 @@ public class Piece : MonoBehaviour
         KnightMove(-2, -1);
     }
 
-    void KnightMove(int x, int y)
+    protected virtual void KnightMove(int x, int y)
     {
         if (Offset(posX, x) != posX && Offset(posY, y) != posY)
         {
@@ -355,7 +247,7 @@ public class Piece : MonoBehaviour
         }
     }
 
-    void King()
+    protected virtual void King()
     {
         //Front
         CheckMoveAttack(Offset(posX, 1), posY);

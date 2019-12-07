@@ -7,7 +7,7 @@ public class Game : MonoBehaviour
     public static Game M;
 
     //Selection
-    public Piece Selected;
+    public CustomPiece Selected;
     public Tile TargetTile;
 
     //Turn Management
