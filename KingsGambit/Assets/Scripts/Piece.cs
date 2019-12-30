@@ -133,9 +133,9 @@ public class Piece : MonoBehaviour
             CheckAttack(Offset(posX, 1), Offset(posY, -1));
     }
 
-    public virtual void PawnShowAttack()
+    public virtual void PawnShowAttack(bool b)
     {
-        toggle = true;
+        toggle = b;
 
         //Diagonal Left
         if ((Offset(posX, 1) != posX && Offset(posY, 1) != posY))
@@ -278,24 +278,16 @@ public class Piece : MonoBehaviour
 
     protected virtual void King()
     {
-        //Front
-        CheckMoveAttack(Offset(posX, 1), posY);
-
-        //Back
-        CheckMoveAttack(Offset(posX, -1), posY);
-
-        //Front
-        CheckMoveAttack(posX, Offset(posY, 1));
-
-        CheckMoveAttack(posX, Offset(posY, -1));
-
-        CheckMoveAttack(Offset(posX, 1), Offset(posY, 1));
-
-        CheckMoveAttack(Offset(posX, -1), Offset(posY, 1));
-
-        CheckMoveAttack(Offset(posX, 1), Offset(posY, -1));
-
-        CheckMoveAttack(Offset(posX, -1), Offset(posY, -1));
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (InRange(posX + i, posY + j) && Grid.M.Tiles[posX + i, posY + j].Safe)
+                {
+                    CheckMoveAttack(posX + i, posY + j);
+                }
+            }
+        }
     }
 
     #endregion

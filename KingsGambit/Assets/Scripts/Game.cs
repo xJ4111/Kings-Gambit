@@ -17,11 +17,13 @@ public class Game : MonoBehaviour
     [Header("Piece Management")]
     public GameObject WhiteParentObj;
     private CustomPiece WhiteKing;
-    private CustomPiece[] WhitePieces;
+    private CustomPiece[] WhitePieces = new CustomPiece[16];
 
     public GameObject BlackParentObj;
     private CustomPiece BlackKing;
-    private CustomPiece[] BlackPieces;
+    private CustomPiece[] BlackPieces = new CustomPiece[16];
+
+    public CustomPiece[] AllPieces = new CustomPiece[32];
 
     public bool InCheck;
 
@@ -69,13 +71,12 @@ public class Game : MonoBehaviour
                 CheckStatus(BlackKing);
         }
 
-
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             foreach (CustomPiece piece in BlackPieces)
             {
                 if (piece.Type == "Pawn")
-                    piece.PawnShowAttack();
+                    piece.PawnShowAttack(true);
                 else
                     piece.Highlight(true);
             }
@@ -89,11 +90,9 @@ public class Game : MonoBehaviour
             }
         }
 
-
         if (Input.GetKeyDown(KeyCode.S))
         {
             CheckStatus(WhiteKing);
-            CheckStatus(BlackKing);
         }
     }
 
@@ -142,12 +141,17 @@ public class Game : MonoBehaviour
         foreach (CustomPiece piece in Enemies)
         {
             if (piece.Type == "Pawn")
-                piece.PawnShowAttack();
+                piece.PawnShowAttack(true);
             else
                 piece.Highlight(true);
         }
 
         InCheck = Grid.M.Tiles[King.posX, King.posY].l.enabled;
+
+        foreach (Tile t in Grid.M.Tiles)
+        {
+            t.Safe = !t.l.enabled;
+        }
 
         foreach (CustomPiece piece in Enemies)
         {

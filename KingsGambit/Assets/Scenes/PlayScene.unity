@@ -1061,6 +1061,39 @@ MonoBehaviour:
   Turn: 
   WhiteParentObj: {fileID: 76801942}
   BlackParentObj: {fileID: 655107410}
+  AllPieces:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   InCheck: 0
   CamPivotAnim: {fileID: 175289343}
 --- !u!4 &539076974
@@ -2624,7 +2657,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: fde735b1b09de1c409cefecc145d31da, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2
+      value: -14
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: fde735b1b09de1c409cefecc145d31da, type: 3}
       propertyPath: m_LocalRotation.x

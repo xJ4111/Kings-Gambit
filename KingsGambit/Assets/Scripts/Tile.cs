@@ -11,6 +11,7 @@ public class Tile : MonoBehaviour
 
     void Start()
     {
+        Safe = true;
         FindPosition();
     }
 

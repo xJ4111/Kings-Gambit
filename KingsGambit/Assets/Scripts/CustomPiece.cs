@@ -16,6 +16,8 @@ public class CustomPiece : Piece
         Side = names[0];
         Type = names[1];
 
+        pawnFirst = true;
+
         StartCoroutine(SetPos());
     }
 
@@ -116,6 +118,7 @@ public class CustomPiece : Piece
     public void Restart()
     {
         Highlight(false);
+        PawnShowAttack(false);
         Game.M.Selected = null;
         Game.M.TargetTile = null;
         ResetHit();
