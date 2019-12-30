@@ -4,22 +4,35 @@ using UnityEngine;
 
 public class Piece : MonoBehaviour
 {
+    [Header("Piece Info")]
     public string Side;
     public string Type;
 
-    protected int posX, posY;
+    [Header("Position")]
+    public int posX, posY;
     protected Tile[,] Tiles;
     protected int activeTiles;
 
     protected bool pawnFirst = true;
-    public bool[] hit = new bool[4];
+    [HideInInspector] public bool[] hit = new bool[4];
 
     protected bool toggle;
 
-    public void SetPos(int x, int y)
+    public IEnumerator SetPos()
     {
-        posX = x;
-        posY = y;
+        yield return new WaitForEndOfFrame();
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (transform.position == Grid.M.Tiles[i, j].transform.position)
+                {
+                    posX = i;
+                    posY = j;
+                    Grid.M.Tiles[i, j].Enter(this);
+                }
+            }
+        }
     }
 
     protected void CheckMove(int posX, int posY)
@@ -96,7 +109,7 @@ public class Piece : MonoBehaviour
     }
 
     #region Piece Movement
-    protected virtual void Pawn()
+    protected virtual void PawnMove()
     {
         //Front 2 Spaces
         CheckMove(Offset(posX, 1), posY);
@@ -107,7 +120,10 @@ public class Piece : MonoBehaviour
         }
         else if(!toggle)
             CheckMove(Offset(posX, 2), posY);
+    }
 
+    protected virtual void PawnAttack()
+    {
         //Diagonal Left
         if ((Offset(posX, 1) != posX && Offset(posY, 1) != posY))
             CheckAttack(Offset(posX, 1), Offset(posY, 1));
@@ -115,6 +131,19 @@ public class Piece : MonoBehaviour
         //Diagonal Right
         if ((Offset(posX, 1) != posX && Offset(posY, -1) != posY))
             CheckAttack(Offset(posX, 1), Offset(posY, -1));
+    }
+
+    public virtual void PawnShowAttack()
+    {
+        toggle = true;
+
+        //Diagonal Left
+        if ((Offset(posX, 1) != posX && Offset(posY, 1) != posY))
+            CheckMoveAttack(Offset(posX, 1), Offset(posY, 1));
+
+        //Diagonal Right
+        if ((Offset(posX, 1) != posX && Offset(posY, -1) != posY))
+            CheckMoveAttack(Offset(posX, 1), Offset(posY, -1));
     }
 
     protected virtual void Rook()

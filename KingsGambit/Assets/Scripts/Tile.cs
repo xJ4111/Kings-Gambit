@@ -7,6 +7,7 @@ public class Tile : MonoBehaviour
     public int PosX, PosY = 0;
     public Light l;
     public Piece Occupier;
+    public bool Safe;
 
     void Start()
     {
@@ -35,21 +36,16 @@ public class Tile : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void Enter(Piece piece)
     {
-        if(other.tag == "Piece")
-        {
-            Occupier = other.GetComponent<Piece>();
-            Occupier.SetPos(PosX, PosY);
-        }
+        Occupier = piece.GetComponent<Piece>();
+        Occupier.posX = PosX;
+        Occupier.posY = PosY;
     }
 
-    private void OnTriggerExit(Collider other)
+    public void Exit()
     {
-        if (other.tag == "Piece")
-        {
-            Occupier = null;
-        }
+        Occupier = null;
     }
 
     private void OnMouseOver()

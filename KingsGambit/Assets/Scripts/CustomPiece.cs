@@ -15,6 +15,8 @@ public class CustomPiece : Piece
 
         Side = names[0];
         Type = names[1];
+
+        StartCoroutine(SetPos());
     }
 
     // Update is called once per frame
@@ -30,7 +32,10 @@ public class CustomPiece : Piece
     {
         if (Game.M.Turn == Side && !Game.M.Selected)
         {
-            Highlight(true);
+            if (Game.M.InCheck && Type == "King")
+                Highlight(true);
+            else if (!Game.M.InCheck)
+                Highlight(true);
 
             if (Input.GetMouseButtonDown(1) && activeTiles > 0)
             {
@@ -58,33 +63,35 @@ public class CustomPiece : Piece
         }
     }
 
-    void Movement()
-    {
-        Highlight(false);
-        Move();
-        Restart();
-    }
-
     public void Move()
     {
+        Highlight(false);
+
         //Attack
         if (Game.M.TargetTile.Occupier)
             Destroy(Game.M.TargetTile.Occupier.gameObject);
         //Move
         transform.position = Game.M.TargetTile.transform.position;
+
+        Tiles[posX, posY].Exit();
+        Game.M.TargetTile.Enter(this);
+
+        transform.position = Game.M.TargetTile.transform.position;
+
         pawnFirst = false;
 
         Restart();
     }
 
-    void Highlight(bool b)
+    public void Highlight(bool b)
     {
         toggle = b;
 
         switch (Type)
         {
             case "Pawn":
-                Pawn();
+                PawnMove();
+                PawnAttack();
                 break;
             case "Rook":
                 Rook();
@@ -115,10 +122,10 @@ public class CustomPiece : Piece
         activeTiles = 0;
     }
 
-    protected override void Pawn()
+    protected override void PawnMove()
     {
         if (Ability == "")
-            base.Pawn();
+            base.PawnMove();
         else
         {
             switch(Ability)

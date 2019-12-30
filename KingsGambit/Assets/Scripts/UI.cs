@@ -7,6 +7,7 @@ public class UI : MonoBehaviour
 {
     public static UI M;
 
+    [Header("Info Display")]
     public Text TurnText, SelectedText;
 
     // Start is called before the first frame update
