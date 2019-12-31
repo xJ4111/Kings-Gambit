@@ -1059,41 +1059,10 @@ MonoBehaviour:
   Selected: {fileID: 0}
   TargetTile: {fileID: 0}
   Turn: 
-  WhiteParentObj: {fileID: 76801942}
-  BlackParentObj: {fileID: 655107410}
-  AllPieces:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  PieceParentObj: {fileID: 626225419}
+  AllPieces: []
+  WhiteKing: {fileID: 0}
+  BlackKing: {fileID: 0}
   InCheck: 0
   CamPivotAnim: {fileID: 175289343}
 --- !u!4 &539076974
@@ -4614,7 +4583,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.y

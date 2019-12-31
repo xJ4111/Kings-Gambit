@@ -15,13 +15,16 @@ public class Game : MonoBehaviour
     private int turnVal = 0;
 
     [Header("Piece Management")]
-    public GameObject WhiteParentObj;
-    private CustomPiece WhiteKing;
-    private CustomPiece[] WhitePieces;
+    public GameObject PieceParentObj;
+    [SerializeField] private CustomPiece[] AllPieces;
 
-    public GameObject BlackParentObj;
-    private CustomPiece BlackKing;
-    private CustomPiece[] BlackPieces;
+    [SerializeField] private CustomPiece WhiteKing;
+    private List<CustomPiece> WhitePawns;
+    private List<CustomPiece> WhitePieces;
+
+    [SerializeField] private CustomPiece BlackKing;
+    private List<CustomPiece> BlackPawns;
+    private List<CustomPiece> BlackPieces;
 
     public bool InCheck;
 
@@ -44,15 +47,13 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        WhitePieces = WhiteParentObj.GetComponentsInChildren<CustomPiece>();
-        foreach (CustomPiece piece in WhitePieces)
-            if (piece.Type == "King")
-                WhiteKing = piece;
+        AllPieces = PieceParentObj.GetComponentsInChildren<CustomPiece>();
+        WhitePawns = new List<CustomPiece>();
+        WhitePieces = new List<CustomPiece>();
+        BlackPawns = new List<CustomPiece>();
+        BlackPieces = new List<CustomPiece>();
 
-        BlackPieces = BlackParentObj.GetComponentsInChildren<CustomPiece>();
-        foreach (CustomPiece piece in BlackPieces)
-            if (piece.Type == "King")
-                BlackKing = piece;
+        StartCoroutine(Initialise());
     }
 
     // Update is called once per frame
@@ -62,68 +63,56 @@ public class Game : MonoBehaviour
         {
             Selected.Move();
             NextTurn();
-
-            if (Turn == "White")
-                CheckStatus(WhiteKing);
-            else if (Turn == "Black")
-                CheckStatus(BlackKing);
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            NextTurn();
-            if (Turn == "White")
-                CheckStatus(WhiteKing);
-            if (Turn == "Black")
-                CheckStatus(BlackKing);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            foreach (CustomPiece piece in BlackPieces)
-            {
-                if (piece.Type == "Pawn")
-                    piece.PawnShowAttack(true);
-                else
-                    piece.Highlight(true);
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            foreach (CustomPiece piece in BlackPieces)
-            {
-                piece.Restart();
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            foreach (CustomPiece piece in WhitePieces)
-            {
-                if (piece.Type == "Pawn")
-                    piece.PawnShowAttack(true);
-                else
-                    piece.Highlight(true);
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            foreach (CustomPiece piece in WhitePieces)
-            {
-                piece.Restart();
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            CheckStatus(WhiteKing);
+            if (Selected)
+                Selected.Unselect();
         }
     }
 
+    IEnumerator Initialise()
+    {
+        yield return new WaitForEndOfFrame();
+
+        foreach (CustomPiece p in AllPieces)
+        {
+            if (p.name.Contains("White"))
+            {
+                WhitePieces.Add(p);
+
+                if (p.name.Contains("Pawn"))
+                    WhitePawns.Add(p);
+
+                if (p.name.Contains("King"))
+                    WhiteKing = p;
+            }
+
+            if (p.name.Contains("Black"))
+            {
+                BlackPieces.Add(p);
+
+                if (p.name.Contains("Pawn"))
+                    BlackPawns.Add(p);
+
+                if (p.name.Contains("King"))
+                    BlackKing = p;
+            }
+
+            p.SetPos();
+        }
+
+        CalcMovePaths();
+        CheckStatus(WhiteKing);
+    }
+
+    #region Turn Management
     void NextTurn()
     {
+        Selected = null;
+        TargetTile = null;
+
         if (turnVal + 1 < 2)
             turnVal++;
         else
@@ -146,13 +135,35 @@ public class Game : MonoBehaviour
         }
 
         UI.M.TurnText.text = Turn + "'s Turn";
+
+        CalcMovePaths();
+
+        if (Turn == "White")
+            CheckStatus(WhiteKing);
+        if (Turn == "Black")
+            CheckStatus(BlackKing);
     }
 
-    #region Check/Checkmate State
+    void CalcMovePaths()
+    {
+        foreach (CustomPiece p in AllPieces)
+        {
+            p.Guarded = false;
+            p.ResetHit();
+        }
 
+        foreach (CustomPiece p in AllPieces)
+        {
+            p.CheckPath();
+        }
+    }
+    #endregion
+
+    #region Check/Checkmate State
     void CheckStatus(CustomPiece King)
     {
-        CustomPiece[] Enemies = null;
+        List<CustomPiece> Enemies = new List<CustomPiece>();
+        InCheck = false;
 
         switch (King.Side)
         {
@@ -163,32 +174,35 @@ public class Game : MonoBehaviour
                 Enemies = WhitePieces;
                 break;
         }
+
+        foreach (Tile t in Grid.M.Tiles)
+            t.Safe = true;
+
         foreach (CustomPiece piece in Enemies)
         {
-            if(piece.Type != "King")
+            if(piece.Type == "Pawn")
             {
-                if (piece.Type == "Pawn")
-                    piece.PawnShowAttack(true);
-                else
-                    piece.Highlight(true);
+                foreach (Tile t in piece.PawnAttackTiles)
+                {
+                    t.Safe = false;
+
+                    if (!InCheck && t == Grid.M.Tiles[King.posX, King.posY])
+                        InCheck = true;
+                }
+            }
+            else
+            {
+                foreach (Tile t in piece.Path)
+                {
+                    t.Safe = false;
+
+                    if (!InCheck && t == Grid.M.Tiles[King.posX, King.posY])
+                        InCheck = true;
+                }
             }
         }
 
-        InCheck = Grid.M.Tiles[King.posX, King.posY].l.enabled;
-
-        foreach (Tile t in Grid.M.Tiles)
-        {
-            t.Safe = !t.l.enabled;
-        }
-
-        foreach (CustomPiece piece in Enemies)
-        {
-            if (piece.Type == "Pawn")
-                piece.PawnShowAttack(false);
-            else
-                piece.Restart();
-        }
+        King.CheckPath();
     }
-
     #endregion
 }

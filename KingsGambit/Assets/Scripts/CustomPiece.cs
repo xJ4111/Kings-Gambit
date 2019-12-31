@@ -18,27 +18,13 @@ public class CustomPiece : Piece
 
         pawnFirst = true;
         Guarded = false;
-
-        StartCoroutine(SetPos());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Restart();
-        }
     }
 
     protected void OnMouseOver()
     {
         if (Game.M.Turn == Side && !Game.M.Selected)
         {
-            if (Game.M.InCheck && Type == "King")
-                Highlight(true);
-            else if (!Game.M.InCheck)
-                Highlight(true);
+            Highlight(true);
 
             if (Input.GetMouseButtonDown(1) && activeTiles > 0)
             {
@@ -80,22 +66,25 @@ public class CustomPiece : Piece
         Tiles[posX, posY].Exit();
         Game.M.TargetTile.Enter(this);
 
-        transform.position = Game.M.TargetTile.transform.position;
-
         pawnFirst = false;
-
-        Restart();
     }
 
     public void Highlight(bool b)
     {
-        toggle = b;
+        foreach (Tile t in Path)
+            t.l.enabled = b;
+    }
+
+    public void CheckPath()
+    {
+        Path.Clear();
 
         switch (Type)
         {
             case "Pawn":
                 PawnMove();
                 PawnAttack();
+                PawnShowAttack();
                 break;
             case "Rook":
                 Rook();
@@ -117,14 +106,10 @@ public class CustomPiece : Piece
         }
     }
 
-    public void Restart()
+    public void Unselect()
     {
-        Game.M.Selected = null;
-        Game.M.TargetTile = null;
         Highlight(false);
-
-        ResetHit();
-        activeTiles = 0;
+        Game.M.Selected = null;
     }
 
     protected override void PawnMove()
@@ -141,15 +126,10 @@ public class CustomPiece : Piece
                     CheckMove(Offset(posX, 1), posY);
                     CheckMove(Offset(posX, 2), posY);
 
-                    if (toggle && pawnFirst && Tiles[Offset(posX, 1), posY].l.enabled)
+                    if (pawnFirst && Tiles[Offset(posX, 1), posY].l.enabled)
                     {
                         CheckMove(Offset(posX, 3), posY);
                         CheckMove(Offset(posX, 4), posY);
-                    }
-                    else if (!toggle)
-                    {
-                        for(int i = 1; i <= 4; i++)
-                            CheckMove(Offset(posX, i), posY);
                     }
 
                     //Diagonal Left

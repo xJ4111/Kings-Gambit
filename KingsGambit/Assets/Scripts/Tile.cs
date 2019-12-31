@@ -10,10 +10,10 @@ public class Tile : MonoBehaviour
     public bool Safe;
     public Piece onner;
 
-    void Start()
+    void Awake()
     {
         Safe = true;
-        FindPosition();
+        StartCoroutine(FindPosition());
     }
 
     // Update is called once per frame
@@ -22,8 +22,9 @@ public class Tile : MonoBehaviour
        
     }
 
-    void FindPosition()
+    IEnumerator FindPosition()
     {
+        yield return new WaitForEndOfFrame();
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
@@ -52,8 +53,6 @@ public class Tile : MonoBehaviour
 
     private void OnMouseOver()
     {
-
-
         if(Input.GetMouseButtonDown(0))
         {
             if (Game.M.Selected && l.enabled)
