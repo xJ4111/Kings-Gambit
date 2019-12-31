@@ -50,14 +50,15 @@ public class CustomPiece : Piece
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Game.M.TargetTile = Tiles[posX, posY];
+                if(Tiles[posX, posY].l.enabled)
+                    Game.M.TargetTile = Tiles[posX, posY];
             }
         }
     }
 
     protected void OnMouseExit()
     {
-        if (Game.M.Selected != this)
+        if (!Game.M.Selected)
         {
             Highlight(false);
 
@@ -120,14 +121,9 @@ public class CustomPiece : Piece
     {
         Game.M.Selected = null;
         Game.M.TargetTile = null;
-
-        if (Type == "Pawn")
-            PawnShowAttack(false);
-        else
-            Highlight(false);
+        Highlight(false);
 
         ResetHit();
-        Guarded = false;
         activeTiles = 0;
     }
 

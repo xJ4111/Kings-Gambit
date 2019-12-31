@@ -183,7 +183,10 @@ public class Game : MonoBehaviour
 
         foreach (CustomPiece piece in Enemies)
         {
-            piece.Restart();
+            if (piece.Type == "Pawn")
+                piece.PawnShowAttack(false);
+            else
+                piece.Restart();
         }
     }
 

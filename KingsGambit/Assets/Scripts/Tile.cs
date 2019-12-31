@@ -52,6 +52,8 @@ public class Tile : MonoBehaviour
 
     private void OnMouseOver()
     {
+
+
         if(Input.GetMouseButtonDown(0))
         {
             if (Game.M.Selected && l.enabled)
