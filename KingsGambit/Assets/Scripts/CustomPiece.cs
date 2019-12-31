@@ -17,6 +17,7 @@ public class CustomPiece : Piece
         Type = names[1];
 
         pawnFirst = true;
+        Guarded = false;
 
         StartCoroutine(SetPos());
     }
@@ -117,11 +118,16 @@ public class CustomPiece : Piece
 
     public void Restart()
     {
-        Highlight(false);
-        PawnShowAttack(false);
         Game.M.Selected = null;
         Game.M.TargetTile = null;
+
+        if (Type == "Pawn")
+            PawnShowAttack(false);
+        else
+            Highlight(false);
+
         ResetHit();
+        Guarded = false;
         activeTiles = 0;
     }
 
@@ -134,6 +140,7 @@ public class CustomPiece : Piece
             switch(Ability)
             {
                 case "Endurance":
+                    #region Endurance
                     //Front 2 Spaces
                     CheckMove(Offset(posX, 1), posY);
                     CheckMove(Offset(posX, 2), posY);
@@ -166,6 +173,7 @@ public class CustomPiece : Piece
                             CheckAttack(Offset(posX, i), Offset(posY, -i));
                         }
                     }
+                    #endregion
                     break;
             }
         }

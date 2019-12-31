@@ -7,6 +7,7 @@ public class Piece : MonoBehaviour
     [Header("Piece Info")]
     public string Side;
     public string Type;
+    public bool Guarded;
 
     [Header("Position")]
     public int posX, posY;
@@ -35,6 +36,7 @@ public class Piece : MonoBehaviour
         }
     }
 
+    #region Movement Checks
     protected void CheckMove(int posX, int posY)
     {
         if (InRange(posX, posY))
@@ -51,11 +53,18 @@ public class Piece : MonoBehaviour
     {
         if (InRange(posX, posY))
         {
-            if (Tiles[posX, posY] && Tiles[posX, posY].Occupier && Tiles[posX, posY].Occupier.Side != Side)
+            if (Tiles[posX, posY] && Tiles[posX, posY].Occupier)
             {
-                Tiles[posX, posY].l.enabled = toggle;
-                if (toggle)
-                    activeTiles++;
+                if(Tiles[posX, posY].Occupier.Side != Side)
+                {
+                    Tiles[posX, posY].l.enabled = toggle;
+                    if (toggle)
+                        activeTiles++;
+                }
+                else if(Tiles[posX, posY].Occupier.Side == Side)
+                {
+                    Tiles[posX, posY].Occupier.Guarded = true;
+                }
             }
         }
     }
@@ -64,18 +73,18 @@ public class Piece : MonoBehaviour
     {
         if (InRange(posX, posY))
         {
-            if (!Tiles[posX, posY].Occupier)
+            if (Tiles[posX, posY])
             {
-                Tiles[posX, posY].l.enabled = toggle;
-                if(toggle)
-                    activeTiles++;
-            }
-
-            if (Tiles[posX, posY] && Tiles[posX, posY].Occupier && Tiles[posX, posY].Occupier.Side != Side)
-            {
-                Tiles[posX, posY].l.enabled = toggle;
-                if (toggle)
-                    activeTiles++;
+                if((Tiles[posX, posY].Occupier && Tiles[posX, posY].Occupier.Side != Side) || !Tiles[posX, posY].Occupier)
+                {
+                    Tiles[posX, posY].l.enabled = toggle;
+                    if (toggle)
+                        activeTiles++;
+                }
+                else if(Tiles[posX, posY].Occupier && Tiles[posX, posY].Occupier.Side == Side)
+                {
+                    Tiles[posX, posY].Occupier.Guarded = true;
+                }
             }
         }
     }
@@ -107,6 +116,8 @@ public class Piece : MonoBehaviour
         for (int i = 0; i < 4; i++)
             hit[i] = false;
     }
+
+    #endregion
 
     #region Piece Movement
     protected virtual void PawnMove()
@@ -282,9 +293,15 @@ public class Piece : MonoBehaviour
         {
             for (int j = -1; j <= 1; j++)
             {
-                if (InRange(posX + i, posY + j) && Grid.M.Tiles[posX + i, posY + j].Safe)
+                if (InRange(posX + i, posY + j))
                 {
-                    CheckMoveAttack(posX + i, posY + j);
+                    Tile t = Grid.M.Tiles[posX + i, posY + j];
+
+                    if(!t.Occupier && t.Safe)
+                        CheckMoveAttack(posX + i, posY + j);
+
+                    if(t.Occupier && !t.Occupier.Guarded)
+                        CheckMoveAttack(posX + i, posY + j);
                 }
             }
         }

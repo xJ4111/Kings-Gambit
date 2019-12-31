@@ -8,6 +8,7 @@ public class Tile : MonoBehaviour
     public Light l;
     public Piece Occupier;
     public bool Safe;
+    public Piece onner;
 
     void Start()
     {

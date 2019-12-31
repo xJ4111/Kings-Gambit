@@ -17,13 +17,11 @@ public class Game : MonoBehaviour
     [Header("Piece Management")]
     public GameObject WhiteParentObj;
     private CustomPiece WhiteKing;
-    private CustomPiece[] WhitePieces = new CustomPiece[16];
+    private CustomPiece[] WhitePieces;
 
     public GameObject BlackParentObj;
     private CustomPiece BlackKing;
-    private CustomPiece[] BlackPieces = new CustomPiece[16];
-
-    public CustomPiece[] AllPieces = new CustomPiece[32];
+    private CustomPiece[] BlackPieces;
 
     public bool InCheck;
 
@@ -67,6 +65,15 @@ public class Game : MonoBehaviour
 
             if (Turn == "White")
                 CheckStatus(WhiteKing);
+            else if (Turn == "Black")
+                CheckStatus(BlackKing);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            NextTurn();
+            if (Turn == "White")
+                CheckStatus(WhiteKing);
             if (Turn == "Black")
                 CheckStatus(BlackKing);
         }
@@ -85,6 +92,25 @@ public class Game : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             foreach (CustomPiece piece in BlackPieces)
+            {
+                piece.Restart();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            foreach (CustomPiece piece in WhitePieces)
+            {
+                if (piece.Type == "Pawn")
+                    piece.PawnShowAttack(true);
+                else
+                    piece.Highlight(true);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            foreach (CustomPiece piece in WhitePieces)
             {
                 piece.Restart();
             }
@@ -137,13 +163,15 @@ public class Game : MonoBehaviour
                 Enemies = WhitePieces;
                 break;
         }
-
         foreach (CustomPiece piece in Enemies)
         {
-            if (piece.Type == "Pawn")
-                piece.PawnShowAttack(true);
-            else
-                piece.Highlight(true);
+            if(piece.Type != "King")
+            {
+                if (piece.Type == "Pawn")
+                    piece.PawnShowAttack(true);
+                else
+                    piece.Highlight(true);
+            }
         }
 
         InCheck = Grid.M.Tiles[King.posX, King.posY].l.enabled;
