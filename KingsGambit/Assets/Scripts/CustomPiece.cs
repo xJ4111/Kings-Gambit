@@ -20,11 +20,19 @@ public class CustomPiece : Piece
         Guarded = false;
     }
 
+    private void Update()
+    {
+        
+    }
+
     protected void OnMouseOver()
     {
         if (Game.M.Turn == Side && !Game.M.Selected)
         {
-            Highlight(true);
+            if (!Game.M.InCheck)
+                Highlight(true);
+            else if (Game.M.InCheck && (Type == "King" || CanBlock))
+                Highlight(true);
 
             if (Input.GetMouseButtonDown(1) && activeTiles > 0)
             {
@@ -36,8 +44,8 @@ public class CustomPiece : Piece
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if(Tiles[posX, posY].l.enabled)
-                    Game.M.TargetTile = Tiles[posX, posY];
+                if (Tiles[PosY, PosX].l.enabled)
+                    Game.M.TargetTile = Tiles[PosY, PosX];
             }
         }
     }
@@ -59,11 +67,15 @@ public class CustomPiece : Piece
 
         //Attack
         if (Game.M.TargetTile.Occupier)
+        {
+            Game.M.AllPieces.Remove(Game.M.TargetTile.Occupier);
             Destroy(Game.M.TargetTile.Occupier.gameObject);
+        }
+
         //Move
         transform.position = Game.M.TargetTile.transform.position;
 
-        Tiles[posX, posY].Exit();
+        Tiles[PosY, PosX].Exit();
         Game.M.TargetTile.Enter(this);
 
         pawnFirst = false;
@@ -78,6 +90,7 @@ public class CustomPiece : Piece
     public void CheckPath()
     {
         Path.Clear();
+        Potential.Clear();
 
         switch (Type)
         {
@@ -123,30 +136,58 @@ public class CustomPiece : Piece
                 case "Endurance":
                     #region Endurance
                     //Front 2 Spaces
-                    CheckMove(Offset(posX, 1), posY);
-                    CheckMove(Offset(posX, 2), posY);
+                    CheckMove(Offset(PosY, 1), PosX);
+                    CheckMove(Offset(PosY, 2), PosX);
 
-                    if (pawnFirst && Tiles[Offset(posX, 1), posY].l.enabled)
+                    if (pawnFirst && Tiles[Offset(PosY, 1), PosX].l.enabled)
                     {
-                        CheckMove(Offset(posX, 3), posY);
-                        CheckMove(Offset(posX, 4), posY);
+                        CheckMove(Offset(PosY, 3), PosX);
+                        CheckMove(Offset(PosY, 4), PosX);
                     }
 
-                    //Diagonal Left
+
                     for (int i = 1; i <= 2; i++)
                     {
-                        if ((Offset(posX, i) != posX && Offset(posY, i) != posY))
+                        //Diagonal Left
+                        if ((Offset(PosY, i) != PosY && Offset(PosX, i) != PosX))
                         {
-                            CheckAttack(Offset(posX, i), Offset(posY, i));
+                            if(!hit[0])
+                            {
+                                if (Tiles[Offset(PosY, i), Offset(PosX, i)].Occupier && Tiles[Offset(PosY, i), Offset(PosX, i)].Occupier.Side != Side)
+                                {
+                                    hit[0] = true;
+                                    CheckAttack(Offset(PosY, i), Offset(PosX, i));
+                                }
+                                else
+                                {
+                                    Potential.Add(Tiles[Offset(PosY, i), Offset(PosX, i)]);
+                                }
+                            }
+                            else if (hit[0])
+                            {
+                                Potential.Add(Tiles[Offset(PosY, i), Offset(PosX, i)]);
+                            }
                         }
-                    }
 
-                    //Diagonal Right
-                    for (int i = 1; i <= 2; i++)
-                    {
-                        if ((Offset(posX, i) != posX && Offset(posY, -i) != posY))
+                        //Diagonal Right
+                        if ((Offset(PosY, i) != PosY && Offset(PosX, -i) != PosX))
                         {
-                            CheckAttack(Offset(posX, i), Offset(posY, -i));
+                            if (!hit[1])
+                            {
+                                if (Tiles[Offset(PosY, i), Offset(PosX, -i)].Occupier && Tiles[Offset(PosY, i), Offset(PosX, -i)].Occupier.Side != Side)
+                                {
+                                    hit[1] = true;
+                                    CheckAttack(Offset(PosY, i), Offset(PosX, -i));
+                                }
+                                else
+                                {
+                                    Potential.Add(Tiles[Offset(PosY, i), Offset(PosX, -i)]);
+                                }
+                            }
+                            else if (hit[0])
+                            {
+                                Potential.Add(Tiles[Offset(PosY, i), Offset(PosX, -i)]);
+                            }
                         }
                     }
                     #endregion

@@ -16,13 +16,13 @@ public class Game : MonoBehaviour
 
     [Header("Piece Management")]
     public GameObject PieceParentObj;
-    [SerializeField] private CustomPiece[] AllPieces;
+    public List<CustomPiece> AllPieces;
 
-    [SerializeField] private CustomPiece WhiteKing;
+    public CustomPiece WhiteKing;
     private List<CustomPiece> WhitePawns;
     private List<CustomPiece> WhitePieces;
 
-    [SerializeField] private CustomPiece BlackKing;
+    public CustomPiece BlackKing;
     private List<CustomPiece> BlackPawns;
     private List<CustomPiece> BlackPieces;
 
@@ -47,7 +47,9 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        AllPieces = PieceParentObj.GetComponentsInChildren<CustomPiece>();
+        foreach (CustomPiece p in PieceParentObj.GetComponentsInChildren<CustomPiece>())
+            AllPieces.Add(p);
+
         WhitePawns = new List<CustomPiece>();
         WhitePieces = new List<CustomPiece>();
         BlackPawns = new List<CustomPiece>();
@@ -69,6 +71,11 @@ public class Game : MonoBehaviour
         {
             if (Selected)
                 Selected.Unselect();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            NextTurn();
         }
     }
 
@@ -156,6 +163,12 @@ public class Game : MonoBehaviour
         {
             p.CheckPath();
         }
+
+        foreach (CustomPiece p in AllPieces)
+        {
+            p.CheckPinning();
+        } 
+
     }
     #endregion
 
@@ -186,7 +199,7 @@ public class Game : MonoBehaviour
                 {
                     t.Safe = false;
 
-                    if (!InCheck && t == Grid.M.Tiles[King.posX, King.posY])
+                    if (!InCheck && t == Grid.M.Tiles[King.PosY, King.PosX])
                         InCheck = true;
                 }
             }
@@ -196,7 +209,7 @@ public class Game : MonoBehaviour
                 {
                     t.Safe = false;
 
-                    if (!InCheck && t == Grid.M.Tiles[King.posX, King.posY])
+                    if (!InCheck && t == Grid.M.Tiles[King.PosY, King.PosX])
                         InCheck = true;
                 }
             }

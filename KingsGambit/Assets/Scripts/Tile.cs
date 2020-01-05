@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    public int PosX, PosY = 0;
+    public int PosY, PosX = 0;
     public Light l;
-    public Piece Occupier;
+    public CustomPiece Occupier;
     public bool Safe;
     public Piece onner;
 
@@ -31,8 +31,8 @@ public class Tile : MonoBehaviour
             {
                 if (transform.position == Grid.M.GridPos[i, j])
                 {
-                    PosX = i;
-                    PosY = j;
+                    PosY = i;
+                    PosX = j;
                     Grid.M.Tiles[i, j] = this;
                 }
             }
@@ -41,9 +41,10 @@ public class Tile : MonoBehaviour
 
     public void Enter(Piece piece)
     {
-        Occupier = piece.GetComponent<Piece>();
-        Occupier.posX = PosX;
-        Occupier.posY = PosY;
+        Occupier = piece.GetComponent<CustomPiece>();
+        Occupier.PosY = PosY;
+        Occupier.PosX = PosX;
+        Occupier.Pos = this;
     }
 
     public void Exit()
