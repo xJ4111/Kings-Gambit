@@ -10,15 +10,14 @@ public class Piece : MonoBehaviour
 
     public List<Tile> Path = new List<Tile>();
     public List<Tile> Potential = new List<Tile>();
-
-    public bool Pinned;
-
     //PAWN ONLY
     public List<Tile> PawnAttackTiles = new List<Tile>();
 
+    public bool Pinned;
     public bool Guarded;
-
-    [HideInInspector] public bool CanBlock;
+    public bool CanBlock;
+    //KING ONLY
+    public CustomPiece Checker;
 
     [Header("Position")]
     public Tile Pos;
@@ -111,6 +110,45 @@ public class Piece : MonoBehaviour
         return copy;
     }
 
+    public void CheckBlock()
+    {
+        CustomPiece king = null;
+        CanBlock = false;
+
+        switch(Side)
+        {
+            case "White": king = Game.M.WhiteKing;
+                break;
+            case "Black": king = Game.M.BlackKing;
+                break;
+        }
+
+        if(Game.M.InCheck && Game.M.CheckBlockable)
+        {
+            CanBlock = false;
+
+            foreach(Tile t in Game.M.AttackPath)
+            {
+                if(Path.Contains(t))
+                {
+                    CanBlock = true;
+                }
+            }
+
+            if(CanBlock)
+            {
+                List<Tile> copy = Clone(Path);
+                foreach (Tile t in copy)
+                {
+                    if (!Game.M.AttackPath.Contains(t))
+                    {
+                        Path.Remove(t);
+                    }
+                }
+            }
+        }
+    }
+
     public List<Tile> FullPath()
     {
         //Pinner Line of Sight
@@ -137,7 +175,7 @@ public class Piece : MonoBehaviour
                 return QueenLOS(King);
         }
 
-        return null;
+        return new List<Tile>();
     }
 
     public List<Tile> RookLOS(CustomPiece King)
@@ -148,53 +186,38 @@ public class Piece : MonoBehaviour
 
         if (King.Pos.PosY != PosY && King.Pos.PosX != PosX)
         {
-            return null;
+            return path;
         }
         else if(King.Pos.PosY == PosY)
         {
             if(King.Pos.PosX > PosX)
             {
-                while(Tiles[y,x] != King.Pos)
-                {
-                    path.Add(Tiles[y, x]);
-                    x++;
-                }
-
-                return path;
+                path = SeePath(1, 0);
             }
             if (King.Pos.PosX < PosX)
             {
-                while (Tiles[y, x] != King.Pos)
-                {
-                    path.Add(Tiles[y, x]);
-                    x--;
-                }
-
-                return path;
+                path = SeePath(-1, 0);
             }
         }
         else if (King.Pos.PosX == PosX)
         {
             if (King.Pos.PosY < PosY)
             {
-                while (Tiles[y, x] != King.Pos)
-                {
-                    path.Add(Tiles[y, x]);
-                    y--;
-                }
-
-                return path;
+                path = SeePath(0, -1);
             }
             if (King.Pos.PosY > PosY)
             {
-                while (Tiles[y, x] != King.Pos)
-                {
-                    path.Add(Tiles[y, x]);
-                    y++;
-                }
-
-                return path;
+                path = SeePath(0, 1);
             }
+        }
+
+        if(path.Contains(King.Pos))
+        {
+            return path;
+        }
+        else
+        {
+            path.Clear();
         }
 
         return path;
@@ -202,64 +225,42 @@ public class Piece : MonoBehaviour
     public List<Tile> BishopLOS(CustomPiece King)
     {
         List<Tile> path = new List<Tile>();
-        int x = PosX;
-        int y = PosY;
 
         if (King.Pos.PosY == PosY || King.Pos.PosX == PosX)
         {
-            return null;
+            return path;
         }
         else if (King.Pos.PosY > PosY) //below
         {
             if (King.Pos.PosX > PosX) //right
             {
-                while (Tiles[y, x] != King.Pos)
-                {
-                    path.Add(Tiles[y, x]);
-                    x++;
-                    y++;
-                }
-
-                return path;
+                path = SeePath(1, 1);
             }
             else if (King.Pos.PosX < PosX) //left
             {
-                while (Tiles[y, x] != King.Pos)
-                {
-                    path.Add(Tiles[y, x]);
-                    x--;
-                    y++;
-
-                    Debug.Log(x + " " + y);
-                }
-
-                return path;
+                path = SeePath(-1, 1);
             }
         }
         else if (King.Pos.PosY < PosY) //above
         {
             if (King.Pos.PosX > PosX) //right
             {
-                while (Tiles[y, x] != King.Pos)
-                {
-                    path.Add(Tiles[y, x]);
-                    x++;
-                    y--;
-                }
-
-                return path;
+                path = SeePath(1, -1);
             }
             else if (King.Pos.PosX < PosX) //left
             {
-                while (Tiles[y, x] != King.Pos)
-                {
-                    path.Add(Tiles[y, x]);
-                    x--;
-                    y--;
-                }
-
-                return path;
+                path = SeePath(-1, -1);
             }
+        }
+
+
+        if (path.Contains(King.Pos))
+        {
+            return path;
+        }
+        else
+        {
+            path.Clear();
         }
 
         return path;
@@ -271,6 +272,22 @@ public class Piece : MonoBehaviour
             return RookLOS(King);
         else
             return BishopLOS(King);
+    }
+
+    List<Tile> SeePath(int xDir, int yDir)
+    {
+        List<Tile> path = new List<Tile>();
+        int x = PosX;
+        int y = PosY;
+
+        while (InRange(x, y))
+        {
+            path.Add(Tiles[y, x]);
+            x += xDir;
+            y += yDir;
+        }
+
+        return path;
     }
     #endregion
 

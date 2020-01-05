@@ -8,20 +8,12 @@ public class Tile : MonoBehaviour
     public Light l;
     public CustomPiece Occupier;
     public bool Safe;
-    public Piece onner;
 
     void Awake()
     {
         Safe = true;
         StartCoroutine(FindPosition());
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-       
-    }
-
     IEnumerator FindPosition()
     {
         yield return new WaitForEndOfFrame();
@@ -42,9 +34,9 @@ public class Tile : MonoBehaviour
     public void Enter(Piece piece)
     {
         Occupier = piece.GetComponent<CustomPiece>();
+        Occupier.Pos = this;
         Occupier.PosY = PosY;
         Occupier.PosX = PosX;
-        Occupier.Pos = this;
     }
 
     public void Exit()

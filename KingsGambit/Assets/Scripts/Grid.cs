@@ -23,18 +23,6 @@ public class Grid : MonoBehaviour
         SetGridCoords();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     void SetGridCoords()
     {
         Vector3 tempCoord = new Vector3(-14f,0f,14f);

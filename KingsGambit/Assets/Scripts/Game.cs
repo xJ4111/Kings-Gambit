@@ -27,6 +27,9 @@ public class Game : MonoBehaviour
     private List<CustomPiece> BlackPieces;
 
     public bool InCheck;
+    public int CheckCount;
+    public bool CheckBlockable;
+    public List<Tile> AttackPath;
 
     public Animation CamPivotAnim;
 
@@ -111,7 +114,6 @@ public class Game : MonoBehaviour
         }
 
         CalcMovePaths();
-        CheckStatus(WhiteKing);
     }
 
     #region Turn Management
@@ -144,11 +146,6 @@ public class Game : MonoBehaviour
         UI.M.TurnText.text = Turn + "'s Turn";
 
         CalcMovePaths();
-
-        if (Turn == "White")
-            CheckStatus(WhiteKing);
-        if (Turn == "Black")
-            CheckStatus(BlackKing);
     }
 
     void CalcMovePaths()
@@ -167,7 +164,17 @@ public class Game : MonoBehaviour
         foreach (CustomPiece p in AllPieces)
         {
             p.CheckPinning();
-        } 
+        }
+
+        if (Turn == "White")
+            CheckStatus(WhiteKing);
+        if (Turn == "Black")
+            CheckStatus(BlackKing);
+
+        foreach (CustomPiece p in AllPieces)
+        {
+            p.CheckBlock();
+        }
 
     }
     #endregion
@@ -176,7 +183,10 @@ public class Game : MonoBehaviour
     void CheckStatus(CustomPiece King)
     {
         List<CustomPiece> Enemies = new List<CustomPiece>();
+        King.Checker = null;
         InCheck = false;
+        CheckCount = 0;
+        AttackPath = null;
 
         switch (King.Side)
         {
@@ -199,23 +209,59 @@ public class Game : MonoBehaviour
                 {
                     t.Safe = false;
 
-                    if (!InCheck && t == Grid.M.Tiles[King.PosY, King.PosX])
+                    if(t == Grid.M.Tiles[King.PosY, King.PosX])
+                    {
                         InCheck = true;
+                        CheckCount++;
+
+                        if (!King.Checker)
+                            King.Checker = piece;
+                    }
+
                 }
             }
             else
             {
-                foreach (Tile t in piece.Path)
-                {
-                    t.Safe = false;
+                List<Tile> path = piece.LineOfSight(King);
 
-                    if (!InCheck && t == Grid.M.Tiles[King.PosY, King.PosX])
-                        InCheck = true;
+                
+    
+                if (path.Count > 0 && piece.Path.Contains(King.Pos))
+                {
+                    foreach (Tile t in path)
+                    {
+                        t.Safe = false;
+                    }
+
+                    InCheck = true;
+                    CheckCount++;
+
+                    if (!King.Checker)
+                        King.Checker = piece;
+                }
+                else
+                {
+                    foreach (Tile t in piece.Path)
+                    {
+                        t.Safe = false;
+                    }
                 }
             }
         }
 
+        CheckBlockable = CheckCount <= 1;
+
+        if(InCheck && CheckBlockable)
+        {
+            AttackPath = King.Checker.LineOfSight(King);
+        }
+
         King.CheckPath();
+
+        if(InCheck && !CheckBlockable && King.Path.Count == 0)
+        {
+            Debug.Log("CHECKMATE!");
+        }
     }
     #endregion
 }
