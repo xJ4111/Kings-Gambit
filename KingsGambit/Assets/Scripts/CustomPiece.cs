@@ -16,7 +16,7 @@ public class CustomPiece : Piece
         Side = names[0];
         Type = names[1];
 
-        pawnFirst = true;
+        firstMove = true;
         Guarded = false;
     }
 
@@ -65,9 +65,6 @@ public class CustomPiece : Piece
     {
         Highlight(false);
 
-        //Move
-        transform.position = Game.M.TargetTile.transform.position;
-
         //Attack
         if (Game.M.TargetTile.Occupier)
         {
@@ -82,13 +79,30 @@ public class CustomPiece : Piece
             Destroy(EPTarget.gameObject);
         }
 
-        Tiles[PosX, PosY].Exit();
-        Game.M.TargetTile.Enter(this);
+        if(Type == "King")
+        {
+            if (CastleLeft != null && Game.M.TargetTile == CastleLeft.Item2[0])
+            {
+                CastleLeft.Item1.MoveTo(CastleLeft.Item2[1]);
+            }
 
-        if(Type == "Pawn")
+            if (CastleRight != null && Game.M.TargetTile == CastleRight.Item2[0])
+            {
+                CastleRight.Item1.MoveTo(CastleRight.Item2[1]);
+            }
+
+            CastleLeft = null;
+            CastleRight = null;
+        }
+
+        MoveTo(Game.M.TargetTile);
+
+        if (Type == "Pawn")
         {
             PawnStateCheck();
         }
+
+        firstMove = false;
     }
 
     public void Highlight(bool b)
@@ -156,7 +170,7 @@ public class CustomPiece : Piece
                     CheckMove(Offset(PosY, 1), PosX);
                     CheckMove(Offset(PosY, 2), PosX);
 
-                    if (pawnFirst && Tiles[Offset(PosY, 1), PosX].l.enabled)
+                    if (firstMove && Tiles[Offset(PosY, 1), PosX].l.enabled)
                     {
                         CheckMove(Offset(PosY, 3), PosX);
                         CheckMove(Offset(PosY, 4), PosX);

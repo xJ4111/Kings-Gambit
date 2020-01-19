@@ -14,8 +14,6 @@ public class Piece : MonoBehaviour
     public bool Pinned;
     public bool Guarded;
     public bool CanBlock;
-    //KING ONLY
-    public CustomPiece Checker;
 
     [Header("Position")]
     public Tile Pos;
@@ -23,7 +21,7 @@ public class Piece : MonoBehaviour
     protected Tile[,] Tiles;
     public int activeTiles;
 
-    protected bool pawnFirst = true;
+    protected bool firstMove = true;
     [HideInInspector] public bool[] hit = new bool[4];
 
     [Header("Pawn Only")]
@@ -31,7 +29,13 @@ public class Piece : MonoBehaviour
     public Tile EPTile;
     public CustomPiece EPTarget;
     public bool EPTake = false;
-    private int startingX, startingY;
+    private int startingY;
+
+    [Header("King Related")]
+    public CustomPiece Checker;
+    private int startingX;
+    public System.Tuple<CustomPiece, List<Tile>> CastleLeft;
+    public System.Tuple<CustomPiece, List<Tile>> CastleRight;
 
     public void SetPos()
     {
@@ -79,10 +83,10 @@ public class Piece : MonoBehaviour
             switch (Side)
             {
                 case "White":
-                    EnemyKing = Game.M.BlackKing;
+                    EnemyKing = Game.Black.King;
                     break;
                 case "Black":
-                    EnemyKing = Game.M.WhiteKing;
+                    EnemyKing = Game.White.King;
                     break;
             }
 
@@ -124,9 +128,9 @@ public class Piece : MonoBehaviour
 
         switch(Side)
         {
-            case "White": king = Game.M.WhiteKing;
+            case "White": king = Game.White.King;
                 break;
-            case "Black": king = Game.M.BlackKing;
+            case "Black": king = Game.Black.King;
                 break;
         }
 
@@ -299,6 +303,13 @@ public class Piece : MonoBehaviour
     #endregion
 
     #region Movement Checks
+
+    public void MoveTo(Tile TargetTile)
+    {
+        transform.position = TargetTile.transform.position;
+        Tiles[PosX, PosY].Exit();
+        TargetTile.Enter(this);
+    }
     protected void CheckMove(int posX, int posY)
     {
         if (InRange(posX, posY))
@@ -405,7 +416,7 @@ public class Piece : MonoBehaviour
         //Front 2 Spaces
         CheckMove(PosX, Offset(PosY, 1));
 
-        if (pawnFirst && Path.Contains(Tiles[PosX, Offset(PosY, 1)]))
+        if (firstMove && Path.Contains(Tiles[PosX, Offset(PosY, 1)]))
         {
             CheckMove(PosX, Offset(PosY, 2));
         }
@@ -452,7 +463,6 @@ public class Piece : MonoBehaviour
 
     protected void PawnStateCheck()
     {
-        pawnFirst = false;
         EPTake = Mathf.Abs(PosY - startingY) == 2;
     }
 
@@ -601,6 +611,87 @@ public class Piece : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void CheckCastling()
+    {
+        if(firstMove && !Game.M.InCheck)
+        {
+            switch (Side)
+            {
+                case "White":
+                    foreach (CustomPiece piece in Game.White.Rooks)
+                    {
+                        Castling(piece);
+                    }
+                    break;
+                case "Black":
+                    foreach (CustomPiece piece in Game.Black.Rooks)
+                    {
+                        Castling(piece);
+                    }
+                    break;
+            }
+        }
+        else if(!firstMove)
+        {
+            Debug.Log("Cannot Castle: King Moved");
+        }
+        else if(Game.M.InCheck)
+        {
+            Debug.Log("Cannot Castle: King In Check");
+        }
+    }
+
+    bool Castling(CustomPiece Rook)
+    {
+        if (Rook.PosX != Rook.startingX)
+        {
+            Debug.Log("Rook Moved");
+            return false;
+        }
+
+
+        foreach (Tile t in Rook.RookLOS((CustomPiece)this))
+        {
+            if (t.Occupier && t.Occupier.Type != "Rook" && t.Occupier != this)
+            {
+                Debug.Log("Path Blocked");
+                return false;
+            }
+        }
+
+        List<Tile> temp = new List<Tile>();
+        bool left = Rook.PosX < PosX;
+
+        for (int i = -2; i < 0; i++)
+        {
+            if(left)
+                temp.Add(Tiles[PosX + i, PosY]);
+            else
+                temp.Add(Tiles[PosX - i, PosY]);
+        }
+
+        foreach (Tile t in temp)
+        {
+            if (!t.Safe)
+            {
+                Debug.Log("Cannot Castle Towards " + Rook.name + " (Path Unsafe)");
+                return false;
+            }
+        }
+
+        Path.Add(temp[0]);
+        if(left)
+        {
+            CastleLeft = new System.Tuple<CustomPiece, List<Tile>>(Rook,temp);
+        }
+        else if (!left)
+        {
+            CastleRight = new System.Tuple<CustomPiece, List<Tile>>(Rook, temp);
+        }
+
+        return true;
     }
 
     #endregion

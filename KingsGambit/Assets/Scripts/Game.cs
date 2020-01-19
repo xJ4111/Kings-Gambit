@@ -17,14 +17,27 @@ public class Game : MonoBehaviour
     [Header("Piece Management")]
     public GameObject PieceParentObj;
     public List<CustomPiece> AllPieces;
+    public static class White
+    {
+        public static List<CustomPiece> All = new List<CustomPiece>();
+        public static CustomPiece King;
+        public static CustomPiece Queen;
+        public static List<CustomPiece> Pawns = new List<CustomPiece>();
+        public static List<CustomPiece> Rooks = new List<CustomPiece>();
+        public static List<CustomPiece> Bishops = new List<CustomPiece>();
+        public static List<CustomPiece> Knights = new List<CustomPiece>();
+    }
 
-    public CustomPiece WhiteKing;
-    private List<CustomPiece> WhitePawns;
-    private List<CustomPiece> WhitePieces;
-
-    public CustomPiece BlackKing;
-    private List<CustomPiece> BlackPawns;
-    private List<CustomPiece> BlackPieces;
+    public static class Black
+    {
+        public static List<CustomPiece> All = new List<CustomPiece>();
+        public static CustomPiece King;
+        public static CustomPiece Queen;
+        public static List<CustomPiece> Pawns = new List<CustomPiece>();
+        public static List<CustomPiece> Rooks = new List<CustomPiece>();
+        public static List<CustomPiece> Bishops = new List<CustomPiece>();
+        public static List<CustomPiece> Knights = new List<CustomPiece>();
+    }
 
     public bool InCheck;
     public int CheckCount;
@@ -52,11 +65,6 @@ public class Game : MonoBehaviour
     {
         foreach (CustomPiece p in PieceParentObj.GetComponentsInChildren<CustomPiece>())
             AllPieces.Add(p);
-
-        WhitePawns = new List<CustomPiece>();
-        WhitePieces = new List<CustomPiece>();
-        BlackPawns = new List<CustomPiece>();
-        BlackPieces = new List<CustomPiece>();
 
         StartCoroutine(Initialise());
     }
@@ -90,24 +98,56 @@ public class Game : MonoBehaviour
         {
             if (p.name.Contains("White"))
             {
-                WhitePieces.Add(p);
+                White.All.Add(p);
 
-                if (p.name.Contains("Pawn"))
-                    WhitePawns.Add(p);
-
-                if (p.name.Contains("King"))
-                    WhiteKing = p;
+                switch (p.name.Split(' ')[1])
+                {
+                    case "King":
+                        White.King = p;
+                        break;
+                    case "Queen":
+                        White.Queen = p;
+                        break;
+                    case "Pawn":
+                        White.Pawns.Add(p);
+                        break;
+                    case "Bishop":
+                        White.Bishops.Add(p);
+                        break;
+                    case "Knight":
+                        White.Knights.Add(p);
+                        break;
+                    case "Rook":
+                        White.Rooks.Add(p);
+                        break;
+                }
             }
 
             if (p.name.Contains("Black"))
             {
-                BlackPieces.Add(p);
+                Black.All.Add(p);
 
-                if (p.name.Contains("Pawn"))
-                    BlackPawns.Add(p);
-
-                if (p.name.Contains("King"))
-                    BlackKing = p;
+                switch (p.name.Split(' ')[1])
+                {
+                    case "King":
+                        Black.King = p;
+                        break;
+                    case "Queen":
+                        Black.Queen = p;
+                        break;
+                    case "Pawn":
+                        Black.Pawns.Add(p);
+                        break;
+                    case "Bishop":
+                        Black.Bishops.Add(p);
+                        break;
+                    case "Knight":
+                        Black.Knights.Add(p);
+                        break;
+                    case "Rook":
+                        Black.Rooks.Add(p);
+                        break;
+                }
             }
 
             p.SetPos();
@@ -167,9 +207,15 @@ public class Game : MonoBehaviour
         }
 
         if (Turn == "White")
-            CheckStatus(WhiteKing);
+        {
+            CheckStatus(White.King);
+            White.King.CheckCastling();
+        }
         if (Turn == "Black")
-            CheckStatus(BlackKing);
+        {
+            CheckStatus(Black.King);
+            Black.King.CheckCastling();
+        }
 
         foreach (CustomPiece p in AllPieces)
         {
@@ -191,10 +237,10 @@ public class Game : MonoBehaviour
         switch (King.Side)
         {
             case "White":
-                Enemies = BlackPieces;
+                Enemies = Black.All;
                 break;
             case "Black":
-                Enemies = WhitePieces;
+                Enemies = White.All;
                 break;
         }
 
