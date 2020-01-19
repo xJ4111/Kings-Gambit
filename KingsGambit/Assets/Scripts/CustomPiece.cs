@@ -65,6 +65,9 @@ public class CustomPiece : Piece
     {
         Highlight(false);
 
+        //Move
+        transform.position = Game.M.TargetTile.transform.position;
+
         //Attack
         if (Game.M.TargetTile.Occupier)
         {
@@ -72,19 +75,33 @@ public class CustomPiece : Piece
             Destroy(Game.M.TargetTile.Occupier.gameObject);
         }
 
-        //Move
-        transform.position = Game.M.TargetTile.transform.position;
+        //En Passant Attack
+        if(Game.M.TargetTile == EPTile)
+        {
+            Game.M.AllPieces.Remove(EPTarget);
+            Destroy(EPTarget.gameObject);
+        }
 
         Tiles[PosX, PosY].Exit();
         Game.M.TargetTile.Enter(this);
 
-        pawnFirst = false;
+        if(Type == "Pawn")
+        {
+            PawnStateCheck();
+        }
     }
 
     public void Highlight(bool b)
     {
         foreach (Tile t in Path)
+        {
             t.l.enabled = b;
+        }
+
+        if(EPTile && EPTarget)
+        {
+            EPTile.l.enabled = b;
+        }
     }
 
     public void CheckPath()

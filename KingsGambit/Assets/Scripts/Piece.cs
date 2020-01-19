@@ -10,8 +10,6 @@ public class Piece : MonoBehaviour
 
     public List<Tile> Path = new List<Tile>();
     public List<Tile> Potential = new List<Tile>();
-    //PAWN ONLY
-    public List<Tile> PawnAttackTiles = new List<Tile>();
 
     public bool Pinned;
     public bool Guarded;
@@ -28,6 +26,13 @@ public class Piece : MonoBehaviour
     protected bool pawnFirst = true;
     [HideInInspector] public bool[] hit = new bool[4];
 
+    [Header("Pawn Only")]
+    public List<Tile> PawnAttackTiles = new List<Tile>();
+    public Tile EPTile;
+    public CustomPiece EPTarget;
+    public bool EPTake = false;
+    private int startingX, startingY;
+
     public void SetPos()
     {
         for (int i = 0; i < 8; i++)
@@ -38,10 +43,10 @@ public class Piece : MonoBehaviour
                 {
                     PosX = i;
                     PosY = j;
+                    startingX = i;
+                    startingY = j;
                     Pos = Grid.M.Tiles[i, j];
                     Pos.Enter(this);
-
-                    Debug.Log(name + ": " + PosX + " " + PosY);
                 }
             }
         }
@@ -415,6 +420,23 @@ public class Piece : MonoBehaviour
         //Diagonal Right
         if ((Offset(PosX, -1) != PosX && Offset(PosY, 1) != PosY))
             CheckAttack(Offset(PosX, -1), Offset(PosY, 1));
+
+        EnPassant(1);
+        EnPassant(-1);
+    }
+
+    void EnPassant(int direction)
+    {
+        if(InRange(PosX + direction, PosY))
+        {
+            Tile temp = Tiles[PosX + direction, PosY];
+
+            if (temp.Occupier && temp.Occupier.Side != Side && temp.Occupier.Type == "Pawn" && temp.Occupier.EPTake)
+            {
+                EPTile = Tiles[PosX + direction, Offset(PosY, 1)];
+                EPTarget = temp.Occupier;
+            }
+        }
     }
 
     public virtual void PawnShowAttack()
@@ -426,6 +448,12 @@ public class Piece : MonoBehaviour
         //Diagonal Right
         if ((Offset(PosX, -1) != PosX && Offset(PosY, 1) != PosY))
             ShowMoveAttack(Offset(PosX, -1), Offset(PosY, 1));
+    }
+
+    protected void PawnStateCheck()
+    {
+        pawnFirst = false;
+        EPTake = Mathf.Abs(PosY - startingY) == 2;
     }
 
     protected virtual void Rook()
