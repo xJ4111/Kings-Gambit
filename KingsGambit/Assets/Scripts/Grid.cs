@@ -31,7 +31,7 @@ public class Grid : MonoBehaviour
         {
             for (int j = 0; j < 8; j++)
             {
-                GridPos[i,j] = tempCoord;
+                GridPos[j,i] = tempCoord;
                 tempCoord.x += 4f;
             }
             tempCoord.x = -14f;

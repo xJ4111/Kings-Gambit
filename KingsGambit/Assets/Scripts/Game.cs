@@ -209,7 +209,7 @@ public class Game : MonoBehaviour
                 {
                     t.Safe = false;
 
-                    if(t == Grid.M.Tiles[King.PosY, King.PosX])
+                    if(t == Grid.M.Tiles[King.PosX, King.PosY])
                     {
                         InCheck = true;
                         CheckCount++;
@@ -217,14 +217,11 @@ public class Game : MonoBehaviour
                         if (!King.Checker)
                             King.Checker = piece;
                     }
-
                 }
             }
             else
             {
                 List<Tile> path = piece.LineOfSight(King);
-
-                
     
                 if (path.Count > 0 && piece.Path.Contains(King.Pos))
                 {

@@ -21,7 +21,7 @@ public class Piece : MonoBehaviour
 
     [Header("Position")]
     public Tile Pos;
-    public int PosY, PosX;
+    public int PosX, PosY;
     protected Tile[,] Tiles;
     public int activeTiles;
 
@@ -36,10 +36,12 @@ public class Piece : MonoBehaviour
             {
                 if (transform.position == Grid.M.Tiles[i, j].transform.position)
                 {
-                    PosY = i;
-                    PosX = j;
+                    PosX = i;
+                    PosY = j;
                     Pos = Grid.M.Tiles[i, j];
                     Pos.Enter(this);
+
+                    Debug.Log(name + ": " + PosX + " " + PosY);
                 }
             }
         }
@@ -181,8 +183,6 @@ public class Piece : MonoBehaviour
     public List<Tile> RookLOS(CustomPiece King)
     {
         List<Tile> path = new List<Tile>();
-        int x = PosX;
-        int y = PosY;
 
         if (King.Pos.PosY != PosY && King.Pos.PosX != PosX)
         {
@@ -282,7 +282,7 @@ public class Piece : MonoBehaviour
 
         while (InRange(x, y))
         {
-            path.Add(Tiles[y, x]);
+            path.Add(Tiles[x, y]);
             x += xDir;
             y += yDir;
         }
@@ -398,39 +398,38 @@ public class Piece : MonoBehaviour
     protected virtual void PawnMove()
     {
         //Front 2 Spaces
-        CheckMove(Offset(PosY, 1), PosX);
+        CheckMove(PosX, Offset(PosY, 1));
 
-        if (pawnFirst && Path.Contains(Tiles[Offset(PosY, 1), PosX]))
+        if (pawnFirst && Path.Contains(Tiles[PosX, Offset(PosY, 1)]))
         {
-            CheckMove(Offset(PosY, 2), PosX);
+            CheckMove(PosX, Offset(PosY, 2));
         }
     }
 
     protected virtual void PawnAttack()
     {
         //Diagonal Left
-        if ((Offset(PosY, 1) != PosY && Offset(PosX, 1) != PosX))
-            CheckAttack(Offset(PosY, 1), Offset(PosX, 1));
+        if ((Offset(PosX, 1) != PosX) && (Offset(PosY, 1) != PosY))
+            CheckAttack(Offset(PosX, 1), Offset(PosY, 1));
 
         //Diagonal Right
-        if ((Offset(PosY, 1) != PosY && Offset(PosX, -1) != PosX))
-            CheckAttack(Offset(PosY, 1), Offset(PosX, -1));
+        if ((Offset(PosX, -1) != PosX && Offset(PosY, 1) != PosY))
+            CheckAttack(Offset(PosX, -1), Offset(PosY, 1));
     }
 
     public virtual void PawnShowAttack()
     {
         //Diagonal Left
-        if ((Offset(PosY, 1) != PosY && Offset(PosX, 1) != PosX))
-            ShowMoveAttack(Offset(PosY, 1), Offset(PosX, 1));
+        if ((Offset(PosX, 1) != PosX && Offset(PosY, 1) != PosY))
+            ShowMoveAttack(Offset(PosX, 1), Offset(PosY, 1));
 
         //Diagonal Right
-        if ((Offset(PosY, 1) != PosY && Offset(PosX, -1) != PosX))
-            ShowMoveAttack(Offset(PosY, 1), Offset(PosX, -1));
+        if ((Offset(PosX, -1) != PosX && Offset(PosY, 1) != PosY))
+            ShowMoveAttack(Offset(PosX, -1), Offset(PosY, 1));
     }
 
     protected virtual void Rook()
     {
-        
         for (int i = 1; i < 8; i++)
         {
             //Forward
@@ -451,95 +450,88 @@ public class Piece : MonoBehaviour
     {
         if (!hit)
         {
-            if (Tiles[Offset(PosY, i), PosX].Occupier)
+            if (Tiles[PosX, Offset(PosY, i)].Occupier)
             {
-                if (Tiles[Offset(PosY, i), PosX].Occupier.Side == Side)
+                if (Tiles[PosX, Offset(PosY, i)].Occupier.Side == Side)
                 {
-                    Potential.Add(Tiles[Offset(PosY, i), PosX]);
+                    Potential.Add(Tiles[PosX, Offset(PosY, i)]);
                     hit = true;
                 }
-                else if (Tiles[Offset(PosY, i), PosX].Occupier.Side != Side)
+                else if (Tiles[PosX, Offset(PosY, i)].Occupier.Side != Side)
                 {
                     hit = true;
-                    CheckMoveAttack(Offset(PosY, i), PosX);
+                    CheckMoveAttack(PosX, Offset(PosY, i));
                 }
             }
-            else if (!Tiles[Offset(PosY, i), PosX].Occupier)
+            else if (!Tiles[PosX, Offset(PosY, i)].Occupier)
             {
-                CheckMoveAttack(Offset(PosY, i), PosX);
+                CheckMoveAttack(PosX, Offset(PosY, i));
             }
         }
         else if (hit)
-            Potential.Add(Tiles[Offset(PosY, i), PosX]);
+            Potential.Add(Tiles[PosX, Offset(PosY, i)]);
     }
 
     protected virtual void RookMovementX(int i, ref bool hit)
     {
         if (!hit)
         {
-            if (Tiles[PosY, Offset(PosX, i)].Occupier)
+            if (Tiles[Offset(PosX, i), PosY].Occupier)
             {
-                if (Tiles[PosY, Offset(PosX, i)].Occupier.Side == Side)
+                if (Tiles[Offset(PosX, i), PosY].Occupier.Side == Side)
                 {
-                    Potential.Add(Tiles[PosY, Offset(PosX, i)]);
+                    Potential.Add(Tiles[Offset(PosX, i), PosY]);
                     hit = true;
                 }
-                else if (Tiles[PosY, Offset(PosX, i)].Occupier.Side != Side)
+                else if (Tiles[Offset(PosX, i), PosY].Occupier.Side != Side)
                 {
                     hit = true;
-                    CheckMoveAttack(PosY, Offset(PosX, i));
+                    CheckMoveAttack(Offset(PosX, i), PosY);
                 }
             }
-            else if (!Tiles[PosY, Offset(PosX, i)].Occupier)
+            else if (!Tiles[Offset(PosX, i), PosY].Occupier)
             {
-                CheckMoveAttack(PosY, Offset(PosX, i));
+                CheckMoveAttack(Offset(PosX, i), PosY);
             }
         }
         else if (hit)
-            Potential.Add(Tiles[PosY, Offset(PosX, i)]);
+            Potential.Add(Tiles[Offset(PosX, i), PosY]);
     }
 
     protected virtual void Bishop()
     {
         for (int i = 1; i < 8; i++)
         {
-            //Top Left
             BishopMovement(i, i, ref hit[0]);
-
-            //Top Right
             BishopMovement(i, -i, ref hit[1]);
-
-            //Bottom Left
             BishopMovement(-i, i, ref hit[2]);
-
-            //Bottom Right
             BishopMovement(-i, -i, ref hit[3]);
         } 
     }
 
     protected virtual void BishopMovement(int x, int y, ref bool hit)
     {
-        if(!hit && (Offset(PosY, x) != PosY && Offset(PosX, y) != PosX))
+        if(!hit && Offset(PosX, x) != PosX && Offset(PosY, y) != PosY)
         {
-            if(Tiles[Offset(PosY, x), Offset(PosX, y)].Occupier)
+            if(Tiles[Offset(PosX, x), Offset(PosY, y)].Occupier)
             {
-                if(Tiles[Offset(PosY, x), Offset(PosX, y)].Occupier.Side != Side)
+                if(Tiles[Offset(PosX, x), Offset(PosY, y)].Occupier.Side != Side)
                 {
-                    CheckMoveAttack(Offset(PosY, x), Offset(PosX, y));
+                    CheckMoveAttack(Offset(PosX, x), Offset(PosY, y));
                     hit = true;
                 }
-                else if(Tiles[Offset(PosY, x), Offset(PosX, y)].Occupier.Side == Side)
+                else if(Tiles[Offset(PosX, x), Offset(PosY, y)].Occupier.Side == Side)
                 {
-                    CheckMoveAttack(Offset(PosY, x), Offset(PosX, y));
-                    Potential.Add(Tiles[Offset(PosY, x), Offset(PosX, y)]);
+                    CheckMoveAttack(Offset(PosX, x), Offset(PosY, y));
+                    Potential.Add(Tiles[Offset(PosX, x), Offset(PosY, y)]);
                     hit = true;
                 }
             }
             else
-                CheckMoveAttack(Offset(PosY, x), Offset(PosX, y));
+                CheckMoveAttack(Offset(PosX, x), Offset(PosY, y));
         }
-        else if (hit && (Offset(PosY, x) != PosY && Offset(PosX, y) != PosX))
-            Potential.Add(Tiles[Offset(PosY, x), Offset(PosX, y)]);
+        else if (hit && (Offset(PosX, x) != PosX && Offset(PosY, y) != PosY))
+            Potential.Add(Tiles[Offset(PosX, x), Offset(PosY, y)]);
     }
 
     protected virtual void Knight()
@@ -559,9 +551,9 @@ public class Piece : MonoBehaviour
 
     protected virtual void KnightMove(int x, int y)
     {
-        if (Offset(PosY, x) != PosY && Offset(PosX, y) != PosX)
+        if (Offset(PosX, y) != PosX && Offset(PosY, x) != PosY)
         {
-            CheckMoveAttack(Offset(PosY, x), Offset(PosX, y));
+            CheckMoveAttack(Offset(PosX, y), Offset(PosY, x));
         }
     }
 
@@ -571,13 +563,13 @@ public class Piece : MonoBehaviour
         {
             for (int j = -1; j <= 1; j++)
             {
-                if (InRange(PosY + i, PosX + j))
+                if (InRange(PosX + i, PosY + j))
                 {
-                    Tile t = Grid.M.Tiles[PosY + i, PosX + j];
+                    Tile t = Grid.M.Tiles[PosX + i, PosY + j];
                     if (!t.Occupier && t.Safe)
-                        CheckMoveAttack(PosY + i, PosX + j);
+                        CheckMoveAttack(PosX + i, PosY + j);
                     else if(t.Occupier && !t.Occupier.Guarded)
-                        CheckMoveAttack(PosY + i, PosX + j);
+                        CheckMoveAttack(PosX + i, PosY + j);
                 }
             }
         }

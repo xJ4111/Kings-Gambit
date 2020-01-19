@@ -23,8 +23,8 @@ public class Tile : MonoBehaviour
             {
                 if (transform.position == Grid.M.GridPos[i, j])
                 {
-                    PosY = i;
-                    PosX = j;
+                    PosX = i;
+                    PosY = j;
                     Grid.M.Tiles[i, j] = this;
                 }
             }

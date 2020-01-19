@@ -44,7 +44,7 @@ public class CustomPiece : Piece
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (Tiles[PosY, PosX].l.enabled)
+                if (Tiles[PosX, PosY].l.enabled)
                     Game.M.TargetTile = Tiles[PosY, PosX];
             }
         }
@@ -75,7 +75,7 @@ public class CustomPiece : Piece
         //Move
         transform.position = Game.M.TargetTile.transform.position;
 
-        Tiles[PosY, PosX].Exit();
+        Tiles[PosX, PosY].Exit();
         Game.M.TargetTile.Enter(this);
 
         pawnFirst = false;
