@@ -1,0 +1,5 @@
+Piece,Description
+Rook,Rook can move any number of vacant squares vertically or horizontally. It also is moved while castling.
+Bishop,Bishop can move any number of vacant squares in any diagonal direction.
+Knight,Knight can move one square along any rank or file and then at an angle. The knight's movement can also be viewed as an "L" or "7" laid out at any horizontal or vertical angle.
+Queen,Queen can move any number of vacant squares diagonally horizontally or vertically.

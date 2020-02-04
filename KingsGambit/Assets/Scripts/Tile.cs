@@ -48,7 +48,7 @@ public class Tile : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            if (Game.M.Selected && l.enabled)
+            if (Game.M.Selected && !Game.M.TargetTile && l.enabled)
             {
                 Game.M.TargetTile = this;
             }

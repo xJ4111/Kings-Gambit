@@ -17,15 +17,12 @@ public class Game : MonoBehaviour
     [Header("Piece Management")]
     public GameObject PieceParentObj;
     public List<CustomPiece> AllPieces;
+
     public static class White
     {
         public static List<CustomPiece> All = new List<CustomPiece>();
         public static CustomPiece King;
         public static CustomPiece Queen;
-        public static List<CustomPiece> Pawns = new List<CustomPiece>();
-        public static List<CustomPiece> Rooks = new List<CustomPiece>();
-        public static List<CustomPiece> Bishops = new List<CustomPiece>();
-        public static List<CustomPiece> Knights = new List<CustomPiece>();
     }
 
     public static class Black
@@ -33,16 +30,17 @@ public class Game : MonoBehaviour
         public static List<CustomPiece> All = new List<CustomPiece>();
         public static CustomPiece King;
         public static CustomPiece Queen;
-        public static List<CustomPiece> Pawns = new List<CustomPiece>();
-        public static List<CustomPiece> Rooks = new List<CustomPiece>();
-        public static List<CustomPiece> Bishops = new List<CustomPiece>();
-        public static List<CustomPiece> Knights = new List<CustomPiece>();
     }
 
+    [Header("Game State")]
     public bool InCheck;
     public int CheckCount;
     public bool CheckBlockable;
     public List<Tile> AttackPath;
+    public GameObject WhiteSide;
+    private int whiteSideCount;
+    public GameObject BlackSide;
+    private int blackSideCount;
 
     public Animation CamPivotAnim;
 
@@ -108,18 +106,6 @@ public class Game : MonoBehaviour
                     case "Queen":
                         White.Queen = p;
                         break;
-                    case "Pawn":
-                        White.Pawns.Add(p);
-                        break;
-                    case "Bishop":
-                        White.Bishops.Add(p);
-                        break;
-                    case "Knight":
-                        White.Knights.Add(p);
-                        break;
-                    case "Rook":
-                        White.Rooks.Add(p);
-                        break;
                 }
             }
 
@@ -135,24 +121,11 @@ public class Game : MonoBehaviour
                     case "Queen":
                         Black.Queen = p;
                         break;
-                    case "Pawn":
-                        Black.Pawns.Add(p);
-                        break;
-                    case "Bishop":
-                        Black.Bishops.Add(p);
-                        break;
-                    case "Knight":
-                        Black.Knights.Add(p);
-                        break;
-                    case "Rook":
-                        Black.Rooks.Add(p);
-                        break;
                 }
             }
 
             p.SetPos();
         }
-
         CalcMovePaths();
     }
 
@@ -267,15 +240,15 @@ public class Game : MonoBehaviour
             }
             else
             {
+                foreach (Tile t in piece.Path)
+                {
+                    t.Safe = false;
+                }
+
                 List<Tile> path = piece.LineOfSight(King);
     
-                if (path.Count > 0 && piece.Path.Contains(King.Pos))
+                if (piece.Path.Contains(King.Pos))
                 {
-                    foreach (Tile t in path)
-                    {
-                        t.Safe = false;
-                    }
-
                     InCheck = true;
                     CheckCount++;
 
@@ -306,5 +279,50 @@ public class Game : MonoBehaviour
             Debug.Log("CHECKMATE!");
         }
     }
+    #endregion
+
+    #region Piece Management
+    public void Kill(CustomPiece p)
+    {
+        switch (p.Side)
+        {
+            case "White":
+                if (White.All.Contains(p))
+                    White.All.Remove(p);
+
+                p.gameObject.transform.parent = WhiteSide.transform;
+                whiteSideCount++;
+                p.gameObject.transform.localPosition = SidePos(whiteSideCount, 1);
+                break;
+
+            case "Black":
+                if (Black.All.Contains(p))
+                    Black.All.Remove(p);
+
+                p.gameObject.transform.parent = BlackSide.transform;
+                blackSideCount++;
+                p.gameObject.transform.localPosition = SidePos(blackSideCount, -1);
+                break;
+        }
+    }
+
+    Vector3 SidePos(int count, int offset)
+    {
+        float x;
+        float z;
+
+        if (count % 2 == 0)
+            x = 1.5f;
+        else
+            x = -1.5f;
+
+        if (count > 2)
+            z = (offset * 3.0f) * (count / 2);
+        else
+            z = 0;
+
+        return new Vector3(x, 0, z);
+    }
+
     #endregion
 }

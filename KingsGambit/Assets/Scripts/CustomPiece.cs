@@ -20,32 +20,29 @@ public class CustomPiece : Piece
         Guarded = false;
     }
 
-    private void Update()
-    {
-        
-    }
-
     protected void OnMouseOver()
     {
-        if (Game.M.Turn == Side && !Game.M.Selected)
+        if(!UI.M.PromoPanel.activeSelf)
         {
-            if (!Game.M.InCheck)
-                Highlight(true);
-            else if (Game.M.InCheck && (Type == "King" || CanBlock))
-                Highlight(true);
-
-            if (Input.GetMouseButtonDown(1) && activeTiles > 0)
+            if (Game.M.Turn == Side && !Game.M.Selected)
             {
-                Game.M.Selected = this;
+                if (!Game.M.InCheck)
+                    Highlight(true);
+                else if (Game.M.InCheck && (Type == "King" || CanBlock))
+                    Highlight(true);
+
+                if (Input.GetMouseButtonDown(1) && activeTiles > 0)
+                {
+                    Game.M.Selected = this;
+                }
             }
-        }
 
-        if (Game.M.Selected && Game.M.Selected != this)
-        {
-            if (Input.GetMouseButtonDown(0))
+            if (Game.M.Selected && Game.M.Selected != this && Tiles[PosX, PosY].l.enabled)
             {
-                if (Tiles[PosX, PosY].l.enabled)
-                    Game.M.TargetTile = Tiles[PosY, PosX];
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Game.M.TargetTile = Tiles[PosX, PosY];
+                }
             }
         }
     }
@@ -68,15 +65,13 @@ public class CustomPiece : Piece
         //Attack
         if (Game.M.TargetTile.Occupier)
         {
-            Game.M.AllPieces.Remove(Game.M.TargetTile.Occupier);
-            Destroy(Game.M.TargetTile.Occupier.gameObject);
+            Game.M.Kill(Game.M.TargetTile.Occupier);
         }
 
         //En Passant Attack
         if(Game.M.TargetTile == EPTile)
         {
-            Game.M.AllPieces.Remove(EPTarget);
-            Destroy(EPTarget.gameObject);
+            Game.M.Kill(EPTarget);
         }
 
         if(Type == "King")
@@ -165,63 +160,6 @@ public class CustomPiece : Piece
             switch(Ability)
             {
                 case "Endurance":
-                    #region Endurance
-                    //Front 2 Spaces
-                    CheckMove(Offset(PosY, 1), PosX);
-                    CheckMove(Offset(PosY, 2), PosX);
-
-                    if (firstMove && Tiles[Offset(PosY, 1), PosX].l.enabled)
-                    {
-                        CheckMove(Offset(PosY, 3), PosX);
-                        CheckMove(Offset(PosY, 4), PosX);
-                    }
-
-
-                    for (int i = 1; i <= 2; i++)
-                    {
-                        //Diagonal Left
-                        if ((Offset(PosY, i) != PosY && Offset(PosX, i) != PosX))
-                        {
-                            if(!hit[0])
-                            {
-                                if (Tiles[Offset(PosY, i), Offset(PosX, i)].Occupier && Tiles[Offset(PosY, i), Offset(PosX, i)].Occupier.Side != Side)
-                                {
-                                    hit[0] = true;
-                                    CheckAttack(Offset(PosY, i), Offset(PosX, i));
-                                }
-                                else
-                                {
-                                    Potential.Add(Tiles[Offset(PosY, i), Offset(PosX, i)]);
-                                }
-                            }
-                            else if (hit[0])
-                            {
-                                Potential.Add(Tiles[Offset(PosY, i), Offset(PosX, i)]);
-                            }
-                        }
-
-                        //Diagonal Right
-                        if ((Offset(PosY, i) != PosY && Offset(PosX, -i) != PosX))
-                        {
-                            if (!hit[1])
-                            {
-                                if (Tiles[Offset(PosY, i), Offset(PosX, -i)].Occupier && Tiles[Offset(PosY, i), Offset(PosX, -i)].Occupier.Side != Side)
-                                {
-                                    hit[1] = true;
-                                    CheckAttack(Offset(PosY, i), Offset(PosX, -i));
-                                }
-                                else
-                                {
-                                    Potential.Add(Tiles[Offset(PosY, i), Offset(PosX, -i)]);
-                                }
-                            }
-                            else if (hit[0])
-                            {
-                                Potential.Add(Tiles[Offset(PosY, i), Offset(PosX, -i)]);
-                            }
-                        }
-                    }
-                    #endregion
                     break;
             }
         }

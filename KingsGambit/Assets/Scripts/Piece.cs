@@ -62,6 +62,19 @@ public class Piece : MonoBehaviour
     {
         bool KingInPath = false;
         CustomPiece PieceInPath = null;
+        CustomPiece EnemyKing = null;
+
+        switch (Side)
+        {
+            case "White":
+                EnemyKing = Game.Black.King;
+                break;
+            case "Black":
+                EnemyKing = Game.White.King;
+                break;
+        }
+
+        List<Tile> TempList = LineOfSight(EnemyKing);
 
         foreach (Tile t in FullPath())
         {
@@ -72,25 +85,17 @@ public class Piece : MonoBehaviour
                 else
                 {
                     if (!PieceInPath)
-                        PieceInPath = t.Occupier;
+                    {
+                        if(TempList.Contains(t))
+                            PieceInPath = t.Occupier;
+                    }
                 }
             }
         }
 
         if (KingInPath && PieceInPath)
         {
-            CustomPiece EnemyKing = null;
-            switch (Side)
-            {
-                case "White":
-                    EnemyKing = Game.Black.King;
-                    break;
-                case "Black":
-                    EnemyKing = Game.White.King;
-                    break;
-            }
-
-            PieceInPath.PinnedMovement(LineOfSight(EnemyKing));
+            PieceInPath.PinnedMovement(TempList);
         }
     }
 
@@ -262,7 +267,6 @@ public class Piece : MonoBehaviour
             }
         }
 
-
         if (path.Contains(King.Pos))
         {
             return path;
@@ -303,7 +307,6 @@ public class Piece : MonoBehaviour
     #endregion
 
     #region Movement Checks
-
     public void MoveTo(Tile TargetTile)
     {
         transform.position = TargetTile.transform.position;
@@ -464,6 +467,12 @@ public class Piece : MonoBehaviour
     protected void PawnStateCheck()
     {
         EPTake = Mathf.Abs(PosY - startingY) == 2;
+
+        if ((Side == "White" && PosY == 0) || (Side == "Black" && PosY == 8))
+        {
+            UI.M.TogglePromoPanel(true);
+            UI.M.PromotionTarget = (CustomPiece)this;
+        }
     }
 
     protected virtual void Rook()
@@ -620,26 +629,20 @@ public class Piece : MonoBehaviour
             switch (Side)
             {
                 case "White":
-                    foreach (CustomPiece piece in Game.White.Rooks)
+                    foreach (CustomPiece piece in Game.White.All)
                     {
-                        Castling(piece);
+                        if (piece.Type == "Rook")
+                            Castling(piece);
                     }
                     break;
                 case "Black":
-                    foreach (CustomPiece piece in Game.Black.Rooks)
+                    foreach (CustomPiece piece in Game.Black.All)
                     {
-                        Castling(piece);
+                        if(piece.Type == "Rook")
+                            Castling(piece);
                     }
                     break;
             }
-        }
-        else if(!firstMove)
-        {
-            Debug.Log("Cannot Castle: King Moved");
-        }
-        else if(Game.M.InCheck)
-        {
-            Debug.Log("Cannot Castle: King In Check");
         }
     }
 
@@ -647,7 +650,6 @@ public class Piece : MonoBehaviour
     {
         if (Rook.PosX != Rook.startingX)
         {
-            Debug.Log("Rook Moved");
             return false;
         }
 
@@ -656,7 +658,6 @@ public class Piece : MonoBehaviour
         {
             if (t.Occupier && t.Occupier.Type != "Rook" && t.Occupier != this)
             {
-                Debug.Log("Path Blocked");
                 return false;
             }
         }
@@ -676,7 +677,6 @@ public class Piece : MonoBehaviour
         {
             if (!t.Safe)
             {
-                Debug.Log("Cannot Castle Towards " + Rook.name + " (Path Unsafe)");
                 return false;
             }
         }
@@ -695,4 +695,11 @@ public class Piece : MonoBehaviour
     }
 
     #endregion
+
+    public void Promote(string NewType)
+    {
+        Type = NewType;
+        name = Side + " " + Type;
+        //Replace Model
+    }
 }
