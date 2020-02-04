@@ -69,7 +69,7 @@ public class CustomPiece : Piece
         }
 
         //En Passant Attack
-        if(Game.M.TargetTile == EPTile)
+        if(Game.M.TargetTile == Game.M.EPTile)
         {
             Game.M.Kill(EPTarget);
         }
@@ -91,6 +91,7 @@ public class CustomPiece : Piece
         }
 
         MoveTo(Game.M.TargetTile);
+        Game.M.EPTile = null;
 
         if (Type == "Pawn")
         {
@@ -107,9 +108,12 @@ public class CustomPiece : Piece
             t.l.enabled = b;
         }
 
-        if(EPTile && EPTarget)
+        if(EPTarget)
         {
-            EPTile.l.enabled = b;
+            if (Game.M.EPTile)
+                Game.M.EPTile.l.enabled = b;
+            else
+                EPTarget = null;
         }
     }
 

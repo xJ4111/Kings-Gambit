@@ -42,6 +42,8 @@ public class Game : MonoBehaviour
     public GameObject BlackSide;
     private int blackSideCount;
 
+    public Tile EPTile;
+
     public Animation CamPivotAnim;
 
     private void Awake()

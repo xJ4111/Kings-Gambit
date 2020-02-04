@@ -2303,6 +2303,7 @@ MonoBehaviour:
   AttackPath: []
   WhiteSide: {fileID: 275166702}
   BlackSide: {fileID: 1235748871}
+  EPTile: {fileID: 0}
   CamPivotAnim: {fileID: 175289343}
 --- !u!4 &539076974
 Transform:

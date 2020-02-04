@@ -26,7 +26,6 @@ public class Piece : MonoBehaviour
 
     [Header("Pawn Only")]
     public List<Tile> PawnAttackTiles = new List<Tile>();
-    public Tile EPTile;
     public CustomPiece EPTarget;
     public bool EPTake = false;
     private int startingY;
@@ -435,20 +434,18 @@ public class Piece : MonoBehaviour
         if ((Offset(PosX, -1) != PosX && Offset(PosY, 1) != PosY))
             CheckAttack(Offset(PosX, -1), Offset(PosY, 1));
 
-        EnPassant(1);
-        EnPassant(-1);
+        EnPassant(1,1);
+        EnPassant(-1, 1);
     }
 
-    void EnPassant(int direction)
+    void EnPassant(int x, int y)
     {
-        if(InRange(PosX + direction, PosY))
+        if (InRange(PosX + x, PosY + y))
         {
-            Tile temp = Tiles[PosX + direction, PosY];
-
-            if (temp.Occupier && temp.Occupier.Side != Side && temp.Occupier.Type == "Pawn" && temp.Occupier.EPTake)
+            if (Tiles[Offset(PosX, x), Offset(PosY, y)] == Game.M.EPTile)
             {
-                EPTile = Tiles[PosX + direction, Offset(PosY, 1)];
-                EPTarget = temp.Occupier;
+                Path.Add(Tiles[Offset(PosX, x), Offset(PosY, y)]);
+                EPTarget = Tiles[Offset(PosX, x), Offset(PosY, y - 1)].Occupier;
             }
         }
     }
@@ -466,7 +463,17 @@ public class Piece : MonoBehaviour
 
     protected void PawnStateCheck()
     {
-        EPTake = Mathf.Abs(PosY - startingY) == 2;
+
+        if(firstMove)
+        {
+            EPTake = Mathf.Abs(PosY - startingY) == 2;
+
+            if(EPTake)
+            {
+                Game.M.EPTile = Tiles[PosX, Offset(PosY, -1)];
+            }
+        }
+
 
         if ((Side == "White" && PosY == 0) || (Side == "Black" && PosY == 8))
         {
