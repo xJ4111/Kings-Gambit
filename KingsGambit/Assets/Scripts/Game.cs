@@ -33,6 +33,8 @@ public class Game : MonoBehaviour
     }
 
     [Header("Game State")]
+    public int RoundCount = 1;
+
     public bool InCheck;
     public int CheckCount;
     public bool CheckBlockable;
@@ -135,6 +137,7 @@ public class Game : MonoBehaviour
     #region Turn Management
     void NextTurn()
     {
+        RoundCount++;
         Selected = null;
         TargetTile = null;
 
@@ -173,10 +176,11 @@ public class Game : MonoBehaviour
             p.Guarded = false;
             p.ResetHit();
 
+            if (p.Injured && RoundCount - p.RoundInjured == 3)
+                p.Injured = false;
+
             if(p.CancelEP)
-            {
                 p.EPTake = false;
-            }
 
             if(!p.FirstMove)
                 p.CancelEP = true;
@@ -221,7 +225,6 @@ public class Game : MonoBehaviour
                 }
             }
         }
-
     }
     #endregion
 

@@ -65,6 +65,7 @@ public class CustomPiece : Piece
         Highlight(false);
 
         Attack();
+        OnMove();
         Castle();
 
         MoveTo(Game.M.TargetTile);
@@ -80,10 +81,25 @@ public class CustomPiece : Piece
 
     public void Highlight(bool b)
     {
-        foreach (Tile t in Path)
+        if(b)
         {
-            t.l.enabled = b;
+            if (!Injured)
+            {
+                foreach (Tile t in Path)
+                {
+                    t.l.enabled = b;
+                }
+            }
         }
+        else
+        {
+            foreach (Tile t in Path)
+            {
+                t.l.enabled = b;
+            }
+        }
+
+
     }
 
     public void CheckPath()
@@ -122,6 +138,7 @@ public class CustomPiece : Piece
         Game.M.Selected = null;
     }
 
+    #region Abilities
     protected override void Pawn()
     {
         if (Ability == "")
@@ -163,6 +180,8 @@ public class CustomPiece : Piece
             }
         }
     }
+
+    #region Rook
     protected override void Rook()
     {
         if (Ability == "")
@@ -172,12 +191,89 @@ public class CustomPiece : Piece
             switch (Ability)
             {
                 case "Shield Wall":
+                    Invincible = true;
+
+                    for (int i = 1; i < 3; i++)
+                    {
+                        //Forward
+                        RookMovementY(i, ref hit[0]);
+
+                        //Backwards
+                        RookMovementY(-i, ref hit[1]);
+
+                        //Forward
+                        RookMovementX(i, ref hit[2]);
+
+                        //Backwards
+                        RookMovementX(-i, ref hit[3]);
+                    }
+
                     break;
                 case "Reckless":
+                    base.Rook();
                     break;
             }
         }
     }
+
+    protected override void RookMovementX(int i, ref bool hit)
+    {
+        if (Ability == "")
+            base.RookMovementX(i, ref hit);
+        else
+        {
+            switch (Ability)
+            {
+                case "Shield Wall":
+
+                    if (!hit)
+                    {
+                        if (Tiles[Offset(PosX, i), PosY].Occupier)
+                        {
+                            hit = true;
+                        }
+                        else if (!Tiles[Offset(PosX, i), PosY].Occupier)
+                        {
+                            CheckMove(Offset(PosX, i), PosY);
+                        }
+                    }
+
+                    break;
+                case "Reckless":
+                    base.RookMovementX(i, ref hit);
+                    break;
+            }
+        }
+    }
+
+    protected override void RookMovementY(int i, ref bool hit)
+    {
+        if (Ability == "")
+            base.RookMovementY(i, ref hit);
+        else
+        {
+            switch (Ability)
+            {
+                case "Shield Wall":
+                    if (!hit)
+                    {
+                        if (Tiles[PosX, Offset(PosY, i)].Occupier)
+                        {
+                            hit = true;
+                        }
+                        else if (!Tiles[PosX, Offset(PosY, i)].Occupier)
+                        {
+                            CheckMove(PosX, Offset(PosY, i));
+                        }
+                    }
+                    break;
+                case "Reckless":
+                    base.RookMovementY(i, ref hit);
+                    break;
+            }
+        }
+    }
+    #endregion
     protected override void Knight()
     {
         if (Ability == "")
@@ -189,6 +285,7 @@ public class CustomPiece : Piece
                 case "Combat Medic":
                     break;
                 case "Charge":
+                    base.Knight();
                     break;
             }
         }
@@ -239,4 +336,83 @@ public class CustomPiece : Piece
             }
         }
     }
+
+    #endregion
+
+    #region On Move Effects
+    void OnMove()
+    {
+        switch (Type)
+        {
+            case "Pawn":
+                break;
+            case "Rook":
+                switch (Ability)
+                {
+                    case "Shield Wall":
+                        break;
+                    case "Reckless":
+                        Reckless();
+                        break;
+                }
+                break;
+            case "Knight":
+                switch (Ability)
+                {
+                    case "Combat Medic":
+                        break;
+                    case "Charge":
+                        Reckless();
+                        break;
+                }
+                break;
+            case "Bishop":
+                break;
+            case "Queen":
+                break;
+            case "King":
+                break;
+        }
+    }
+
+    void Reckless()
+    {
+        CustomPiece temp = Game.M.TargetTile.Occupier;
+        List<CustomPiece> surrounding = new List<CustomPiece>();
+
+        if(temp)
+        {
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    if (!(i == 0 && j == 0))
+                    {
+                        if(InRange(temp.PosX + i, temp.PosY + j))
+                        {
+                            Tile t = Tiles[temp.PosX + i, temp.PosY + j];
+                            if (t.Occupier && t.Occupier.Side != Side && !t.Occupier.Invincible)
+                                surrounding.Add(t.Occupier);
+                        }
+                    }
+                }
+            }
+
+            if(surrounding.Count >= 1)
+            {
+                CustomPiece target = surrounding[Random.Range(0, surrounding.Count)];
+                target.Injured = true;
+                target.RoundInjured = Game.M.RoundCount;
+            }
+
+            Injured = true;
+            RoundInjured = Game.M.RoundCount;
+        }
+    }
+
+    void Revive()
+    {
+
+    }
+    #endregion
 }

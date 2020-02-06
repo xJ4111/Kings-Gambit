@@ -21,9 +21,14 @@ public class Piece : MonoBehaviour
     protected Tile[,] Tiles;
     public int activeTiles;
 
+
+    [Header("State")]
     public bool FirstMove = true;
     public bool CancelEP = false;
     [HideInInspector] public bool[] hit = new bool[4];
+    public bool Invincible = false;
+    public bool Injured = false;
+    public int RoundInjured = 0;
 
     [Header("Pawn Only")]
     public List<Tile> PawnAttackTiles = new List<Tile>();
@@ -35,7 +40,6 @@ public class Piece : MonoBehaviour
     [Header("King Related")]
     public CustomPiece Checker;
     protected int startingX;
-    
     public System.Tuple<CustomPiece, List<Tile>> CastleLeft;
     public System.Tuple<CustomPiece, List<Tile>> CastleRight;
 
@@ -78,6 +82,7 @@ public class Piece : MonoBehaviour
     {
         bool KingInPath = false;
         CustomPiece PieceInPath = null;
+        int piecesInPath = 0;
         CustomPiece EnemyKing = null;
 
         switch (Side)
@@ -100,16 +105,16 @@ public class Piece : MonoBehaviour
                     KingInPath = true;
                 else
                 {
-                    if (!PieceInPath)
+                    if (TempList.Contains(t))
                     {
-                        if (TempList.Contains(t))
-                            PieceInPath = t.Occupier;
+                        PieceInPath = t.Occupier;
+                        piecesInPath++;
                     }
                 }
             }
         }
 
-        if (KingInPath && PieceInPath)
+        if (KingInPath && PieceInPath && piecesInPath == 1)
         {
             PieceInPath.PinnedMovement(TempList);
         }
@@ -366,7 +371,7 @@ public class Piece : MonoBehaviour
 
             if (Tiles[x, y] && Tiles[x, y].Occupier)
             {
-                if (Tiles[x, y].Occupier.Side != Side)
+                if (Tiles[x, y].Occupier.Side != Side && !Tiles[x, y].Occupier.Invincible)
                 {
                     if (Type == "Pawn")
                         PawnAttackTiles.Add(Tiles[x, y]);
@@ -390,7 +395,7 @@ public class Piece : MonoBehaviour
 
             if (Tiles[x, y])
             {
-                if ((Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side != Side) || !Tiles[x, y].Occupier)
+                if ((Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side != Side && !Tiles[x, y].Occupier.Invincible) || !Tiles[x, y].Occupier)
                 {
                     if (Type == "Pawn")
                         PawnAttackTiles.Add(Tiles[x, y]);
@@ -418,7 +423,7 @@ public class Piece : MonoBehaviour
         {
             if (Tiles[x, y])
             {
-                if ((Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side != Side) || !Tiles[x, y].Occupier)
+                if ((Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side != Side && !Tiles[x, y].Occupier.Invincible) || !Tiles[x, y].Occupier)
                 {
                     PawnAttackTiles.Add(Tiles[x, y]);
                     activeTiles++;
@@ -576,7 +581,7 @@ public class Piece : MonoBehaviour
         {
             if (Tiles[PosX, Offset(PosY, i)].Occupier)
             {
-                if (Tiles[PosX, Offset(PosY, i)].Occupier.Side == Side)
+                if (Tiles[PosX, Offset(PosY, i)].Occupier.Side == Side || Tiles[PosX, Offset(PosY, i)].Occupier.Invincible)
                 {
                     Potential.Add(Tiles[PosX, Offset(PosY, i)]);
                     hit = true;
