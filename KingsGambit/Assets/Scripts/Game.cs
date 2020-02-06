@@ -42,7 +42,7 @@ public class Game : MonoBehaviour
     public GameObject BlackSide;
     private int blackSideCount;
 
-    public Tile EPTile;
+    public Dictionary<Tile, CustomPiece> EPTiles = new Dictionary<Tile, CustomPiece>();
 
     public Animation CamPivotAnim;
 
@@ -128,6 +128,7 @@ public class Game : MonoBehaviour
 
             p.SetPos();
         }
+
         CalcMovePaths();
     }
 
@@ -165,10 +166,20 @@ public class Game : MonoBehaviour
 
     void CalcMovePaths()
     {
+        EPTiles.Clear();
+
         foreach (CustomPiece p in AllPieces)
         {
             p.Guarded = false;
             p.ResetHit();
+
+            if(p.CancelEP)
+            {
+                p.EPTake = false;
+            }
+
+            if(!p.FirstMove)
+                p.CancelEP = true;
         }
 
         foreach (CustomPiece p in AllPieces)
@@ -192,9 +203,23 @@ public class Game : MonoBehaviour
             Black.King.CheckCastling();
         }
 
-        foreach (CustomPiece p in AllPieces)
+        if(InCheck)
         {
-            p.CheckBlock();
+            if(White.King.Checker)
+            {
+                foreach (CustomPiece p in White.All)
+                {
+                    p.CheckBlock();
+                }
+            }
+
+            if (Black.King.Checker)
+            {
+                foreach (CustomPiece p in Black.All)
+                {
+                    p.CheckBlock();
+                }
+            }
         }
 
     }
@@ -224,6 +249,7 @@ public class Game : MonoBehaviour
 
         foreach (CustomPiece piece in Enemies)
         {
+
             if(piece.Type == "Pawn")
             {
                 foreach (Tile t in piece.PawnAttackTiles)

@@ -16,8 +16,10 @@ public class CustomPiece : Piece
         Side = names[0];
         Type = names[1];
 
-        firstMove = true;
+        EPTake = true;
+        FirstMove = true;
         Guarded = false;
+        CancelEP = false;
     }
 
     protected void OnMouseOver()
@@ -62,58 +64,25 @@ public class CustomPiece : Piece
     {
         Highlight(false);
 
-        //Attack
-        if (Game.M.TargetTile.Occupier)
-        {
-            Game.M.Kill(Game.M.TargetTile.Occupier);
-        }
-
-        //En Passant Attack
-        if(Game.M.TargetTile == Game.M.EPTile)
-        {
-            Game.M.Kill(EPTarget);
-        }
-
-        if(Type == "King")
-        {
-            if (CastleLeft != null && Game.M.TargetTile == CastleLeft.Item2[0])
-            {
-                CastleLeft.Item1.MoveTo(CastleLeft.Item2[1]);
-            }
-
-            if (CastleRight != null && Game.M.TargetTile == CastleRight.Item2[0])
-            {
-                CastleRight.Item1.MoveTo(CastleRight.Item2[1]);
-            }
-
-            CastleLeft = null;
-            CastleRight = null;
-        }
+        Attack();
+        Castle();
 
         MoveTo(Game.M.TargetTile);
-        Game.M.EPTile = null;
 
         if (Type == "Pawn")
         {
             PawnStateCheck();
         }
 
-        firstMove = false;
+        FirstMove = false;
     }
+
 
     public void Highlight(bool b)
     {
         foreach (Tile t in Path)
         {
             t.l.enabled = b;
-        }
-
-        if(EPTarget)
-        {
-            if (Game.M.EPTile)
-                Game.M.EPTile.l.enabled = b;
-            else
-                EPTarget = null;
         }
     }
 
@@ -125,9 +94,7 @@ public class CustomPiece : Piece
         switch (Type)
         {
             case "Pawn":
-                PawnMove();
-                PawnAttack();
-                PawnShowAttack();
+                Pawn();
                 break;
             case "Rook":
                 Rook();
@@ -155,19 +122,46 @@ public class CustomPiece : Piece
         Game.M.Selected = null;
     }
 
-    protected override void PawnMove()
+    protected override void Pawn()
     {
         if (Ability == "")
-            base.PawnMove();
+            base.Pawn();
         else
         {
-            switch(Ability)
+            EPCheck();
+
+            switch (Ability)
             {
-                case "Endurance":
+                case "Zeal":
+                    Vulnerable = true;
+                    CheckMove(PosX, Offset(PosY, 1));
+                    if(Path.Contains(Tiles[PosX, Offset(PosY, 1)]))
+                        CheckMove(PosX, Offset(PosY, 2));
+
+                    CheckAttack(Offset(PosX, 1), Offset(PosY, 1));
+                    if (!Path.Contains(Tiles[Offset(PosX, 1), Offset(PosY, 1)]))
+                        CheckAttack(Offset(PosX, 2), Offset(PosY, 2));
+
+                    CheckAttack(Offset(PosX, -1), Offset(PosY, 1));
+                    if (!Path.Contains(Tiles[Offset(PosX, -1), Offset(PosY, 1)]))
+                        CheckAttack(Offset(PosX, -2), Offset(PosY, 2));
+
+                    break;
+                case "Focus":
+                    Vulnerable = false;
+
+                    if (FirstMove)
+                    {
+                        CheckMoveAttack(PosX, Offset(PosY, 1));
+                        CheckMoveAttack(PosX, Offset(PosY, 2));
+                    }
+                    else
+                    {
+                        CheckMoveAttack(PosX, Offset(PosY, 1));
+                    }
                     break;
             }
         }
-
     }
     protected override void Rook()
     {
@@ -177,7 +171,9 @@ public class CustomPiece : Piece
         {
             switch (Ability)
             {
-                case "Endurance":
+                case "Shield Wall":
+                    break;
+                case "Reckless":
                     break;
             }
         }
@@ -190,7 +186,9 @@ public class CustomPiece : Piece
         {
             switch (Ability)
             {
-                case "Endurance":
+                case "Combat Medic":
+                    break;
+                case "Charge":
                     break;
             }
         }
@@ -204,7 +202,25 @@ public class CustomPiece : Piece
         {
             switch (Ability)
             {
-                case "Endurance":
+                case "Warp":
+                    break;
+                case "Arcane Connection":
+                    break;
+            }
+        }
+    }
+
+    protected override void Queen()
+    {
+        if (Ability == "")
+            base.Queen();
+        else
+        {
+            switch (Ability)
+            {
+                case "Deploy":
+                    break;
+                case "Arcane Connection":
                     break;
             }
         }

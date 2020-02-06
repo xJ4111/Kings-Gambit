@@ -21,18 +21,21 @@ public class Piece : MonoBehaviour
     protected Tile[,] Tiles;
     public int activeTiles;
 
-    protected bool firstMove = true;
+    public bool FirstMove = true;
+    public bool CancelEP = false;
     [HideInInspector] public bool[] hit = new bool[4];
 
     [Header("Pawn Only")]
     public List<Tile> PawnAttackTiles = new List<Tile>();
-    public CustomPiece EPTarget;
+    public List<CustomPiece> EPTargets = new List<CustomPiece>();
+    public bool Vulnerable = true;
     public bool EPTake = false;
-    private int startingY;
+    protected int startingY;
 
     [Header("King Related")]
     public CustomPiece Checker;
-    private int startingX;
+    protected int startingX;
+    
     public System.Tuple<CustomPiece, List<Tile>> CastleLeft;
     public System.Tuple<CustomPiece, List<Tile>> CastleRight;
 
@@ -53,6 +56,20 @@ public class Piece : MonoBehaviour
                 }
             }
         }
+    }
+
+    protected void Attack()
+    {
+        //Attack
+        if (Game.M.TargetTile.Occupier)
+        {
+            Game.M.Kill(Game.M.TargetTile.Occupier);
+        }
+
+        //En Passant Attack
+        if(Game.M.EPTiles.ContainsKey(Game.M.TargetTile))
+            Game.M.Kill(Game.M.EPTiles[Game.M.TargetTile]);
+
     }
 
     #region PathProcessing
@@ -85,7 +102,7 @@ public class Piece : MonoBehaviour
                 {
                     if (!PieceInPath)
                     {
-                        if(TempList.Contains(t))
+                        if (TempList.Contains(t))
                             PieceInPath = t.Occupier;
                     }
                 }
@@ -104,9 +121,9 @@ public class Piece : MonoBehaviour
 
         if (LOS.Count > 0)
         {
-            foreach(Tile t in tempPath)
+            foreach (Tile t in tempPath)
             {
-                if(!LOS.Contains(t))
+                if (!LOS.Contains(t))
                 {
                     Path.Remove(t);
                 }
@@ -117,7 +134,7 @@ public class Piece : MonoBehaviour
     {
         List<Tile> copy = new List<Tile>();
 
-        foreach(Tile t in list)
+        foreach (Tile t in list)
         {
             copy.Add(t);
         }
@@ -130,7 +147,7 @@ public class Piece : MonoBehaviour
         CustomPiece king = null;
         CanBlock = false;
 
-        switch(Side)
+        switch (Side)
         {
             case "White": king = Game.White.King;
                 break;
@@ -138,24 +155,42 @@ public class Piece : MonoBehaviour
                 break;
         }
 
-        if(Game.M.InCheck && Game.M.CheckBlockable)
+        if (Game.M.InCheck && Game.M.CheckBlockable)
         {
             CanBlock = false;
 
-            foreach(Tile t in Game.M.AttackPath)
+            foreach (Tile t in Game.M.AttackPath)
             {
-                if(Path.Contains(t))
+                if (Path.Contains(t))
                 {
                     CanBlock = true;
                 }
             }
 
-            if(CanBlock)
+            if (Path.Contains(king.Checker.Pos))
+                CanBlock = true;
+
+            Tile EPCheckBlock = null;
+
+            foreach(KeyValuePair<Tile, CustomPiece> temp in Game.M.EPTiles)
+            {
+                if(temp.Value == king.Checker)
+                {
+                    if (Path.Contains(temp.Key))
+                    {
+                        CanBlock = true;
+                        EPCheckBlock = temp.Key;
+                    }
+                }
+            }
+
+
+            if (CanBlock)
             {
                 List<Tile> copy = Clone(Path);
                 foreach (Tile t in copy)
                 {
-                    if (!Game.M.AttackPath.Contains(t))
+                    if (!Game.M.AttackPath.Contains(t) && t != king.Checker.Pos && t != EPCheckBlock)
                     {
                         Path.Remove(t);
                     }
@@ -180,7 +215,7 @@ public class Piece : MonoBehaviour
     #region LineOfSight
     public List<Tile> LineOfSight(CustomPiece King)
     {
-        switch(Type)
+        switch (Type)
         {
             case "Rook":
                 return RookLOS(King);
@@ -201,9 +236,9 @@ public class Piece : MonoBehaviour
         {
             return path;
         }
-        else if(King.Pos.PosY == PosY)
+        else if (King.Pos.PosY == PosY)
         {
-            if(King.Pos.PosX > PosX)
+            if (King.Pos.PosX > PosX)
             {
                 path = SeePath(1, 0);
             }
@@ -224,7 +259,7 @@ public class Piece : MonoBehaviour
             }
         }
 
-        if(path.Contains(King.Pos))
+        if (path.Contains(King.Pos))
         {
             return path;
         }
@@ -312,71 +347,85 @@ public class Piece : MonoBehaviour
         Tiles[PosX, PosY].Exit();
         TargetTile.Enter(this);
     }
-    protected void CheckMove(int posX, int posY)
+    protected void CheckMove(int x, int y)
     {
-        if (InRange(posX, posY))
+        if (InRange(x, y))
         {
-            if (!Tiles[posX, posY].Occupier)
+            if (!Tiles[x, y].Occupier)
             {
-                Path.Add(Tiles[posX, posY]);
+                Path.Add(Tiles[x, y]);
                 activeTiles++;
             }
         }
     }
-    protected void CheckAttack(int posX, int posY)
+    protected void CheckAttack(int x, int y)
     {
-        if (InRange(posX, posY))
+        if (InRange(x, y))
         {
-            if (Tiles[posX, posY] && Tiles[posX, posY].Occupier)
+            EnPassant(x, y);
+
+            if (Tiles[x, y] && Tiles[x, y].Occupier)
             {
-                if(Tiles[posX, posY].Occupier.Side != Side)
+                if (Tiles[x, y].Occupier.Side != Side)
                 {
-                    Path.Add(Tiles[posX, posY]);
+                    if (Type == "Pawn")
+                        PawnAttackTiles.Add(Tiles[x, y]);
+
+                    Path.Add(Tiles[x, y]);
                     activeTiles++;
                 }
-                else if(Tiles[posX, posY].Occupier.Side == Side)
+                else if (Tiles[x, y].Occupier.Side == Side)
                 {
-                    Tiles[posX, posY].Occupier.Guarded = true;
+                    Tiles[x, y].Occupier.Guarded = true;
                 }
             }
         }
     }
 
-    protected void CheckMoveAttack(int posX, int posY)
+    protected void CheckMoveAttack(int x, int y)
     {
-        if (InRange(posX, posY))
+        if (InRange(x, y))
         {
-            if (Tiles[posX, posY])
+            EnPassant(x, y);
+
+            if (Tiles[x, y])
             {
-                if((Tiles[posX, posY].Occupier && Tiles[posX, posY].Occupier.Side != Side) || !Tiles[posX, posY].Occupier)
+                if ((Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side != Side) || !Tiles[x, y].Occupier)
                 {
-                    Path.Add(Tiles[posX, posY]);
+                    if (Type == "Pawn")
+                        PawnAttackTiles.Add(Tiles[x, y]);
+
+                    Path.Add(Tiles[x, y]);
                     activeTiles++;
                 }
-                else if(Tiles[posX, posY].Occupier && Tiles[posX, posY].Occupier.Side == Side)
+                else if (Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side == Side)
                 {
-                    Tiles[posX, posY].Occupier.Guarded = true;
+                    Tiles[x, y].Occupier.Guarded = true;
                 }
-                else if(!Tiles[posX, posY].Occupier)
-                    Path.Add(Tiles[posX, posY]);
+                else if (!Tiles[x, y].Occupier)
+                {
+                    Path.Add(Tiles[x, y]);
+                    Debug.Log("third");
+                }
+
             }
         }
     }
 
-    protected void ShowMoveAttack(int posX, int posY)
+    protected void ShowMoveAttack(int x, int y)
     {
-        if (InRange(posX, posY))
+        if (InRange(x, y))
         {
-            if (Tiles[posX, posY])
+            if (Tiles[x, y])
             {
-                if ((Tiles[posX, posY].Occupier && Tiles[posX, posY].Occupier.Side != Side) || !Tiles[posX, posY].Occupier)
+                if ((Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side != Side) || !Tiles[x, y].Occupier)
                 {
-                    PawnAttackTiles.Add(Tiles[posX, posY]);
+                    PawnAttackTiles.Add(Tiles[x, y]);
                     activeTiles++;
                 }
-                else if (Tiles[posX, posY].Occupier && Tiles[posX, posY].Occupier.Side == Side)
+                else if (Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side == Side)
                 {
-                    Tiles[posX, posY].Occupier.Guarded = true;
+                    Tiles[x, y].Occupier.Guarded = true;
                 }
             }
         }
@@ -384,12 +433,12 @@ public class Piece : MonoBehaviour
 
     protected int Offset(int pos, int offset)
     {
-        if(Side == "White")
+        if (Side == "White")
         {
             if (pos - offset < 8 && pos - offset >= 0)
                 return pos - offset;
         }
-        else if(Side == "Black")
+        else if (Side == "Black")
         {
             if (pos + offset < 8 && pos + offset >= 0)
                 return pos + offset;
@@ -413,12 +462,20 @@ public class Piece : MonoBehaviour
     #endregion
 
     #region Piece Movement
+    protected virtual void Pawn()
+    {
+        EPCheck();
+        PawnMove();
+        PawnAttack();
+        PawnShowAttack();
+    }
+
     protected virtual void PawnMove()
     {
         //Front 2 Spaces
         CheckMove(PosX, Offset(PosY, 1));
 
-        if (firstMove && Path.Contains(Tiles[PosX, Offset(PosY, 1)]))
+        if (FirstMove && Path.Contains(Tiles[PosX, Offset(PosY, 1)]))
         {
             CheckMove(PosX, Offset(PosY, 2));
         }
@@ -434,18 +491,43 @@ public class Piece : MonoBehaviour
         if ((Offset(PosX, -1) != PosX && Offset(PosY, 1) != PosY))
             CheckAttack(Offset(PosX, -1), Offset(PosY, 1));
 
-        EnPassant(1,1);
-        EnPassant(-1, 1);
+        EPTargets.Clear();
     }
 
-    void EnPassant(int x, int y)
+    protected void EPCheck()
     {
-        if (InRange(PosX + x, PosY + y))
+        Tile temp = Tiles[PosX, Offset(PosY, -1)];
+
+        if (!Vulnerable)
         {
-            if (Tiles[Offset(PosX, x), Offset(PosY, y)] == Game.M.EPTile)
+            if (EPTake)
             {
-                Path.Add(Tiles[Offset(PosX, x), Offset(PosY, y)]);
-                EPTarget = Tiles[Offset(PosX, x), Offset(PosY, y - 1)].Occupier;
+                if (Mathf.Abs(PosY - startingY) == 2)
+                {
+                    if (!Game.M.EPTiles.ContainsKey(temp))
+                    {
+                        Game.M.EPTiles.Add(temp, (CustomPiece)this);
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (!Game.M.EPTiles.ContainsKey(temp))
+            {
+                Game.M.EPTiles.Add(temp, (CustomPiece)this);
+            }
+        }
+    }
+
+    protected void EnPassant(int x, int y)
+    {
+        if (Game.M.EPTiles.ContainsKey(Tiles[x, y]))
+        {
+            if(Type == "Pawn" || Game.M.EPTiles[Tiles[x, y]].Vulnerable)
+            {
+                Path.Add(Tiles[x, y]);
+                EPTargets.Add(Game.M.EPTiles[Tiles[x, y]]);
             }
         }
     }
@@ -461,20 +543,8 @@ public class Piece : MonoBehaviour
             ShowMoveAttack(Offset(PosX, -1), Offset(PosY, 1));
     }
 
-    protected void PawnStateCheck()
+    protected virtual void PawnStateCheck()
     {
-
-        if(firstMove)
-        {
-            EPTake = Mathf.Abs(PosY - startingY) == 2;
-
-            if(EPTake)
-            {
-                Game.M.EPTile = Tiles[PosX, Offset(PosY, -1)];
-            }
-        }
-
-
         if ((Side == "White" && PosY == 0) || (Side == "Black" && PosY == 8))
         {
             UI.M.TogglePromoPanel(true);
@@ -560,21 +630,21 @@ public class Piece : MonoBehaviour
             BishopMovement(i, -i, ref hit[1]);
             BishopMovement(-i, i, ref hit[2]);
             BishopMovement(-i, -i, ref hit[3]);
-        } 
+        }
     }
 
     protected virtual void BishopMovement(int x, int y, ref bool hit)
     {
-        if(!hit && Offset(PosX, x) != PosX && Offset(PosY, y) != PosY)
+        if (!hit && Offset(PosX, x) != PosX && Offset(PosY, y) != PosY)
         {
-            if(Tiles[Offset(PosX, x), Offset(PosY, y)].Occupier)
+            if (Tiles[Offset(PosX, x), Offset(PosY, y)].Occupier)
             {
-                if(Tiles[Offset(PosX, x), Offset(PosY, y)].Occupier.Side != Side)
+                if (Tiles[Offset(PosX, x), Offset(PosY, y)].Occupier.Side != Side)
                 {
                     CheckMoveAttack(Offset(PosX, x), Offset(PosY, y));
                     hit = true;
                 }
-                else if(Tiles[Offset(PosX, x), Offset(PosY, y)].Occupier.Side == Side)
+                else if (Tiles[Offset(PosX, x), Offset(PosY, y)].Occupier.Side == Side)
                 {
                     CheckMoveAttack(Offset(PosX, x), Offset(PosY, y));
                     Potential.Add(Tiles[Offset(PosX, x), Offset(PosY, y)]);
@@ -611,6 +681,13 @@ public class Piece : MonoBehaviour
         }
     }
 
+    protected virtual void Queen()
+    {
+        Rook();
+        ResetHit();
+        Bishop();
+    }
+
     protected virtual void King()
     {
         for (int i = -1; i <= 1; i++)
@@ -629,9 +706,28 @@ public class Piece : MonoBehaviour
         }
     }
 
+    protected void Castle()
+    {
+        if (Type == "King")
+        {
+            if (CastleLeft != null && Game.M.TargetTile == CastleLeft.Item2[0])
+            {
+                CastleLeft.Item1.MoveTo(CastleLeft.Item2[1]);
+            }
+
+            if (CastleRight != null && Game.M.TargetTile == CastleRight.Item2[0])
+            {
+                CastleRight.Item1.MoveTo(CastleRight.Item2[1]);
+            }
+
+            CastleLeft = null;
+            CastleRight = null;
+        }
+    }
+
     public void CheckCastling()
     {
-        if(firstMove && !Game.M.InCheck)
+        if(FirstMove && !Game.M.InCheck)
         {
             switch (Side)
             {

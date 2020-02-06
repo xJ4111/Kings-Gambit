@@ -200,7 +200,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &89933300
 MonoBehaviour:
@@ -407,6 +407,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1913345346}
     m_Modifications:
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: EPTake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Ability
+      value: Focus
+      objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2
@@ -511,7 +526,7 @@ Transform:
   - {fileID: 963194228}
   m_Father: {fileID: 0}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 112.291664, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &234110218
 GameObject:
   m_ObjectHideFlags: 0
@@ -676,7 +691,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &236117710
 MonoBehaviour:
@@ -1699,6 +1714,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1913345346}
     m_Modifications:
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Ability
+      value: Focus
+      objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2
@@ -2303,7 +2328,6 @@ MonoBehaviour:
   AttackPath: []
   WhiteSide: {fileID: 275166702}
   BlackSide: {fileID: 1235748871}
-  EPTile: {fileID: 0}
   CamPivotAnim: {fileID: 175289343}
 --- !u!4 &539076974
 Transform:
@@ -2331,7 +2355,7 @@ GameObject:
   - component: {fileID: 541903281}
   - component: {fileID: 541903280}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: PromoPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2834,6 +2858,11 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
+      value: Zeal
+      objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Type
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
@@ -3034,6 +3063,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1913345346}
     m_Modifications:
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Ability
+      value: Focus
+      objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 14
@@ -4216,6 +4255,11 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
+      value: Zeal
+      objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Type
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
@@ -4307,13 +4351,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.60876167, y: -0, z: -0, w: 0.79335326}
-  m_LocalPosition: {x: 0, y: 31, z: -9}
+  m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
+  m_LocalPosition: {x: 0, y: 30, z: -16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 175289344}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 75, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 60, y: 0, z: 0}
 --- !u!4 &1019164912 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7083940290142566696, guid: fc05fb5cd0f39d340858819ed782de28,
@@ -4484,7 +4528,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1072295808
 MonoBehaviour:
@@ -4724,7 +4768,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1087905546
 MonoBehaviour:
@@ -5046,6 +5090,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1913345346}
     m_Modifications:
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Ability
+      value: Focus
+      objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10
@@ -5200,6 +5254,11 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
+      value: Zeal
+      objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Type
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5305499920221551576, guid: fde735b1b09de1c409cefecc145d31da,
@@ -5227,6 +5286,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1913345346}
     m_Modifications:
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Ability
+      value: Focus
+      objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6
@@ -5368,6 +5437,11 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
+      value: Zeal
+      objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Type
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
@@ -5534,7 +5608,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1500, y: 500}
+  m_SizeDelta: {x: 1500, y: 250}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1253641601
 MonoBehaviour:
@@ -5595,6 +5669,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1913345346}
     m_Modifications:
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Ability
+      value: Focus
+      objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: -14
@@ -5888,6 +5972,11 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
+      value: Zeal
+      objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Type
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
@@ -6716,6 +6805,11 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
+      value: Zeal
+      objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Type
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
@@ -7124,6 +7218,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1913345346}
     m_Modifications:
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Ability
+      value: Focus
+      objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6
@@ -7193,6 +7297,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1913345346}
     m_Modifications:
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: Ability
+      value: Focus
+      objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10
@@ -7405,6 +7519,11 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
+      value: Zeal
+      objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Type
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
@@ -7583,6 +7702,11 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
+      value: Zeal
+      objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Type
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
