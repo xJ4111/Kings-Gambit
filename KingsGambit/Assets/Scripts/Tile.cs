@@ -9,6 +9,8 @@ public class Tile : MonoBehaviour
     public CustomPiece Occupier;
     public bool Safe;
 
+    public List<CustomPiece> Graves;
+
     void Awake()
     {
         Safe = true;

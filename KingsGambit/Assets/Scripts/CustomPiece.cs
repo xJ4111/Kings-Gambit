@@ -283,6 +283,7 @@ public class CustomPiece : Piece
             switch (Ability)
             {
                 case "Combat Medic":
+                    base.Knight();
                     break;
                 case "Charge":
                     base.Knight();
@@ -360,9 +361,10 @@ public class CustomPiece : Piece
                 switch (Ability)
                 {
                     case "Combat Medic":
+                        Revive();
                         break;
                     case "Charge":
-                        Reckless();
+                        Charge();
                         break;
                 }
                 break;
@@ -412,7 +414,106 @@ public class CustomPiece : Piece
 
     void Revive()
     {
+        CustomPiece revive = null;
 
+        Game.M.TargetTile.Graves.Reverse();
+
+        foreach (CustomPiece p in Game.M.TargetTile.Graves)
+        {
+            if(p.Side == Side)
+            {
+                revive = p;
+            }
+        }
+
+        revive.enabled = true;
+        revive.MoveTo(Pos);
+        Game.M.TargetTile.Graves.Remove(revive);
+
+        Game.M.TargetTile.Graves.Reverse();
     }
+
+    void Charge()
+    {
+        List<CustomPiece> inPath = new List<CustomPiece>();
+ 
+        int x = Game.M.TargetTile.PosX - PosX;
+        int y = Game.M.TargetTile.PosY - PosY;
+
+        if(x > 0)
+        {
+            for(int i = 0; i <= x; i++)
+            {
+                if(y > 0)
+                {
+                    for(int j = 0; j <= y; j++)
+                    {
+                        if(!(i == 0 && j == 0))
+                        {
+                            if(Tiles[PosX + i, PosY + j].Occupier && Tiles[PosX + i, PosY + j].Occupier.Side != Side && !Tiles[PosX + i, PosY + j].Occupier.Invincible)
+                            {
+                                inPath.Add(Tiles[PosX + i, PosY + j].Occupier);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (int j = 0; j >= y; j--)
+                    {
+                        if (!(i == 0 && j == 0))
+                        {
+                            if (Tiles[PosX + i, PosY + j].Occupier && Tiles[PosX + i, PosY + j].Occupier.Side != Side && !Tiles[PosX + i, PosY + j].Occupier.Invincible)
+                            {
+                                inPath.Add(Tiles[PosX + i, PosY + j].Occupier);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i >= x; i--)
+            {
+                if (y > 0)
+                {
+                    for (int j = 0; j <= y; j++)
+                    {
+                        if (!(i == 0 && j == 0))
+                        {
+                            if (Tiles[PosX + i, PosY + j].Occupier && Tiles[PosX + i, PosY + j].Occupier.Side != Side && !Tiles[PosX + i, PosY + j].Occupier.Invincible)
+                            {
+                                inPath.Add(Tiles[PosX + i, PosY + j].Occupier);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (int j = 0; j >= y; j--)
+                    {
+                        if (!(i == 0 && j == 0))
+                        {
+                            if (Tiles[PosX + i, PosY + j].Occupier && Tiles[PosX + i, PosY + j].Occupier.Side != Side && !Tiles[PosX + i, PosY + j].Occupier.Invincible)
+                            {
+                                inPath.Add(Tiles[PosX + i, PosY + j].Occupier);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if(Game.M.TargetTile.Occupier)
+            inPath.Remove(Game.M.TargetTile.Occupier);
+
+        foreach(CustomPiece p in inPath)
+        {
+            if (p.Type == "Pawn")
+                p.Injured = true;
+        }
+    }
+
     #endregion
 }

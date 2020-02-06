@@ -335,6 +335,9 @@ public class Game : MonoBehaviour
                 p.gameObject.transform.localPosition = SidePos(blackSideCount, -1);
                 break;
         }
+
+        p.Pos.Graves.Add(p);
+        p.enabled = false;
     }
 
     Vector3 SidePos(int count, int offset)
