@@ -135,7 +135,7 @@ public class Game : MonoBehaviour
     }
 
     #region Turn Management
-    void NextTurn()
+    public void NextTurn()
     {
         RoundCount++;
         Selected = null;

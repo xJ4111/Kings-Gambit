@@ -41,9 +41,10 @@ public class Tile : MonoBehaviour
         Occupier.PosX = PosX;
     }
 
-    public void Exit()
+    public void Exit(Piece p)
     {
-        Occupier = null;
+        if(Occupier.Equals(p))
+            Occupier = null;
     }
 
     private void OnMouseOver()

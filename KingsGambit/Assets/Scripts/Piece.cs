@@ -71,9 +71,10 @@ public class Piece : MonoBehaviour
         }
 
         //En Passant Attack
-        if(Game.M.EPTiles.ContainsKey(Game.M.TargetTile))
+        if(Game.M.EPTiles.ContainsKey(Game.M.TargetTile) && Game.M.EPTiles[Game.M.TargetTile].Side != Side)
+        {
             Game.M.Kill(Game.M.EPTiles[Game.M.TargetTile]);
-
+        }
     }
 
     #region PathProcessing
@@ -349,7 +350,7 @@ public class Piece : MonoBehaviour
     public void MoveTo(Tile TargetTile)
     {
         transform.position = TargetTile.transform.position;
-        Tiles[PosX, PosY].Exit();
+        Tiles[PosX, PosY].Exit(this);
         TargetTile.Enter(this);
     }
     protected void CheckMove(int x, int y)
@@ -529,7 +530,7 @@ public class Piece : MonoBehaviour
     {
         if (Game.M.EPTiles.ContainsKey(Tiles[x, y]))
         {
-            if(Type == "Pawn" || Game.M.EPTiles[Tiles[x, y]].Vulnerable)
+            if((Type == "Pawn" || Game.M.EPTiles[Tiles[x, y]].Vulnerable) && Game.M.EPTiles[Tiles[x, y]].Side != Side)
             {
                 Path.Add(Tiles[x, y]);
                 EPTargets.Add(Game.M.EPTiles[Tiles[x, y]]);

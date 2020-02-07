@@ -16,6 +16,7 @@ public class UI : MonoBehaviour
     public Image PromoImage;
     public TextMeshProUGUI[] PromoTexts;
     public Button ConfirmButton;
+    public Button AbilityButton;
 
     [HideInInspector] public CustomPiece PromotionTarget;
 
@@ -77,5 +78,17 @@ public class UI : MonoBehaviour
         ConfirmButton.onClick.RemoveAllListeners();
         ConfirmButton.onClick.AddListener(() => PromotionTarget.Promote(Type));
         ConfirmButton.onClick.AddListener(() => TogglePromoPanel(false));
+    }
+
+    public void ToggleAbilityButton(UnityEngine.Events.UnityAction call)
+    {
+        AbilityButton.gameObject.SetActive(true);
+        AbilityButton.onClick.RemoveAllListeners();
+        AbilityButton.onClick.AddListener(call);
+        AbilityButton.onClick.AddListener(() => ToggleAbilityButton());
+    }
+    public void ToggleAbilityButton()
+    {
+        AbilityButton.gameObject.SetActive(false);
     }
 }

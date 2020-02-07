@@ -33,10 +33,13 @@ public class CustomPiece : Piece
                 else if (Game.M.InCheck && (Type == "King" || CanBlock))
                     Highlight(true);
 
-                if (Input.GetMouseButtonDown(1) && activeTiles > 0)
+                OnClick();
+
+                if (Input.GetMouseButtonDown(1) && (OnClick() || activeTiles > 0))
                 {
                     Game.M.Selected = this;
                 }
+
             }
 
             if (Game.M.Selected && Game.M.Selected != this && Tiles[PosX, PosY].l.enabled)
@@ -54,6 +57,7 @@ public class CustomPiece : Piece
         if (!Game.M.Selected)
         {
             Highlight(false);
+            UI.M.ToggleAbilityButton();
 
             for (int i = 0; i < 4; i++)
                 hit[i] = false;
@@ -64,7 +68,6 @@ public class CustomPiece : Piece
     {
         Highlight(false);
 
-        Attack();
         OnMove();
         Castle();
 
@@ -136,6 +139,7 @@ public class CustomPiece : Piece
     {
         Highlight(false);
         Game.M.Selected = null;
+        UI.M.ToggleAbilityButton();
     }
 
     #region Abilities
@@ -301,8 +305,10 @@ public class CustomPiece : Piece
             switch (Ability)
             {
                 case "Warp":
+                    base.Bishop();
                     break;
                 case "Arcane Connection":
+                    base.Bishop();
                     break;
             }
         }
@@ -317,8 +323,10 @@ public class CustomPiece : Piece
             switch (Ability)
             {
                 case "Deploy":
+                    base.Queen();
                     break;
                 case "Arcane Connection":
+                    base.Queen();
                     break;
             }
         }
@@ -340,19 +348,83 @@ public class CustomPiece : Piece
 
     #endregion
 
-    #region On Move Effects
+    #region Effects
+
+    bool OnClick()
+    {
+        switch (Type)
+        {
+            case "Pawn":
+                return false;
+            case "Rook":
+                return false;
+            case "Knight":
+                return false;
+            case "Bishop":
+                switch (Ability)
+                {
+                    case "Warp":
+                        break;
+                    case "Arcane Connection":
+                        UI.M.ToggleAbilityButton(() => ACBishop());
+                        break;
+                }
+                return true;
+            case "Queen":
+                return false;
+            case "King":
+                return false;
+        }
+
+        return false;
+    }
+    public void ACQueen(CustomPiece bishop)
+    {
+        SwapPos(bishop);
+    }
+
+    public void ACBishop()
+    {
+        switch (Side)
+        {
+            case "White":
+                SwapPos(Game.White.Queen);
+                break;
+            case "Black":
+                SwapPos(Game.Black.Queen);
+                break;
+        }
+
+        Highlight(false);
+        Game.M.NextTurn();
+    }
+
+    void SwapPos(CustomPiece target)
+    {
+        int x = PosX;
+        int y = PosY;
+
+        MoveTo(target.Pos);
+        target.MoveTo(Tiles[x, y]);
+    }
+
     void OnMove()
     {
         switch (Type)
         {
             case "Pawn":
+                Attack();
                 break;
             case "Rook":
                 switch (Ability)
                 {
+                    case "":
+                        Attack();
+                        break;
                     case "Shield Wall":
                         break;
                     case "Reckless":
+                        Attack();
                         Reckless();
                         break;
                 }
@@ -360,15 +432,32 @@ public class CustomPiece : Piece
             case "Knight":
                 switch (Ability)
                 {
+                    case "":
+                        Attack();
+                        break;
                     case "Combat Medic":
+                        Attack();
                         Revive();
                         break;
                     case "Charge":
+                        Attack();
                         Charge();
                         break;
                 }
                 break;
             case "Bishop":
+                switch (Ability)
+                {
+                    case "":
+                        Attack();
+                        break;
+                    case "Warp":
+                        Warp();
+                        break;
+                    case "Arcane Connection":
+                        Attack();
+                        break;
+                }
                 break;
             case "Queen":
                 break;
@@ -513,6 +602,12 @@ public class CustomPiece : Piece
             if (p.Type == "Pawn")
                 p.Injured = true;
         }
+    }
+
+    void Warp()
+    {
+        if(Game.M.TargetTile.Occupier)
+            Game.M.TargetTile.Occupier.MoveTo(Pos);
     }
 
     #endregion
