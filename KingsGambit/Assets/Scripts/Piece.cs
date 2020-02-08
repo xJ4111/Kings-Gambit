@@ -32,16 +32,17 @@ public class Piece : MonoBehaviour
 
     [Header("Pawn Only")]
     public List<Tile> PawnAttackTiles = new List<Tile>();
-    public List<CustomPiece> EPTargets = new List<CustomPiece>();
     public bool Vulnerable = true;
     public bool EPTake = false;
     protected int startingY;
 
     [Header("King Related")]
+    public CustomPiece AllyKing;
     public CustomPiece Checker;
     protected int startingX;
     public System.Tuple<CustomPiece, List<Tile>> CastleLeft;
     public System.Tuple<CustomPiece, List<Tile>> CastleRight;
+    public bool FTKUsed = false;
 
     public void SetPos()
     {
@@ -150,20 +151,10 @@ public class Piece : MonoBehaviour
 
     public void CheckBlock()
     {
-        CustomPiece king = null;
         CanBlock = false;
-
-        switch (Side)
-        {
-            case "White": king = Game.White.King;
-                break;
-            case "Black": king = Game.Black.King;
-                break;
-        }
 
         if (Game.M.InCheck && Game.M.CheckBlockable)
         {
-            CanBlock = false;
 
             foreach (Tile t in Game.M.AttackPath)
             {
@@ -173,14 +164,14 @@ public class Piece : MonoBehaviour
                 }
             }
 
-            if (Path.Contains(king.Checker.Pos))
+            if (Path.Contains(AllyKing.Checker.Pos))
                 CanBlock = true;
 
             Tile EPCheckBlock = null;
 
             foreach(KeyValuePair<Tile, CustomPiece> temp in Game.M.EPTiles)
             {
-                if(temp.Value == king.Checker)
+                if(temp.Value == AllyKing.Checker)
                 {
                     if (Path.Contains(temp.Key))
                     {
@@ -196,7 +187,7 @@ public class Piece : MonoBehaviour
                 List<Tile> copy = Clone(Path);
                 foreach (Tile t in copy)
                 {
-                    if (!Game.M.AttackPath.Contains(t) && t != king.Checker.Pos && t != EPCheckBlock)
+                    if (!Game.M.AttackPath.Contains(t) && t != AllyKing.Checker.Pos && t != EPCheckBlock)
                     {
                         Path.Remove(t);
                     }
@@ -372,7 +363,7 @@ public class Piece : MonoBehaviour
 
             if (Tiles[x, y] && Tiles[x, y].Occupier)
             {
-                if (Tiles[x, y].Occupier.Side != Side && !Tiles[x, y].Occupier.Invincible)
+                if (Tiles[x, y].Occupier.Side != Side)
                 {
                     if (Type == "Pawn")
                         PawnAttackTiles.Add(Tiles[x, y]);
@@ -396,7 +387,7 @@ public class Piece : MonoBehaviour
 
             if (Tiles[x, y])
             {
-                if ((Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side != Side && !Tiles[x, y].Occupier.Invincible) || !Tiles[x, y].Occupier)
+                if ((Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side != Side) || !Tiles[x, y].Occupier)
                 {
                     if (Type == "Pawn")
                         PawnAttackTiles.Add(Tiles[x, y]);
@@ -408,12 +399,6 @@ public class Piece : MonoBehaviour
                 {
                     Tiles[x, y].Occupier.Guarded = true;
                 }
-                else if (!Tiles[x, y].Occupier)
-                {
-                    Path.Add(Tiles[x, y]);
-                    Debug.Log("third");
-                }
-
             }
         }
     }
@@ -496,11 +481,9 @@ public class Piece : MonoBehaviour
         //Diagonal Right
         if ((Offset(PosX, -1) != PosX && Offset(PosY, 1) != PosY))
             CheckAttack(Offset(PosX, -1), Offset(PosY, 1));
-
-        EPTargets.Clear();
     }
 
-    protected void EPCheck()
+    public void EPCheck()
     {
         Tile temp = Tiles[PosX, Offset(PosY, -1)];
 
@@ -519,9 +502,16 @@ public class Piece : MonoBehaviour
         }
         else
         {
-            if (!Game.M.EPTiles.ContainsKey(temp))
+            if(!temp.Occupier)
             {
-                Game.M.EPTiles.Add(temp, (CustomPiece)this);
+                if (!Game.M.EPTiles.ContainsKey(temp))
+                {
+                    Game.M.EPTiles.Add(temp, (CustomPiece)this);
+                }
+            }
+            else
+            {
+                Game.M.EPTiles.Remove(temp);
             }
         }
     }
@@ -530,10 +520,9 @@ public class Piece : MonoBehaviour
     {
         if (Game.M.EPTiles.ContainsKey(Tiles[x, y]))
         {
-            if((Type == "Pawn" || Game.M.EPTiles[Tiles[x, y]].Vulnerable) && Game.M.EPTiles[Tiles[x, y]].Side != Side)
+            if ((Type == "Pawn" || Game.M.EPTiles[Tiles[x, y]].Vulnerable) && Game.M.EPTiles[Tiles[x, y]].Side != Side)
             {
                 Path.Add(Tiles[x, y]);
-                EPTargets.Add(Game.M.EPTiles[Tiles[x, y]]);
             }
         }
     }
@@ -585,6 +574,7 @@ public class Piece : MonoBehaviour
                 if (Tiles[PosX, Offset(PosY, i)].Occupier.Side == Side || Tiles[PosX, Offset(PosY, i)].Occupier.Invincible)
                 {
                     Potential.Add(Tiles[PosX, Offset(PosY, i)]);
+                    CheckMoveAttack(PosX, Offset(PosY, i));
                     hit = true;
                 }
                 else if (Tiles[PosX, Offset(PosY, i)].Occupier.Side != Side)
@@ -611,6 +601,7 @@ public class Piece : MonoBehaviour
                 if (Tiles[Offset(PosX, i), PosY].Occupier.Side == Side)
                 {
                     Potential.Add(Tiles[Offset(PosX, i), PosY]);
+                    CheckMoveAttack(Offset(PosX, i), PosY);
                     hit = true;
                 }
                 else if (Tiles[Offset(PosX, i), PosY].Occupier.Side != Side)
@@ -804,11 +795,4 @@ public class Piece : MonoBehaviour
     }
 
     #endregion
-
-    public void Promote(string NewType)
-    {
-        Type = NewType;
-        name = Side + " " + Type;
-        //Replace Model
-    }
 }

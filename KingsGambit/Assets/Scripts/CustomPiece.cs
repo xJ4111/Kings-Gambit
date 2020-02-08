@@ -22,33 +22,33 @@ public class CustomPiece : Piece
         CancelEP = false;
     }
 
+    private void Update()
+    {
+        if(!AllyKing)
+            StartCoroutine(GetAllyKing());
+    }
+
+    IEnumerator GetAllyKing()
+    {
+        yield return new WaitForEndOfFrame();
+
+        switch (Side)
+        {
+            case "White":
+                AllyKing = Game.White.King;
+                break;
+            case "Black":
+                AllyKing = Game.Black.King;
+                break;
+        }
+    }
+
     protected void OnMouseOver()
     {
         if(!UI.M.PromoPanel.activeSelf)
         {
-            if (Game.M.Turn == Side && !Game.M.Selected)
-            {
-                if (!Game.M.InCheck)
-                    Highlight(true);
-                else if (Game.M.InCheck && (Type == "King" || CanBlock))
-                    Highlight(true);
-
-                OnClick();
-
-                if (Input.GetMouseButtonDown(1) && (OnClick() || activeTiles > 0))
-                {
-                    Game.M.Selected = this;
-                }
-
-            }
-
-            if (Game.M.Selected && Game.M.Selected != this && Tiles[PosX, PosY].l.enabled)
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    Game.M.TargetTile = Tiles[PosX, PosY];
-                }
-            }
+            Selection();
+            Targeting();
         }
     }
 
@@ -62,6 +62,56 @@ public class CustomPiece : Piece
             for (int i = 0; i < 4; i++)
                 hit[i] = false;
         }
+    }
+    
+    void Selection()
+    {
+        if (Game.M.Turn == Side && !Game.M.Selected)
+        {
+            if (!Game.M.InCheck)
+                Highlight(true);
+            else if (Game.M.InCheck)
+            {
+                CheckBlock();
+
+                if(Type == "King" || CanBlock)
+                    Highlight(true);
+            }
+
+
+            OnClick();
+
+            if (Input.GetMouseButtonDown(1) && (OnClick() || activeTiles > 0))
+            {
+                Game.M.Selected = this;
+            }
+        }
+    }
+
+    void Targeting()
+    {
+        if (Game.M.Selected && Game.M.Selected != this)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                if(Tiles[PosX, PosY].l.enabled)
+                    Game.M.TargetTile = Tiles[PosX, PosY];
+
+                if (Game.M.SearchingPiece)
+                {
+                    if(Game.M.Selected.TargetValid(this) == "Valid")
+                    {
+                        Game.M.AbilityTarget = this;
+                        GetTargetPosition();
+                    }
+                    else
+                    {
+                        Debug.Log(Game.M.Selected.TargetValid(this));
+                    }
+                }
+            }
+        }
+
     }
 
     public void Move()
@@ -90,7 +140,16 @@ public class CustomPiece : Piece
             {
                 foreach (Tile t in Path)
                 {
-                    t.l.enabled = b;
+                    if (t.Occupier)
+                    {
+                        if (AllyKing.Checker && t.Occupier == AllyKing.Checker)
+                            t.l.enabled = b;
+                        else if(!t.Occupier.Invincible)
+                            t.l.enabled = b;
+                    }
+                    else
+                        t.l.enabled = b;
+
                 }
             }
         }
@@ -109,6 +168,7 @@ public class CustomPiece : Piece
     {
         Path.Clear();
         Potential.Clear();
+        PawnAttackTiles.Clear();
 
         switch (Type)
         {
@@ -125,9 +185,7 @@ public class CustomPiece : Piece
                 Bishop();
                 break;
             case "Queen":
-                Rook();
-                ResetHit();
-                Bishop();
+                Queen();
                 break;
             case "King":
                 King();
@@ -143,29 +201,43 @@ public class CustomPiece : Piece
     }
 
     #region Abilities
-    protected override void Pawn()
+    protected new void Pawn()
     {
         if (Ability == "")
             base.Pawn();
         else
         {
-            EPCheck();
-
             switch (Ability)
             {
-                case "Zeal":
+                case "Caution":
                     Vulnerable = true;
-                    CheckMove(PosX, Offset(PosY, 1));
-                    if(Path.Contains(Tiles[PosX, Offset(PosY, 1)]))
-                        CheckMove(PosX, Offset(PosY, 2));
 
-                    CheckAttack(Offset(PosX, 1), Offset(PosY, 1));
-                    if (!Path.Contains(Tiles[Offset(PosX, 1), Offset(PosY, 1)]))
-                        CheckAttack(Offset(PosX, 2), Offset(PosY, 2));
+                    if (FirstMove)
+                    {
+                        if ((Offset(PosY, -1) != PosY))
+                            CheckMove(PosX, Offset(PosY, -1));
 
-                    CheckAttack(Offset(PosX, -1), Offset(PosY, 1));
-                    if (!Path.Contains(Tiles[Offset(PosX, -1), Offset(PosY, 1)]))
-                        CheckAttack(Offset(PosX, -2), Offset(PosY, 2));
+                        if ((Offset(PosY, 1) != PosY))
+                            CheckMove(PosX, Offset(PosY, 1));
+
+                        if(Path.Contains(Tiles[PosX, Offset(PosY, 1)]))
+                            if ((Offset(PosY, 1) != PosY))
+                                CheckMove(PosX, Offset(PosY, 2));
+                    }
+                    else
+                    {
+                        if ((Offset(PosY, -1) != PosY))
+                            CheckMove(PosX, Offset(PosY, -1));
+
+                        if ((Offset(PosY, 1) != PosY))
+                            CheckMove(PosX, Offset(PosY, 1));
+                    }
+
+                    if (Offset(PosX, 1) != PosX && Offset(PosY, 1) != PosY)
+                        CheckAttack(Offset(PosX, 1), Offset(PosY, 1));
+
+                    if (Offset(PosX, -1) != PosX && Offset(PosY, 1) != PosY)
+                        CheckAttack(Offset(PosX, -1), Offset(PosY, 1));
 
                     break;
                 case "Focus":
@@ -173,12 +245,17 @@ public class CustomPiece : Piece
 
                     if (FirstMove)
                     {
-                        CheckMoveAttack(PosX, Offset(PosY, 1));
-                        CheckMoveAttack(PosX, Offset(PosY, 2));
+                        if (Offset(PosY, 1) != PosY)
+                            CheckMoveAttack(PosX, Offset(PosY, 1));
+
+                        if (Path.Contains(Tiles[PosX, Offset(PosY, 1)]))
+                            if (Offset(PosY, 2) != PosY)
+                                CheckMoveAttack(PosX, Offset(PosY, 2));
                     }
                     else
                     {
-                        CheckMoveAttack(PosX, Offset(PosY, 1));
+                        if (Offset(PosY, 1) != PosY)
+                            CheckMoveAttack(PosX, Offset(PosY, 1));
                     }
                     break;
             }
@@ -186,7 +263,7 @@ public class CustomPiece : Piece
     }
 
     #region Rook
-    protected override void Rook()
+    protected new void Rook()
     {
         if (Ability == "")
             base.Rook();
@@ -220,7 +297,7 @@ public class CustomPiece : Piece
         }
     }
 
-    protected override void RookMovementX(int i, ref bool hit)
+    protected new void RookMovementX(int i, ref bool hit)
     {
         if (Ability == "")
             base.RookMovementX(i, ref hit);
@@ -250,7 +327,7 @@ public class CustomPiece : Piece
         }
     }
 
-    protected override void RookMovementY(int i, ref bool hit)
+    protected new void RookMovementY(int i, ref bool hit)
     {
         if (Ability == "")
             base.RookMovementY(i, ref hit);
@@ -278,7 +355,7 @@ public class CustomPiece : Piece
         }
     }
     #endregion
-    protected override void Knight()
+    protected new void Knight()
     {
         if (Ability == "")
             base.Knight();
@@ -296,7 +373,7 @@ public class CustomPiece : Piece
         }
     }
 
-    protected override void Bishop()
+    protected new void Bishop()
     {
         if (Ability == "")
             base.Bishop();
@@ -304,7 +381,7 @@ public class CustomPiece : Piece
         {
             switch (Ability)
             {
-                case "Warp":
+                case "Blast":
                     base.Bishop();
                     break;
                 case "Arcane Connection":
@@ -314,25 +391,23 @@ public class CustomPiece : Piece
         }
     }
 
-    protected override void Queen()
+    protected new void Queen()
     {
-        if (Ability == "")
-            base.Queen();
-        else
+        switch (Ability)
         {
-            switch (Ability)
-            {
-                case "Deploy":
-                    base.Queen();
-                    break;
-                case "Arcane Connection":
-                    base.Queen();
-                    break;
-            }
+            case "":
+                base.Queen();
+                break;
+            case "Deploy":
+                base.Queen();
+                break;
+            case "Arcane Connection":
+                base.Queen();
+                break;
         }
     }
 
-    protected override void King()
+    protected new void King()
     {
         if (Ability == "")
             base.King();
@@ -363,7 +438,9 @@ public class CustomPiece : Piece
             case "Bishop":
                 switch (Ability)
                 {
-                    case "Warp":
+                    case "Blast":
+                        Game.M.NeedPos = false;
+                        UI.M.ToggleAbilityButton(() => GetTargetPiece("In Path"));
                         break;
                     case "Arcane Connection":
                         UI.M.ToggleAbilityButton(() => ACBishop());
@@ -371,13 +448,27 @@ public class CustomPiece : Piece
                 }
                 return true;
             case "Queen":
-                return false;
+                switch (Ability)
+                {
+                    case "Deploy":
+                        Game.M.NeedPos = true;
+                        UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"));
+                        break;
+                    case "Arcane Connection":
+                        Game.M.NeedPos = false;
+                        UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"));
+                        break;
+                }
+                return true;
             case "King":
-                return false;
+                Game.M.NeedPos = false;
+                UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"));
+                return true;
         }
 
         return false;
     }
+
     public void ACQueen(CustomPiece bishop)
     {
         SwapPos(bishop);
@@ -385,6 +476,8 @@ public class CustomPiece : Piece
 
     public void ACBishop()
     {
+        Highlight(false);
+
         switch (Side)
         {
             case "White":
@@ -395,7 +488,6 @@ public class CustomPiece : Piece
                 break;
         }
 
-        Highlight(false);
         Game.M.NextTurn();
     }
 
@@ -451,8 +543,8 @@ public class CustomPiece : Piece
                     case "":
                         Attack();
                         break;
-                    case "Warp":
-                        Warp();
+                    case "Blast":
+                        Attack();
                         break;
                     case "Arcane Connection":
                         Attack();
@@ -460,8 +552,10 @@ public class CustomPiece : Piece
                 }
                 break;
             case "Queen":
+                Attack();
                 break;
             case "King":
+                Attack();
                 break;
         }
     }
@@ -503,23 +597,27 @@ public class CustomPiece : Piece
 
     void Revive()
     {
-        CustomPiece revive = null;
-
-        Game.M.TargetTile.Graves.Reverse();
-
-        foreach (CustomPiece p in Game.M.TargetTile.Graves)
+        if(Game.M.TargetTile.Graves.Count > 0)
         {
-            if(p.Side == Side)
+            CustomPiece revive = null;
+
+            Game.M.TargetTile.Graves.Reverse();
+
+            foreach (CustomPiece p in Game.M.TargetTile.Graves)
             {
-                revive = p;
+                if (p.Side == Side)
+                {
+                    revive = p;
+                }
             }
+
+            revive.enabled = true;
+            revive.MoveTo(Pos);
+            Game.M.TargetTile.Graves.Remove(revive);
+
+            Game.M.TargetTile.Graves.Reverse();
         }
 
-        revive.enabled = true;
-        revive.MoveTo(Pos);
-        Game.M.TargetTile.Graves.Remove(revive);
-
-        Game.M.TargetTile.Graves.Reverse();
     }
 
     void Charge()
@@ -604,11 +702,262 @@ public class CustomPiece : Piece
         }
     }
 
-    void Warp()
+    public void UseAbility()
     {
-        if(Game.M.TargetTile.Occupier)
-            Game.M.TargetTile.Occupier.MoveTo(Pos);
+        switch (Type)
+        {
+            case "Pawn":
+                break;
+            case "Rook":
+                break;
+            case "Knight":
+                break;
+            case "Bishop":
+                switch (Ability)
+                {
+                    case "Blast":
+                        Blast();
+                        break;
+                    case "Arcane Connection":
+                        break;
+                }
+
+                break;
+            case "Queen":
+                switch(Ability)
+                {
+                    case "Deploy":
+                        Deploy();
+                        break;
+                    case "Arcane Connection":
+                        ACQueen();
+                        break;
+                }
+                break;
+        }
+
+        Highlight(false);
+
+        if(Ability == "For The King")
+        {
+            ForTheKing();
+            Game.M.Clear();
+        }
+        else
+        {
+            Game.M.NextTurn();
+        }
+    }
+
+    public string TargetValid(CustomPiece target)
+    {
+        switch (Type)
+        {
+            case "Pawn":
+                return "";
+            case "Rook":
+                return "";
+            case "Knight":
+                return "";
+            case "Bishop":
+                switch (Ability)
+                {
+                    case "Blast":
+                        if(target.Side != Side)
+                        {
+                            if (Path.Contains(target.Pos))
+                            {
+                                if (!target.Invincible)
+                                {
+                                    if (!target.Injured)
+                                    {
+                                        return "Valid";
+                                    }
+                                    else
+                                    {
+                                        return "Target Already Injured";
+                                    }
+                                }
+                                else
+                                {
+                                    return "Target Invincible";
+                                }
+                            }
+                            else
+                                return "Target Is Not In Path";
+                        }
+                        else
+                            return "Target Is Not An Enemy";
+
+                    case "Arcane Connection":
+                        break;
+                }
+
+                return "";
+            case "Queen":
+                switch (Ability)
+                {
+                    case "Deploy":
+                        if (Grid.M.Distance(Pos, target.Pos) == 1)
+                            return "Valid";
+                        else
+                            return "Too Far Away";
+
+                    case "Arcane Connection":
+
+                        if (target.Side == Side)
+                        {
+                            if (target.Type == "Bishop")
+                                return "Valid";
+                            else
+                                return "Target is not a Bishop";
+                        }
+                        else
+                            return "Target is not an Ally";
+                }
+                return "";
+            case "King":
+                if(Ability == "For The King")
+                {
+                    if (target.Side == Side)
+                    {
+                        if (target.Type == "Pawn")
+                            return "Valid";
+                        else
+                            return "Target is not a Pawn";
+                    }
+                    else
+                        return "Target is not an Ally";
+                }
+                return "";
+        }
+
+        return "";
+    }
+
+    void GetTargetPiece(string Type)
+    {
+        Highlight(false);
+
+        switch (Type)
+        {
+            case "Any":
+                Highlight(false);
+                break;
+            case "In Path":
+                foreach (Tile t in Path)
+                    if (t.Occupier)
+                        t.l.enabled = true;
+                break;
+        }
+
+        Game.M.SearchingPiece = true;
+    }
+
+    void GetTargetPosition()
+    {
+        Game.M.SearchingPiece = false;
+
+        if (Game.M.NeedPos)
+        {
+            Game.M.Selected.Highlight(true);
+            Game.M.SearchingPos = true;
+        }
+    }
+
+    void Blast()
+    {
+        Game.M.AbilityTarget.Injured = true;
+    }
+
+    void Deploy()
+    {
+        Game.M.AbilityTarget.MoveTo(Game.M.AbilityPosition);
+    }
+
+    void ACQueen()
+    {
+        SwapPos(Game.M.AbilityTarget);
+    }
+
+    void ForTheKing()
+    {
+        UI.M.PromotionTarget = Game.M.AbilityTarget;
+        UI.M.TogglePromoPanel(true);
+        Game.M.AbilityTarget.Invincible = true;
+
+        switch (Side)
+        {
+            case "White":
+                Game.White.FTKTarget = Game.M.AbilityTarget;
+                Game.White.FTKRound = Game.M.RoundCount;
+                break;
+            case "Black":
+                Game.Black.FTKTarget = Game.M.AbilityTarget;
+                Game.Black.FTKRound = Game.M.RoundCount;
+                break;
+        }
+
+        FTKUsed = true;
     }
 
     #endregion
+
+    public void Promote(string NewType)
+    {
+        Type = NewType;
+        name = Side + " " + Type;
+
+        switch (Side)
+        {
+            case "White":
+
+                foreach(CustomPiece p in Game.White.All)
+                {
+                    if (Type == p.Type)
+                        Ability = p.Ability;
+                }
+
+                break;
+            case "Black":
+
+                foreach (CustomPiece p in Game.Black.All)
+                {
+                    if (Type == p.Type)
+                        Ability = p.Ability;
+                }
+                break;
+        }
+
+        Game.M.CalcMovePaths();
+    }
+
+    public void Demote()
+    {
+        Type = "Pawn";
+        name = Side + " " + Type;
+
+        switch (Side)
+        {
+            case "White":
+
+                foreach (CustomPiece p in Game.White.All)
+                {
+                    if (Type == p.Type)
+                        Ability = p.Ability;
+                }
+
+                break;
+            case "Black":
+
+                foreach (CustomPiece p in Game.Black.All)
+                {
+                    if (Type == p.Type)
+                        Ability = p.Ability;
+                }
+                break;
+        }
+
+        Invincible = false;
+    }
 }

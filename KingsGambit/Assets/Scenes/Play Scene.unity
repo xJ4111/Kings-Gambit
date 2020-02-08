@@ -338,10 +338,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Black Rook
       objectReference: {fileID: 0}
+    - target: {fileID: 895025803487142845, guid: 23063323b633958438b52a0042160ea2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2985027371087269377, guid: 23063323b633958438b52a0042160ea2,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Reckless
       objectReference: {fileID: 0}
     - target: {fileID: 7350706694140360026, guid: 23063323b633958438b52a0042160ea2,
         type: 3}
@@ -425,7 +430,7 @@ PrefabInstance:
     - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Focus
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -475,6 +480,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Black Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
@@ -886,7 +896,7 @@ PrefabInstance:
     - target: {fileID: 5081095840335517947, guid: 0df59857772b7ed429195f652b7b1085,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Combat Medic
       objectReference: {fileID: 0}
     - target: {fileID: 7171025913935082823, guid: 0df59857772b7ed429195f652b7b1085,
         type: 3}
@@ -930,7 +940,7 @@ PrefabInstance:
     - target: {fileID: 3684847200950483901, guid: b3a52db95771fb944ac1c0646b7dedd9,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Deploy
       objectReference: {fileID: 0}
     - target: {fileID: 7459571539182960369, guid: b3a52db95771fb944ac1c0646b7dedd9,
         type: 3}
@@ -999,7 +1009,7 @@ PrefabInstance:
     - target: {fileID: 501729081207419200, guid: a2bc45992e5b31040bde7831960d4f7e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 501729081207419200, guid: a2bc45992e5b31040bde7831960d4f7e,
         type: 3}
@@ -1051,6 +1061,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1091517524520474340, guid: a2bc45992e5b31040bde7831960d4f7e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5931507047206630412, guid: a2bc45992e5b31040bde7831960d4f7e,
         type: 3}
       propertyPath: Ability
@@ -1070,6 +1085,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: White Bishop (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8599559263279077808, guid: a2bc45992e5b31040bde7831960d4f7e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2bc45992e5b31040bde7831960d4f7e, type: 3}
@@ -1345,10 +1365,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: White Rook (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 895025803487142845, guid: e86b064cacb6388418f24e389f86a171,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2985027371087269377, guid: e86b064cacb6388418f24e389f86a171,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Shield Wall
       objectReference: {fileID: 0}
     - target: {fileID: 9064197247844633421, guid: e86b064cacb6388418f24e389f86a171,
         type: 3}
@@ -1758,7 +1783,7 @@ PrefabInstance:
     - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Focus
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1808,6 +1833,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Black Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
@@ -1889,6 +1919,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Black King
+      objectReference: {fileID: 0}
+    - target: {fileID: 6734637884681062226, guid: 188ceb28a07b53746a02932068079e1e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8678729865733401326, guid: 188ceb28a07b53746a02932068079e1e,
         type: 3}
@@ -2164,12 +2199,17 @@ PrefabInstance:
     - target: {fileID: 5081095840335517947, guid: 6304374846766384bb50261a83fc92c3,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Charge
       objectReference: {fileID: 0}
     - target: {fileID: 7171025913935082823, guid: 6304374846766384bb50261a83fc92c3,
         type: 3}
       propertyPath: m_Name
       value: White Knight
+      objectReference: {fileID: 0}
+    - target: {fileID: 7171025913935082823, guid: 6304374846766384bb50261a83fc92c3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6304374846766384bb50261a83fc92c3, type: 3}
@@ -2267,6 +2307,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: White Queen
       objectReference: {fileID: 0}
+    - target: {fileID: 1595403107296056833, guid: 6c8f9b14cca50b94d9bea4b62495573e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3009256424547763982, guid: 6c8f9b14cca50b94d9bea4b62495573e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2282,10 +2327,15 @@ PrefabInstance:
       propertyPath: Ability
       value: Arcane Connection
       objectReference: {fileID: 0}
+    - target: {fileID: 3684847200950483901, guid: 6c8f9b14cca50b94d9bea4b62495573e,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7459571539182960369, guid: 6c8f9b14cca50b94d9bea4b62495573e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 7459571539182960369, guid: 6c8f9b14cca50b94d9bea4b62495573e,
         type: 3}
@@ -2370,6 +2420,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Selected: {fileID: 0}
   TargetTile: {fileID: 0}
+  SearchingPiece: 0
+  AbilityTarget: {fileID: 0}
+  NeedPos: 0
+  SearchingPos: 0
+  AbilityPosition: {fileID: 0}
   Turn: 
   PieceParentObj: {fileID: 626225419}
   AllPieces: []
@@ -2910,17 +2965,27 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Caution
       objectReference: {fileID: 0}
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Type
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: m_Name
       value: White Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fde735b1b09de1c409cefecc145d31da, type: 3}
@@ -3051,10 +3116,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: White Rook
       objectReference: {fileID: 0}
+    - target: {fileID: 895025803487142845, guid: e86b064cacb6388418f24e389f86a171,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2985027371087269377, guid: e86b064cacb6388418f24e389f86a171,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Shield Wall
       objectReference: {fileID: 0}
     - target: {fileID: 2985027371087269377, guid: e86b064cacb6388418f24e389f86a171,
         type: 3}
@@ -3133,7 +3203,7 @@ PrefabInstance:
     - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Focus
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3399,6 +3469,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: White Bishop
       objectReference: {fileID: 0}
+    - target: {fileID: 8599559263279077808, guid: a2bc45992e5b31040bde7831960d4f7e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2bc45992e5b31040bde7831960d4f7e, type: 3}
 --- !u!1001 &674026791
@@ -3466,7 +3541,7 @@ PrefabInstance:
     - target: {fileID: 5931507047206630412, guid: 026076625ac596947b6e15320296a79e,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Blast
       objectReference: {fileID: 0}
     - target: {fileID: 8599559263279077808, guid: 026076625ac596947b6e15320296a79e,
         type: 3}
@@ -3959,7 +4034,7 @@ PrefabInstance:
     - target: {fileID: 5931507047206630412, guid: 026076625ac596947b6e15320296a79e,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Blast
       objectReference: {fileID: 0}
     - target: {fileID: 8599559263279077808, guid: 026076625ac596947b6e15320296a79e,
         type: 3}
@@ -4342,17 +4417,27 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Caution
       objectReference: {fileID: 0}
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Type
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: m_Name
       value: White Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fde735b1b09de1c409cefecc145d31da, type: 3}
@@ -4812,10 +4897,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: White King
       objectReference: {fileID: 0}
+    - target: {fileID: 6734637884681062226, guid: cc18e9c05068d0447aa8bf72da72eba3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8678729865733401326, guid: cc18e9c05068d0447aa8bf72da72eba3,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: For The King
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cc18e9c05068d0447aa8bf72da72eba3, type: 3}
@@ -5050,7 +5140,7 @@ PrefabInstance:
     - target: {fileID: 5081095840335517947, guid: 0df59857772b7ed429195f652b7b1085,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Combat Medic
       objectReference: {fileID: 0}
     - target: {fileID: 7171025913935082823, guid: 0df59857772b7ed429195f652b7b1085,
         type: 3}
@@ -5200,7 +5290,7 @@ PrefabInstance:
     - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Focus
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5435,12 +5525,17 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Caution
       objectReference: {fileID: 0}
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Type
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5305499920221551576, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
@@ -5451,6 +5546,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: White Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fde735b1b09de1c409cefecc145d31da, type: 3}
@@ -5475,7 +5575,7 @@ PrefabInstance:
     - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Focus
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5525,6 +5625,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Black Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
@@ -5618,17 +5723,27 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Caution
       objectReference: {fileID: 0}
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Type
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: m_Name
       value: White Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fde735b1b09de1c409cefecc145d31da, type: 3}
@@ -5858,7 +5973,7 @@ PrefabInstance:
     - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Focus
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5908,6 +6023,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Black Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
@@ -6153,17 +6273,27 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Caution
       objectReference: {fileID: 0}
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Type
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: m_Name
       value: White Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fde735b1b09de1c409cefecc145d31da, type: 3}
@@ -6667,12 +6797,17 @@ PrefabInstance:
     - target: {fileID: 5081095840335517947, guid: 6304374846766384bb50261a83fc92c3,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Charge
       objectReference: {fileID: 0}
     - target: {fileID: 7171025913935082823, guid: 6304374846766384bb50261a83fc92c3,
         type: 3}
       propertyPath: m_Name
       value: White Knight (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7171025913935082823, guid: 6304374846766384bb50261a83fc92c3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6304374846766384bb50261a83fc92c3, type: 3}
@@ -7146,17 +7281,27 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Caution
       objectReference: {fileID: 0}
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Type
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: m_Name
       value: White Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fde735b1b09de1c409cefecc145d31da, type: 3}
@@ -7602,10 +7747,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Black Rook
       objectReference: {fileID: 0}
+    - target: {fileID: 895025803487142845, guid: 23063323b633958438b52a0042160ea2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2985027371087269377, guid: 23063323b633958438b52a0042160ea2,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Reckless
       objectReference: {fileID: 0}
     - target: {fileID: 9064197247844633421, guid: 23063323b633958438b52a0042160ea2,
         type: 3}
@@ -7691,7 +7841,7 @@ PrefabInstance:
     - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Focus
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7770,7 +7920,7 @@ PrefabInstance:
     - target: {fileID: -3120920578550015782, guid: b4167996e721475419531fe34e8ad8aa,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Focus
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7820,6 +7970,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Black Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: b4167996e721475419531fe34e8ad8aa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
@@ -7985,17 +8140,27 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Caution
       objectReference: {fileID: 0}
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Type
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: m_Name
       value: White Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fde735b1b09de1c409cefecc145d31da, type: 3}
@@ -8168,17 +8333,27 @@ PrefabInstance:
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Ability
-      value: 
+      value: Caution
       objectReference: {fileID: 0}
     - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: Type
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 333962079025337702, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: Vulnerable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
         type: 3}
       propertyPath: m_Name
       value: White Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194146591846741350, guid: fde735b1b09de1c409cefecc145d31da,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fde735b1b09de1c409cefecc145d31da, type: 3}

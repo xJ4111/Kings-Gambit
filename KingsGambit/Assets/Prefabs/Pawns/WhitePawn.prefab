@@ -60,6 +60,9 @@ MonoBehaviour:
   FirstMove: 1
   CancelEP: 0
   hit: 00000000
+  Invincible: 0
+  Injured: 0
+  RoundInjured: 0
   PawnAttackTiles: []
   EPTargets: []
   Vulnerable: 1
@@ -106,6 +109,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Pawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 2362845889858376993, guid: 5d5021dfa94e86c4e8eb41b38e3b2a2c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3892320472473067204, guid: 5d5021dfa94e86c4e8eb41b38e3b2a2c,
         type: 3}

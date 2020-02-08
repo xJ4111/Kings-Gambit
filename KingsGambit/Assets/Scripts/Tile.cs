@@ -43,18 +43,42 @@ public class Tile : MonoBehaviour
 
     public void Exit(Piece p)
     {
-        if(Occupier.Equals(p))
-            Occupier = null;
+        if(Occupier)
+            if(Occupier.Equals(p))
+                Occupier = null;
     }
 
     private void OnMouseOver()
     {
         if(Input.GetMouseButtonDown(0))
         {
-            if (Game.M.Selected && !Game.M.TargetTile && l.enabled)
+
+            if (Game.M.Selected && !Game.M.TargetTile && !Game.M.SearchingPiece && !Game.M.SearchingPos && l.enabled)
             {
                 Game.M.TargetTile = this;
             }
+
+
+            if (Game.M.SearchingPiece && !Game.M.NeedPos)
+            {
+                if (Occupier && Game.M.Selected.TargetValid(Occupier) == "Valid")
+                {
+                    Game.M.AbilityTarget = Occupier;
+                    Game.M.SearchingPiece = false;
+                    Game.M.SearchingPos = true;
+                }
+                else if(Occupier)
+                {
+                    Debug.Log(Game.M.Selected.TargetValid(Occupier));
+                }
+
+            }
+            else if (Game.M.NeedPos && Game.M.SearchingPos && l.enabled)
+            {
+                Game.M.AbilityPosition = this;
+                Game.M.SearchingPos = false;
+            }
+
         }
 
     }

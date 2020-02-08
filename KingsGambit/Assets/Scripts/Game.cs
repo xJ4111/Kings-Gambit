@@ -10,6 +10,15 @@ public class Game : MonoBehaviour
     public CustomPiece Selected;
     public Tile TargetTile;
 
+    [Header("Ability Targeting")]
+    public bool SearchingPiece;
+    public CustomPiece AbilityTarget;
+
+    public bool NeedPos;
+    public bool SearchingPos;
+    public Tile AbilityPosition;
+
+
     [Header("Turn Management")]
     public string Turn = "White";
     private int turnVal = 0;
@@ -23,6 +32,9 @@ public class Game : MonoBehaviour
         public static List<CustomPiece> All = new List<CustomPiece>();
         public static CustomPiece King;
         public static CustomPiece Queen;
+
+        public static CustomPiece FTKTarget;
+        public static int FTKRound;
     }
 
     public static class Black
@@ -30,6 +42,9 @@ public class Game : MonoBehaviour
         public static List<CustomPiece> All = new List<CustomPiece>();
         public static CustomPiece King;
         public static CustomPiece Queen;
+
+        public static CustomPiece FTKTarget;
+        public static int FTKRound;
     }
 
     [Header("Game State")]
@@ -78,6 +93,19 @@ public class Game : MonoBehaviour
         {
             Selected.Move();
             NextTurn();
+        }
+
+        if(Selected && AbilityTarget)
+        {
+            if(NeedPos && AbilityPosition)
+            {
+                Selected.UseAbility();
+            }
+            else if(!NeedPos)
+            {
+                Selected.UseAbility();
+            }
+
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -138,14 +166,35 @@ public class Game : MonoBehaviour
     public void NextTurn()
     {
         RoundCount++;
-        Selected = null;
-        TargetTile = null;
+
+        Clear();
 
         if (turnVal + 1 < 2)
             turnVal++;
         else
             turnVal = 0;
 
+        CameraFlip();
+
+        UI.M.TurnText.text = Turn + "'s Turn";
+
+        CalcMovePaths();
+    }
+
+    public void Clear()
+    {
+        Selected = null;
+        TargetTile = null;
+
+        AbilityTarget = null;
+        AbilityPosition = null;
+        NeedPos = false;
+        SearchingPiece = false;
+        SearchingPos = false;
+    }
+
+    void CameraFlip()
+    {
         switch (turnVal)
         {
             case 0:
@@ -161,20 +210,21 @@ public class Game : MonoBehaviour
                 CamPivotAnim.Play();
                 break;
         }
-
-        UI.M.TurnText.text = Turn + "'s Turn";
-
-        CalcMovePaths();
     }
 
-    void CalcMovePaths()
+    public void CalcMovePaths()
     {
+        FTKState();
+
         EPTiles.Clear();
 
         foreach (CustomPiece p in AllPieces)
         {
             p.Guarded = false;
             p.ResetHit();
+
+            if(p.Type == "Pawn")
+                p.EPCheck();
 
             if (p.Injured && RoundCount - p.RoundInjured == 3)
                 p.Injured = false;
@@ -315,6 +365,9 @@ public class Game : MonoBehaviour
     #region Piece Management
     public void Kill(CustomPiece p)
     {
+        AllPieces.Remove(p);
+        p.Pos.Exit(p);
+
         switch (p.Side)
         {
             case "White":
@@ -359,4 +412,27 @@ public class Game : MonoBehaviour
     }
 
     #endregion
+
+    void FTKState()
+    {
+        if(White.FTKTarget)
+        {
+            if (RoundCount - White.FTKRound == 2)
+            {
+                White.FTKTarget.Demote();
+                White.FTKTarget = null;
+            }
+        }
+
+
+        if(Black.FTKTarget)
+        {
+            if (RoundCount - Black.FTKRound == 2)
+            {
+                Black.FTKTarget.Demote();
+                Black.FTKTarget = null;
+            }
+        }
+
+    }
 }

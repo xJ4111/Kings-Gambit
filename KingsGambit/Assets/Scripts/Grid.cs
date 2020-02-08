@@ -38,4 +38,17 @@ public class Grid : MonoBehaviour
             tempCoord.z -= 4f;
         }
     }
+
+    public int Distance(Tile a, Tile b)
+    {
+        return highest(Mathf.Abs(a.PosX - b.PosX), Mathf.Abs(a.PosY - b.PosY));
+    }
+
+    int highest(int a, int b)
+    {
+        if (a > b)
+            return a;
+        else
+            return b;
+    }
 }
