@@ -9,7 +9,7 @@ public class UI : MonoBehaviour
     public static UI M;
 
     [Header("Info Display")]
-    public Text TurnText, SelectedText;
+    public TextMeshProUGUI TurnText, SelectedText;
 
     [Header("Promotion Panel")]
     public GameObject PromoPanel;
@@ -17,10 +17,9 @@ public class UI : MonoBehaviour
     public TextMeshProUGUI[] PromoTexts;
     public Button ConfirmButton;
     public Button AbilityButton;
+    private TextMeshProUGUI AbilityText;
 
     [HideInInspector] public CustomPiece PromotionTarget;
-
-    private Dictionary<string, string> Descriptions = new Dictionary<string, string>();
 
     void Awake()
     {
@@ -36,25 +35,12 @@ public class UI : MonoBehaviour
 
     private void Start()
     {
-        LoadDescriptions();
+        AbilityText = AbilityButton.GetComponentsInChildren<TextMeshProUGUI>()[1];
     }
 
     void UpdateText()
     {
         TurnText.text = Game.M.Turn;
-    }
-
-    void LoadDescriptions()
-    {
-        TextAsset data = Resources.Load<TextAsset>("Descriptions");
-
-        string[] lines = data.text.Split('\n');
-
-        for (int i = 1; i < lines.Length; i++)
-        {
-            string[] cells = lines[i].Split(',');
-            Descriptions.Add(cells[0], cells[1]);
-        }
     }
 
     public void TogglePromoPanel(bool toggle)
@@ -73,19 +59,31 @@ public class UI : MonoBehaviour
         PromoImage.color = new Color(1, 1, 1, 1);
 
         PromoTexts[0].text = Type;
-        PromoTexts[1].text = Descriptions[Type];
+        PromoTexts[1].text = AbilityManager.M.Descriptions[Type];
 
         ConfirmButton.onClick.RemoveAllListeners();
         ConfirmButton.onClick.AddListener(() => PromotionTarget.Promote(Type));
         ConfirmButton.onClick.AddListener(() => TogglePromoPanel(false));
     }
 
-    public void ToggleAbilityButton(UnityEngine.Events.UnityAction call)
+    public void ToggleAbilityButton(UnityEngine.Events.UnityAction call, CustomPiece piece)
     {
         AbilityButton.gameObject.SetActive(true);
         AbilityButton.onClick.RemoveAllListeners();
         AbilityButton.onClick.AddListener(call);
         AbilityButton.onClick.AddListener(() => ToggleAbilityButton());
+
+        if (AbilityManager.M.Abilities[piece.Type].Item1.Name == piece.Ability)
+        {
+            AbilityButton.GetComponentInChildren<TextMeshProUGUI>().text = AbilityManager.M.Abilities[piece.Type].Item1.Name;
+            AbilityText.text = AbilityManager.M.Abilities[piece.Type].Item1.Description;
+        }
+        else
+        {
+            AbilityButton.GetComponentInChildren<TextMeshProUGUI>().text = AbilityManager.M.Abilities[piece.Type].Item2.Name;
+            AbilityText.text = AbilityManager.M.Abilities[piece.Type].Item2.Description;
+        }
+
     }
     public void ToggleAbilityButton()
     {

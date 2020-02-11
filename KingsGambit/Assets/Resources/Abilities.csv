@@ -1,0 +1,12 @@
+Piece,Ability,Lore Description,Ability Description
+Pawn,Caution,New recruits are hesitant and scared relying on fight or flight instincts to help them power through which can make them more dangerous but vulnerable to ambush,Pawns can move forward and backward one space and can also attack diagonally but are always VULNERABLE.
+Pawn,Focus,Veteran soldiers are battle-hardened determined to carry out their orders. They remain focused on their course and fight anything in their way.,Pawns can only move and attack 1 space forward but are never vulnerable.
+Rook,Shielded,A shield wall can be a strong defence on a battlefield; a shielded Rook just might be the strongest.,Rooks have lowered movement range and cannot attack but are INVINCIBLE.
+Rook,Reckless,Soldiers willing to fight against the odds and make necessary sacrifices are sometimes the key to victory.,Rooks INJURE a random surround enemy and themselves when attacking.
+Knight,Combat Medic,Having the sharpest swords and strongest armours can win the battle but having the best medics to keep soldiers on their feet can win the war.,If a Knight moves to a tile where a piece was taken they REVIVE the last piece taken there
+Knight,Charge,Send in the cavalry to thin the herd of enemy troops and make room for the power of your Kingdom to dominate.,When Knights move they INJURE any enemy Pawns in their movement path.
+Bishop,Blast,A fight to the death isn't always the answer. Use your divine inspiration to deal damage from afar.,Bishops can INJURE an enemy instead of attacking them.
+Bishop,AC (Bishop),Your learnt power is always calling back to its source. You have an Arcane Connection to your Queen who taught you the ways of the Arcane Arts.,Arcane Connection (AC): Bishops can warp and swap positions with their Queen.
+Queen,Deploy,During a battle its up to the leaders to see the bigger picture and direct the troops to the most effective positions. This responsibility is left to the Queen.,The Queen can send a nearby ally to a position in her path instead of moving herself.
+Queen,AC (Queen),You always feel the power you granted others calling back to you. You have an Arcane Connection to your Bishops who you taught the ways of the Arcane Arts.,Arcane Connection (AC): The Queen can warp and swap positions with one of her Bishops.
+King,For The King,A rousing speech from a righteous King can be enough to inspire a soldier to reach new levels of power.,The King can make a Pawn invincible and promoted for 1 turn which then returns to a Pawn in the next turn.

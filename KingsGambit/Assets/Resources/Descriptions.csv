@@ -1,5 +1,6 @@
 Piece,Description
-Rook,Rook can move any number of vacant squares vertically or horizontally. It also is moved while castling.
-Bishop,Bishop can move any number of vacant squares in any diagonal direction.
-Knight,Knight can move one square along any rank or file and then at an angle. The knight's movement can also be viewed as an "L" or "7" laid out at any horizontal or vertical angle.
-Queen,Queen can move any number of vacant squares diagonally horizontally or vertically.
+Pawn,Pawns can move forward one square if that square is unoccupied. They can also capture an enemy piece diagonally forward
+Rook,Rook can move any number of unoccupied squares vertically or horizontally. It also is moved while castling.
+Bishop,Bishop can move any number of unoccupied squares in any diagonal direction.
+Knight,Knight can move one square along any rank or file and then 2 squares at an angle.
+Queen,Queen can move any number of unoccupied squares diagonally horizontally or vertically.

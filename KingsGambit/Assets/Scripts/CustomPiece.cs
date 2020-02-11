@@ -15,6 +15,10 @@ public class CustomPiece : Piece
 
         Side = names[0];
         Type = names[1];
+        name = Side + " " + Type;
+
+        if(AbilityManager.M && AbilityManager.M.Selected.ContainsKey(name))
+            Ability = AbilityManager.M.Selected[name];
 
         EPTake = true;
         FirstMove = true;
@@ -117,6 +121,7 @@ public class CustomPiece : Piece
     public void Move()
     {
         Highlight(false);
+        UI.M.ToggleAbilityButton();
 
         OnMove();
         Castle();
@@ -248,7 +253,7 @@ public class CustomPiece : Piece
                         if (Offset(PosY, 1) != PosY)
                             CheckMoveAttack(PosX, Offset(PosY, 1));
 
-                        if (Path.Contains(Tiles[PosX, Offset(PosY, 1)]))
+                        if (Path.Contains(Tiles[PosX, Offset(PosY, 1)]) && !Tiles[PosX, Offset(PosY, 1)].Occupier)
                             if (Offset(PosY, 2) != PosY)
                                 CheckMoveAttack(PosX, Offset(PosY, 2));
                     }
@@ -384,7 +389,7 @@ public class CustomPiece : Piece
                 case "Blast":
                     base.Bishop();
                     break;
-                case "Arcane Connection":
+                case "AC (Bishop)":
                     base.Bishop();
                     break;
             }
@@ -401,7 +406,7 @@ public class CustomPiece : Piece
             case "Deploy":
                 base.Queen();
                 break;
-            case "Arcane Connection":
+            case "AC (Queen)":
                 base.Queen();
                 break;
         }
@@ -415,7 +420,8 @@ public class CustomPiece : Piece
         {
             switch (Ability)
             {
-                case "Endurance":
+                case "For The King":
+                    base.King();
                     break;
             }
         }
@@ -440,10 +446,10 @@ public class CustomPiece : Piece
                 {
                     case "Blast":
                         Game.M.NeedPos = false;
-                        UI.M.ToggleAbilityButton(() => GetTargetPiece("In Path"));
+                        UI.M.ToggleAbilityButton(() => GetTargetPiece("In Path"), this);
                         break;
-                    case "Arcane Connection":
-                        UI.M.ToggleAbilityButton(() => ACBishop());
+                    case "AC (Bishop)":
+                        UI.M.ToggleAbilityButton(() => ACBishop(), this);
                         break;
                 }
                 return true;
@@ -452,17 +458,20 @@ public class CustomPiece : Piece
                 {
                     case "Deploy":
                         Game.M.NeedPos = true;
-                        UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"));
+                        UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"), this);
                         break;
-                    case "Arcane Connection":
+                    case "AC (Queen)":
                         Game.M.NeedPos = false;
-                        UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"));
+                        UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"), this);
                         break;
                 }
                 return true;
             case "King":
-                Game.M.NeedPos = false;
-                UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"));
+                if(Ability == "For The King")
+                {
+                    Game.M.NeedPos = false;
+                    UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"), this);
+                }
                 return true;
         }
 
@@ -546,7 +555,7 @@ public class CustomPiece : Piece
                     case "Blast":
                         Attack();
                         break;
-                    case "Arcane Connection":
+                    case "AC (Bishop)":
                         Attack();
                         break;
                 }
@@ -718,7 +727,7 @@ public class CustomPiece : Piece
                     case "Blast":
                         Blast();
                         break;
-                    case "Arcane Connection":
+                    case "AC (Bishop)":
                         break;
                 }
 
@@ -729,7 +738,7 @@ public class CustomPiece : Piece
                     case "Deploy":
                         Deploy();
                         break;
-                    case "Arcane Connection":
+                    case "AC (Queen)":
                         ACQueen();
                         break;
                 }
@@ -789,7 +798,7 @@ public class CustomPiece : Piece
                         else
                             return "Target Is Not An Enemy";
 
-                    case "Arcane Connection":
+                    case "AC (Bishop)":
                         break;
                 }
 
@@ -803,7 +812,7 @@ public class CustomPiece : Piece
                         else
                             return "Too Far Away";
 
-                    case "Arcane Connection":
+                    case "AC (Queen)":
 
                         if (target.Side == Side)
                         {
