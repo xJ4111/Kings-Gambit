@@ -35,6 +35,9 @@ public class Game : MonoBehaviour
 
         public static CustomPiece FTKTarget;
         public static int FTKRound;
+
+        public static int DefencePower;
+        public static int InvasionPower;
     }
 
     public static class Black
@@ -45,6 +48,9 @@ public class Game : MonoBehaviour
 
         public static CustomPiece FTKTarget;
         public static int FTKRound;
+
+        public static int DefencePower;
+        public static int InvasionPower;
     }
 
     [Header("Game State")]
@@ -60,7 +66,6 @@ public class Game : MonoBehaviour
     private int blackSideCount;
 
     public Dictionary<Tile, CustomPiece> EPTiles = new Dictionary<Tile, CustomPiece>();
-
     public Animation CamPivotAnim;
 
     private void Awake()
@@ -123,6 +128,9 @@ public class Game : MonoBehaviour
     IEnumerator Initialise()
     {
         yield return new WaitForEndOfFrame();
+
+        White.All.Clear();
+        Black.All.Clear();
 
         foreach (CustomPiece p in AllPieces)
         {
@@ -275,6 +283,8 @@ public class Game : MonoBehaviour
                 }
             }
         }
+
+        InvasionCheck();
     }
     #endregion
 
@@ -282,6 +292,7 @@ public class Game : MonoBehaviour
     void CheckStatus(CustomPiece King)
     {
         List<CustomPiece> Enemies = new List<CustomPiece>();
+        string enemy = "";
         King.Checker = null;
         InCheck = false;
         CheckCount = 0;
@@ -290,9 +301,11 @@ public class Game : MonoBehaviour
         switch (King.Side)
         {
             case "White":
+                enemy = "Black";
                 Enemies = Black.All;
                 break;
             case "Black":
+                enemy = "White";
                 Enemies = White.All;
                 break;
         }
@@ -346,18 +359,51 @@ public class Game : MonoBehaviour
             }
         }
 
-        CheckBlockable = CheckCount <= 1;
-
-        if(InCheck && CheckBlockable)
+        if(InCheck)
         {
             AttackPath = King.Checker.LineOfSight(King);
         }
 
         King.CheckPath();
 
-        if(InCheck && !CheckBlockable && King.Path.Count == 0)
+        if(InCheck && King.Path.Count == 0)
         {
-            Debug.Log("CHECKMATE!");
+            BlockCheck(King);
+
+            if(!CheckBlockable)
+            {
+                Debug.Log("Checkmate");
+                UI.M.GameOver(enemy, King.Side, "Checkmate");
+            }
+            else
+            {
+                Debug.Log("Blockable");
+            }
+        }
+    }
+
+    void BlockCheck(CustomPiece King)
+    {
+        CheckBlockable = false;
+        List<CustomPiece> temp = null;
+
+        switch (King.Side)
+        {
+            case "White":
+                temp = White.All;
+                break;
+            case "Black":
+                temp = Black.All;
+                break;
+        }
+
+        foreach(CustomPiece p in temp)
+        {
+            foreach(Tile t in p.Path)
+            {
+                if (AttackPath.Contains(t))
+                    CheckBlockable = true;
+            }
         }
     }
     #endregion
@@ -413,6 +459,7 @@ public class Game : MonoBehaviour
 
     #endregion
 
+    #region Game State Checks
     void FTKState()
     {
         if(White.FTKTarget)
@@ -433,6 +480,46 @@ public class Game : MonoBehaviour
                 Black.FTKTarget = null;
             }
         }
-
     }
+
+    void InvasionCheck()
+    {
+        White.DefencePower = 0;
+        White.InvasionPower = 0;
+
+        foreach (CustomPiece p in White.All)
+        {
+            if (p.Type != "Pawn")
+            {
+                if (p.PosY >= 4)
+                    White.DefencePower++;
+                else
+                    White.InvasionPower++;
+            }
+        }
+
+        Black.DefencePower = 0;
+        Black.InvasionPower = 0;
+
+        foreach (CustomPiece p in Black.All)
+        {
+            if (p.Type != "Pawn")
+            {
+                if (p.PosY <= 3)
+                    Black.DefencePower++;
+                else
+                    Black.InvasionPower++;
+            }
+        }
+
+        Debug.Log("White: " + White.DefencePower + " : " + White.InvasionPower);
+        Debug.Log("Black: " + Black.DefencePower + " : " + Black.InvasionPower);
+
+        if (White.InvasionPower > Black.DefencePower)
+            UI.M.GameOver("White", "Black", "Invasion");
+
+        if (Black.InvasionPower > White.DefencePower)
+            UI.M.GameOver("Black", "White", "Invasion");
+    }
+    #endregion
 }

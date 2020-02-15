@@ -85,7 +85,7 @@ public class CustomPiece : Piece
 
             OnClick();
 
-            if (Input.GetMouseButtonDown(1) && (OnClick() || activeTiles > 0))
+            if (Input.GetMouseButtonDown(1) && (OnClick() || Path.Count > 0))
             {
                 Game.M.Selected = this;
             }
@@ -147,10 +147,18 @@ public class CustomPiece : Piece
                 {
                     if (t.Occupier)
                     {
-                        if (AllyKing.Checker && t.Occupier == AllyKing.Checker)
+                        if(Type != "King")
+                        {
+                            if (AllyKing.Checker && t.Occupier == AllyKing.Checker)
+                                t.l.enabled = b;
+                            else if (!t.Occupier.Invincible)
+                                t.l.enabled = b;
+                        }
+                        else
+                        {
                             t.l.enabled = b;
-                        else if(!t.Occupier.Invincible)
-                            t.l.enabled = b;
+                        }
+
                     }
                     else
                         t.l.enabled = b;
@@ -467,7 +475,7 @@ public class CustomPiece : Piece
                 }
                 return true;
             case "King":
-                if(Ability == "For The King")
+                if(Ability == "For The King" && !FTKUsed)
                 {
                     Game.M.NeedPos = false;
                     UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"), this);
@@ -891,23 +899,26 @@ public class CustomPiece : Piece
 
     void ForTheKing()
     {
-        UI.M.PromotionTarget = Game.M.AbilityTarget;
-        UI.M.TogglePromoPanel(true);
-        Game.M.AbilityTarget.Invincible = true;
-
-        switch (Side)
+        if(!FTKUsed)
         {
-            case "White":
-                Game.White.FTKTarget = Game.M.AbilityTarget;
-                Game.White.FTKRound = Game.M.RoundCount;
-                break;
-            case "Black":
-                Game.Black.FTKTarget = Game.M.AbilityTarget;
-                Game.Black.FTKRound = Game.M.RoundCount;
-                break;
-        }
+            UI.M.PromotionTarget = Game.M.AbilityTarget;
+            UI.M.TogglePromoPanel(true);
+            Game.M.AbilityTarget.Invincible = true;
 
-        FTKUsed = true;
+            switch (Side)
+            {
+                case "White":
+                    Game.White.FTKTarget = Game.M.AbilityTarget;
+                    Game.White.FTKRound = Game.M.RoundCount;
+                    break;
+                case "Black":
+                    Game.Black.FTKTarget = Game.M.AbilityTarget;
+                    Game.Black.FTKRound = Game.M.RoundCount;
+                    break;
+            }
+
+            FTKUsed = true;
+        }
     }
 
     #endregion

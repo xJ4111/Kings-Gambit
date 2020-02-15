@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UI : MonoBehaviour
 {
@@ -21,6 +22,11 @@ public class UI : MonoBehaviour
 
     [HideInInspector] public CustomPiece PromotionTarget;
 
+    [Header("Game State")]
+    public GameObject GameOverPanel;
+    private TextMeshProUGUI[] GOTexts;
+    private Button[] GOButtons;
+
     void Awake()
     {
         if (M == null)
@@ -36,6 +42,8 @@ public class UI : MonoBehaviour
     private void Start()
     {
         AbilityText = AbilityButton.GetComponentsInChildren<TextMeshProUGUI>()[1];
+        GOTexts = GameOverPanel.GetComponentsInChildren<TextMeshProUGUI>();
+        GOButtons = GameOverPanel.GetComponentsInChildren<Button>();
     }
 
     void UpdateText()
@@ -88,5 +96,26 @@ public class UI : MonoBehaviour
     public void ToggleAbilityButton()
     {
         AbilityButton.gameObject.SetActive(false);
+    }
+
+    public void GameOver(string winner, string loser, string method)
+    {
+        GameOverPanel.SetActive(true);
+
+        switch (method)
+        {
+            case "Checkmate":
+                GOTexts[1].text = winner + " Won By " + method;
+                GOTexts[2].text = loser + "'s King was being attacked by a " + winner + " piece and had no move to escape the check and the check could not be blocked. " + winner + " won by " + method + ".";
+                break;
+            case "Invasion":
+                GOTexts[1].text = winner + " Won By " + method;
+                GOTexts[2].text = winner + " had more power pieces on " + loser + "'s side of the field than vice versa. " + winner + " Wins By " + method + ".";
+                break;
+        }
+
+        GOButtons[0].onClick.AddListener(() => SceneManager.LoadScene("PlayScene"));
+        GOButtons[1].onClick.AddListener(() => SceneManager.LoadScene("AbilityScene"));
+        GOButtons[2].onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
     }
 }

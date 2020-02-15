@@ -153,9 +153,8 @@ public class Piece : MonoBehaviour
     {
         CanBlock = false;
 
-        if (Game.M.InCheck && Game.M.CheckBlockable)
+        if (Game.M.InCheck)
         {
-
             foreach (Tile t in Game.M.AttackPath)
             {
                 if (Path.Contains(t))
@@ -180,7 +179,6 @@ public class Piece : MonoBehaviour
                     }
                 }
             }
-
 
             if (CanBlock)
             {
@@ -369,7 +367,6 @@ public class Piece : MonoBehaviour
                         PawnAttackTiles.Add(Tiles[x, y]);
 
                     Path.Add(Tiles[x, y]);
-                    activeTiles++;
                 }
                 else if (Tiles[x, y].Occupier.Side == Side)
                 {
@@ -393,7 +390,6 @@ public class Piece : MonoBehaviour
                         PawnAttackTiles.Add(Tiles[x, y]);
 
                     Path.Add(Tiles[x, y]);
-                    activeTiles++;
                 }
                 else if (Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side == Side)
                 {
@@ -412,7 +408,6 @@ public class Piece : MonoBehaviour
                 if ((Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side != Side && !Tiles[x, y].Occupier.Invincible) || !Tiles[x, y].Occupier)
                 {
                     PawnAttackTiles.Add(Tiles[x, y]);
-                    activeTiles++;
                 }
                 else if (Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side == Side)
                 {
