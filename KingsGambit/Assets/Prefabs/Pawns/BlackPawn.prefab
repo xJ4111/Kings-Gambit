@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6419565998382486}
   - component: {fileID: -3120920578550015782}
   - component: {fileID: 7628267584367308005}
-  - component: {fileID: 2073465824247431643}
+  - component: {fileID: -2342992904653315472}
   m_Layer: 0
   m_Name: BlackPawn
   m_TagString: Piece
@@ -60,11 +60,15 @@ MonoBehaviour:
   FirstMove: 1
   CancelEP: 0
   hit: 00000000
+  Invincible: 0
+  Injured: 0
+  RoundInjured: 0
   PawnAttackTiles: []
-  EPTargets: []
   Vulnerable: 1
   EPTake: 0
+  AllyKing: {fileID: 0}
   Checker: {fileID: 0}
+  FTKUsed: 0
   Ability: 
 --- !u!54 &7628267584367308005
 Rigidbody:
@@ -82,7 +86,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!65 &2073465824247431643
+--- !u!65 &-2342992904653315472
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,8 +97,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.4743857, z: 1}
-  m_Center: {x: -0, y: 0.76280713, z: -0}
+  m_Size: {x: 2, y: 1, z: 2}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1001 &5925978706242498245
 PrefabInstance:
   m_ObjectHideFlags: 0

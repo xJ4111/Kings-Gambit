@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6419565998382486}
   - component: {fileID: 333962079025337702}
   - component: {fileID: 2718338990411231136}
-  - component: {fileID: 8738646196415930213}
+  - component: {fileID: 542973326411886264}
   m_Layer: 0
   m_Name: WhitePawn
   m_TagString: Piece
@@ -64,10 +64,11 @@ MonoBehaviour:
   Injured: 0
   RoundInjured: 0
   PawnAttackTiles: []
-  EPTargets: []
   Vulnerable: 1
   EPTake: 0
+  AllyKing: {fileID: 0}
   Checker: {fileID: 0}
+  FTKUsed: 0
   Ability: 
 --- !u!54 &2718338990411231136
 Rigidbody:
@@ -85,7 +86,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!65 &8738646196415930213
+--- !u!65 &542973326411886264
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -96,8 +97,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.4743857, z: 1}
-  m_Center: {x: -0, y: 0.76280713, z: -0}
+  m_Size: {x: 2, y: 1, z: 2}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1001 &8511222370595793988
 PrefabInstance:
   m_ObjectHideFlags: 0

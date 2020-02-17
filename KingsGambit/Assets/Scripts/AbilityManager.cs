@@ -22,28 +22,7 @@ public class AbilityManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public Dictionary<string, string> Descriptions = new Dictionary<string, string>();
-    public Dictionary<string, System.Tuple<Ability, Ability>> Abilities = new Dictionary<string, System.Tuple<Ability, Ability>>();
     public Dictionary<string, string> Selected = new Dictionary<string, string>();
-
-    public class Ability
-    {
-        public string Name;
-        public string Lore;
-        public string Description;
-
-        public Ability()
-        {
-
-        }
-
-        public Ability(string n, string l, string d)
-        {
-            Name = n;
-            Lore = l; 
-            Description = d;
-        }
-    }
 
     [Header("UI")]
     public TextMeshProUGUI Title;
@@ -76,9 +55,10 @@ public class AbilityManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        LoadDescriptions();
-        LoadAbilitiesCSV();
+        StartCoroutine(SceneLoader.M.FadeOut());
         Setup();
+
+        Abilities.Load();
 
         LoadPage(0);
     }
@@ -122,41 +102,6 @@ public class AbilityManager : MonoBehaviour
         }
 
 
-    }
-
-    void LoadDescriptions()
-    {
-        TextAsset data = Resources.Load<TextAsset>("Descriptions");
-
-        string[] lines = data.text.Split('\n');
-
-        for (int i = 1; i < lines.Length; i++)
-        {
-            string[] cells = lines[i].Split(',');
-            Descriptions.Add(cells[0], cells[1]);
-        }
-    }
-
-    void LoadAbilitiesCSV()
-    {
-        TextAsset file = Resources.Load<TextAsset>("Abilities");
-        string[] lines = file.text.Split('\n');
-
-        for(int i = 1; i < lines.Length - 1; i++)
-        {
-            string[] cells = lines[i].Split(',');
-
-            if (!Abilities.ContainsKey(cells[0]))
-            {
-                Abilities.Add(cells[0], new System.Tuple<Ability, Ability>(new Ability(cells[1], cells[2], cells[3]), new Ability()));
-            }
-            else
-            {
-                Ability temp = Abilities[cells[0]].Item1;
-                Abilities[cells[0]] = new System.Tuple<Ability, Ability>(temp, new Ability(cells[1], cells[2], cells[3]));
-            }
-
-        }
     }
 
     void LoadPage(int pageNum)
@@ -262,23 +207,23 @@ public class AbilityManager : MonoBehaviour
 
         Current.text = piece;
         if (Selected.ContainsKey(side + " " + piece))
-            Normal.text = Descriptions[piece] + "\n\nAbility: " + Selected[side + " " + piece];
+            Normal.text = Abilities.Movements[piece] + "\n\nAbility: " + Selected[side + " " + piece];
         else
-            Normal.text = Descriptions[piece] + "\n\nNo Ability Selected";
+            Normal.text = Abilities.Movements[piece] + "\n\nNo Ability Selected";
 
         ab1button.onClick.RemoveAllListeners();
-        ab1button.onClick.AddListener(() => SetSelected(side + " " + piece, Abilities[piece].Item1.Name));
+        ab1button.onClick.AddListener(() => SetSelected(side + " " + piece, Abilities.AllAbilities[piece].Item1.Name));
         ab1button.onClick.AddListener(() => LoadPage(pageNum));
 
-        ab1name.text = Abilities[piece].Item1.Name;
-        ab1text.text = "''" + Abilities[piece].Item1.Lore + "''" + "\n\n" + Abilities[piece].Item1.Description;
+        ab1name.text = Abilities.AllAbilities[piece].Item1.Name;
+        ab1text.text = "''" + Abilities.AllAbilities[piece].Item1.Lore + "''" + "\n\n" + Abilities.AllAbilities[piece].Item1.Description;
 
         ab2button.onClick.RemoveAllListeners();
-        ab2button.onClick.AddListener(() => SetSelected(side + " " + piece, Abilities[piece].Item2.Name));
+        ab2button.onClick.AddListener(() => SetSelected(side + " " + piece, Abilities.AllAbilities[piece].Item2.Name));
         ab2button.onClick.AddListener(() => LoadPage(pageNum));
 
-        ab2name.text = Abilities[piece].Item2.Name;
-        ab2text.text = "''" + Abilities[piece].Item2.Lore + "''" + "\n\n" + Abilities[piece].Item2.Description;
+        ab2name.text = Abilities.AllAbilities[piece].Item2.Name;
+        ab2text.text = "''" + Abilities.AllAbilities[piece].Item2.Lore + "''" + "\n\n" + Abilities.AllAbilities[piece].Item2.Description;
 
         next.GetComponentInChildren<TextMeshProUGUI>().text = "Next";
         next.onClick.RemoveAllListeners();
@@ -312,7 +257,7 @@ public class AbilityManager : MonoBehaviour
             Button b1 = slot.GetComponentsInChildren<Button>()[0];
             Button b2 = slot.GetComponentsInChildren<Button>()[1];
 
-            System.Tuple<Ability, Ability> temp = Abilities[t1.text];
+            System.Tuple<Abilities.Ability, Abilities.Ability> temp = Abilities.AllAbilities[t1.text];
 
             if (Selected[side + " " + t1.text] != "")
                 t2.text = Selected[side + " " + t1.text];
@@ -356,7 +301,7 @@ public class AbilityManager : MonoBehaviour
             Button b1 = FinalizeSlots[i].GetComponentsInChildren<Button>()[0];
             Button b2 = FinalizeSlots[i].GetComponentsInChildren<Button>()[1];
 
-            System.Tuple<Ability, Ability> temp = Abilities[t1.text];
+            System.Tuple<Abilities.Ability, Abilities.Ability> temp = Abilities.AllAbilities[t1.text];
             string side;
 
             if (i < 5)
@@ -389,6 +334,7 @@ public class AbilityManager : MonoBehaviour
     {
         Selected.Add("White King", "For The King");
         Selected.Add("Black King", "For The King");
-        SceneManager.LoadScene("PlayScene");
+
+        SceneLoader.M.LoadScene("PlayScene");
     }
 }

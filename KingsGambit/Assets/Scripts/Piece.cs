@@ -151,43 +151,46 @@ public class Piece : MonoBehaviour
 
     public void CheckBlock()
     {
-        CanBlock = false;
-
-        if (Game.M.InCheck)
+        if(Type != "King")
         {
-            foreach (Tile t in Game.M.AttackPath)
+            CanBlock = false;
+
+            if (Game.M.InCheck)
             {
-                if (Path.Contains(t))
+                foreach (Tile t in Game.M.AttackPath)
                 {
-                    CanBlock = true;
-                }
-            }
-
-            if (Path.Contains(AllyKing.Checker.Pos))
-                CanBlock = true;
-
-            Tile EPCheckBlock = null;
-
-            foreach(KeyValuePair<Tile, CustomPiece> temp in Game.M.EPTiles)
-            {
-                if(temp.Value == AllyKing.Checker)
-                {
-                    if (Path.Contains(temp.Key))
+                    if (Path.Contains(t))
                     {
                         CanBlock = true;
-                        EPCheckBlock = temp.Key;
                     }
                 }
-            }
 
-            if (CanBlock)
-            {
-                List<Tile> copy = Clone(Path);
-                foreach (Tile t in copy)
+                if (Path.Contains(AllyKing.Checker.Pos))
+                    CanBlock = true;
+
+                Tile EPCheckBlock = null;
+
+                foreach (KeyValuePair<Tile, CustomPiece> temp in Game.M.EPTiles)
                 {
-                    if (!Game.M.AttackPath.Contains(t) && t != AllyKing.Checker.Pos && t != EPCheckBlock)
+                    if (temp.Value == AllyKing.Checker)
                     {
-                        Path.Remove(t);
+                        if (Path.Contains(temp.Key))
+                        {
+                            CanBlock = true;
+                            EPCheckBlock = temp.Key;
+                        }
+                    }
+                }
+
+                if (CanBlock)
+                {
+                    List<Tile> copy = Clone(Path);
+                    foreach (Tile t in copy)
+                    {
+                        if (!Game.M.AttackPath.Contains(t) && t != AllyKing.Checker.Pos && t != EPCheckBlock)
+                        {
+                            Path.Remove(t);
+                        }
                     }
                 }
             }
@@ -682,6 +685,11 @@ public class Piece : MonoBehaviour
 
     protected virtual void King()
     {
+        List<Tile> temp = new List<Tile>();
+
+        if (Checker)
+            temp = Checker.FullPath();
+
         for (int i = -1; i <= 1; i++)
         {
             for (int j = -1; j <= 1; j++)
@@ -689,10 +697,14 @@ public class Piece : MonoBehaviour
                 if (InRange(PosX + i, PosY + j))
                 {
                     Tile t = Grid.M.Tiles[PosX + i, PosY + j];
-                    if (!t.Occupier && t.Safe)
-                        CheckMoveAttack(PosX + i, PosY + j);
-                    else if(t.Occupier && !t.Occupier.Guarded)
-                        CheckMoveAttack(PosX + i, PosY + j);
+
+                    if(!temp.Contains(t))
+                    {
+                        if (!t.Occupier && t.Safe)
+                            CheckMoveAttack(PosX + i, PosY + j);
+                        else if (t.Occupier && !t.Occupier.Guarded)
+                            CheckMoveAttack(PosX + i, PosY + j);
+                    }
                 }
             }
         }

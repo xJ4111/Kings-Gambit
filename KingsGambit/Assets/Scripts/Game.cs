@@ -6,6 +6,20 @@ public class Game : MonoBehaviour
 {
     public static Game M;
 
+    private void Awake()
+    {
+        if (M == null)
+        {
+            M = this;
+        }
+        else if (M != this)
+        {
+            Destroy(this);
+        }
+
+        Turn = "White";
+    }
+
     [Header("Selection")]
     public CustomPiece Selected;
     public Tile TargetTile;
@@ -17,7 +31,6 @@ public class Game : MonoBehaviour
     public bool NeedPos;
     public bool SearchingPos;
     public Tile AbilityPosition;
-
 
     [Header("Turn Management")]
     public string Turn = "White";
@@ -61,26 +74,13 @@ public class Game : MonoBehaviour
     public bool CheckBlockable;
     public List<Tile> AttackPath;
     public GameObject WhiteSide;
-    private int whiteSideCount;
     public GameObject BlackSide;
+
+    private int whiteSideCount;
     private int blackSideCount;
 
     public Dictionary<Tile, CustomPiece> EPTiles = new Dictionary<Tile, CustomPiece>();
     public Animation CamPivotAnim;
-
-    private void Awake()
-    {
-        if (M == null)
-        {
-            M = this;
-        }
-        else if (M != this)
-        {
-            Destroy(this);
-        }
-
-        Turn = "White";
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -110,10 +110,9 @@ public class Game : MonoBehaviour
             {
                 Selected.UseAbility();
             }
-
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             if (Selected)
                 Selected.Unselect();
@@ -184,16 +183,17 @@ public class Game : MonoBehaviour
 
         CameraFlip();
 
-        UI.M.TurnText.text = Turn + "'s Turn";
-
         CalcMovePaths();
+
+        UI.M.UpdateTurn();
     }
 
     public void Clear()
     {
-        Selected = null;
-        TargetTile = null;
+        if(Selected)
+            Selected.Unselect();
 
+        TargetTile = null;
         AbilityTarget = null;
         AbilityPosition = null;
         NeedPos = false;
@@ -259,6 +259,7 @@ public class Game : MonoBehaviour
             CheckStatus(White.King);
             White.King.CheckCastling();
         }
+
         if (Turn == "Black")
         {
             CheckStatus(Black.King);
@@ -511,9 +512,6 @@ public class Game : MonoBehaviour
                     Black.InvasionPower++;
             }
         }
-
-        Debug.Log("White: " + White.DefencePower + " : " + White.InvasionPower);
-        Debug.Log("Black: " + Black.DefencePower + " : " + Black.InvasionPower);
 
         if (White.InvasionPower > Black.DefencePower)
             UI.M.GameOver("White", "Black", "Invasion");

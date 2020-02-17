@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9064197247844633421}
   - component: {fileID: 2985027371087269377}
   - component: {fileID: 1441641315451238974}
-  - component: {fileID: 6997151256058140416}
+  - component: {fileID: 8664191734445745708}
   m_Layer: 0
   m_Name: White Rook
   m_TagString: Piece
@@ -50,14 +50,25 @@ MonoBehaviour:
   Type: 
   Path: []
   Potential: []
-  PawnAttackTiles: []
+  Pinned: 0
   Guarded: 0
   CanBlock: 0
   Pos: {fileID: 0}
-  posX: 0
-  posY: 0
+  PosX: 0
+  PosY: 0
   activeTiles: 0
+  FirstMove: 1
+  CancelEP: 0
   hit: 00000000
+  Invincible: 0
+  Injured: 0
+  RoundInjured: 0
+  PawnAttackTiles: []
+  Vulnerable: 1
+  EPTake: 0
+  AllyKing: {fileID: 0}
+  Checker: {fileID: 0}
+  FTKUsed: 0
   Ability: 
 --- !u!54 &1441641315451238974
 Rigidbody:
@@ -75,7 +86,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!65 &6997151256058140416
+--- !u!65 &8664191734445745708
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,8 +97,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.4743857, z: 1}
-  m_Center: {x: -0, y: 0.76280713, z: -0}
+  m_Size: {x: 2, y: 1, z: 2}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1001 &2888441082284513958
 PrefabInstance:
   m_ObjectHideFlags: 0

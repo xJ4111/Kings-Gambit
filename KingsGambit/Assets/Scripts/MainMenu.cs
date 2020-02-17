@@ -13,6 +13,8 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(SceneLoader.M.FadeOut());
+
         bFront = Pages[0].GetComponentsInChildren<Button>();
         tFront = Pages[0].GetComponentsInChildren<TextMeshProUGUI>();
 
@@ -58,8 +60,8 @@ public class MainMenu : MonoBehaviour
         foreach (Button b in bPlay)
             b.onClick.RemoveAllListeners();
 
-        bPlay[0].onClick.AddListener(() => SceneManager.LoadScene("AbilityScene"));
-        bPlay[1].onClick.AddListener(() => SceneManager.LoadScene("PlayScene"));
+        bPlay[0].onClick.AddListener(() => SceneLoader.M.LoadScene("AbilityScene"));
+        bPlay[1].onClick.AddListener(() => SceneLoader.M.LoadScene("PlayScene"));
         bPlay[2].onClick.AddListener(() => TogglePage(0));
     }
 

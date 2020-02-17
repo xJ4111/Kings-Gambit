@@ -47,82 +47,106 @@ public class CustomPiece : Piece
         }
     }
 
+    private void OnMouseEnter()
+    {
+        if (CanSelect())
+        {
+            UI.M.Selected(this);
+        }
+    }
+
     protected void OnMouseOver()
     {
-        if(!UI.M.PromoPanel.activeSelf)
+        if (CanSelect())
         {
+            ShowPath();
             Selection();
-            Targeting();
         }
+
+        Targeting();
     }
 
     protected void OnMouseExit()
     {
-        if (!Game.M.Selected)
+        if (CanSelect())
         {
             Highlight(false);
-            UI.M.ToggleAbilityButton();
+            UI.M.UnSelected();
 
             for (int i = 0; i < 4; i++)
                 hit[i] = false;
         }
     }
-    
-    void Selection()
+
+    bool CanSelect()
     {
-        if (Game.M.Turn == Side && !Game.M.Selected)
+        return !UI.M.PromoPanel.activeSelf && !UI.M.InGameMenuPanel.activeSelf && !Game.M.SearchingPiece && !Game.M.Selected && !Game.M.CamPivotAnim.isPlaying;
+    }
+
+    void ShowPath()
+    {
+        if (Game.M.Turn == Side)
         {
-            if (!Game.M.InCheck)
-                Highlight(true);
-            else if (Game.M.InCheck)
+            if (Game.M.InCheck)
             {
                 CheckBlock();
 
-                if(Type == "King" || CanBlock)
+                if (Type == "King" || CanBlock)
                     Highlight(true);
             }
-
-
-            OnClick();
-
-            if (Input.GetMouseButtonDown(1) && (OnClick() || Path.Count > 0))
+            else
             {
-                Game.M.Selected = this;
+                Highlight(true);
+            }
+        }
+    }
+
+    void Selection()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (Game.M.Turn == Side)
+            {
+                if ((OnClick() || Path.Count > 0))
+                    Game.M.Selected = this;
+                else
+                    UI.M.Tooltip("Piece cant make a move/use an ability");
+            }
+            else if (Game.M.Turn != Side)
+            {
+                UI.M.Tooltip("Cannot Select, Not " + Side + "'s Turn");
             }
         }
     }
 
     void Targeting()
     {
-        if (Game.M.Selected && Game.M.Selected != this)
+        if (Input.GetMouseButtonDown(0))
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Game.M.Selected && Game.M.Selected != this)
             {
-                if(Tiles[PosX, PosY].l.enabled)
+                if (Tiles[PosX, PosY].l.enabled)
                     Game.M.TargetTile = Tiles[PosX, PosY];
 
                 if (Game.M.SearchingPiece)
                 {
-                    if(Game.M.Selected.TargetValid(this) == "Valid")
+                    if (Game.M.Selected.TargetValid(this) == "Valid")
                     {
                         Game.M.AbilityTarget = this;
                         GetTargetPosition();
                     }
                     else
                     {
-                        Debug.Log(Game.M.Selected.TargetValid(this));
+                        UI.M.Tooltip(Game.M.Selected.TargetValid(this));
                     }
                 }
             }
         }
-
     }
 
     public void Move()
     {
         Highlight(false);
-        UI.M.ToggleAbilityButton();
-
         OnMove();
         Castle();
 
@@ -154,7 +178,7 @@ public class CustomPiece : Piece
                             else if (!t.Occupier.Invincible)
                                 t.l.enabled = b;
                         }
-                        else
+                        else if(Type == "King")
                         {
                             t.l.enabled = b;
                         }
@@ -210,7 +234,7 @@ public class CustomPiece : Piece
     {
         Highlight(false);
         Game.M.Selected = null;
-        UI.M.ToggleAbilityButton();
+        UI.M.UnSelected();
     }
 
     #region Abilities
@@ -439,7 +463,7 @@ public class CustomPiece : Piece
 
     #region Effects
 
-    bool OnClick()
+    public bool OnClick()
     {
         switch (Type)
         {
@@ -455,32 +479,33 @@ public class CustomPiece : Piece
                     case "Blast":
                         Game.M.NeedPos = false;
                         UI.M.ToggleAbilityButton(() => GetTargetPiece("In Path"), this);
-                        break;
+                        return Path.Count > 0;
                     case "AC (Bishop)":
                         UI.M.ToggleAbilityButton(() => ACBishop(), this);
-                        break;
+                        return true;
                 }
-                return true;
+                return false;
             case "Queen":
                 switch (Ability)
                 {
                     case "Deploy":
                         Game.M.NeedPos = true;
                         UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"), this);
-                        break;
+                        return Path.Count > 0;
                     case "AC (Queen)":
                         Game.M.NeedPos = false;
                         UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"), this);
-                        break;
+                        return true;
                 }
-                return true;
+                return false;
             case "King":
                 if(Ability == "For The King" && !FTKUsed)
                 {
                     Game.M.NeedPos = false;
                     UI.M.ToggleAbilityButton(() => GetTargetPiece("Any"), this);
+                    return true;
                 }
-                return true;
+                return false;
         }
 
         return false;
@@ -815,10 +840,15 @@ public class CustomPiece : Piece
                 switch (Ability)
                 {
                     case "Deploy":
-                        if (Grid.M.Distance(Pos, target.Pos) == 1)
-                            return "Valid";
+                        if (target.Side == Side)
+                        {
+                            if (Grid.M.Distance(Pos, target.Pos) == 1)
+                                return "Valid";
+                            else
+                                return "Target is Too Far Away";
+                        }
                         else
-                            return "Too Far Away";
+                            return "Target is not an Ally";
 
                     case "AC (Queen)":
 

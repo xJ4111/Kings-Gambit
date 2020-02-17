@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 501729081207419200}
   - component: {fileID: 5931507047206630412}
   - component: {fileID: 8015771324640968755}
-  - component: {fileID: 1884439033892154637}
+  - component: {fileID: 371562566077209458}
   m_Layer: 0
   m_Name: White Bishop
   m_TagString: Piece
@@ -50,14 +50,25 @@ MonoBehaviour:
   Type: 
   Path: []
   Potential: []
-  PawnAttackTiles: []
+  Pinned: 0
   Guarded: 0
   CanBlock: 0
   Pos: {fileID: 0}
-  posX: 0
-  posY: 0
+  PosX: 0
+  PosY: 0
   activeTiles: 0
+  FirstMove: 1
+  CancelEP: 0
   hit: 00000000
+  Invincible: 0
+  Injured: 0
+  RoundInjured: 0
+  PawnAttackTiles: []
+  Vulnerable: 1
+  EPTake: 0
+  AllyKing: {fileID: 0}
+  Checker: {fileID: 0}
+  FTKUsed: 0
   Ability: 
 --- !u!54 &8015771324640968755
 Rigidbody:
@@ -75,7 +86,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!65 &1884439033892154637
+--- !u!65 &371562566077209458
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,8 +97,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.4743857, z: 1}
-  m_Center: {x: -0, y: 0.76280713, z: -0}
+  m_Size: {x: 2, y: 1, z: 2}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1001 &29771649552035555
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -118,7 +129,7 @@ PrefabInstance:
     - target: {fileID: 7464934561894988445, guid: 3503b100c68bfc94584312c3b9aa0d7a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.19
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7464934561894988445, guid: 3503b100c68bfc94584312c3b9aa0d7a,
         type: 3}
