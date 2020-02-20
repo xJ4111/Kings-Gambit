@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2985027371087269377}
   - component: {fileID: 1441641315451238974}
   - component: {fileID: 8664191734445745708}
+  - component: {fileID: 2932682763301997879}
   m_Layer: 0
   m_Name: White Rook
   m_TagString: Piece
@@ -69,6 +70,7 @@ MonoBehaviour:
   AllyKing: {fileID: 0}
   Checker: {fileID: 0}
   FTKUsed: 0
+  MC: {fileID: 0}
   Ability: 
 --- !u!54 &1441641315451238974
 Rigidbody:
@@ -99,6 +101,24 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2, y: 1, z: 2}
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &2932682763301997879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895025803487142845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6464892d2f62fe24d8352c7d2e12ba11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 0}
+  Attack: {fileID: 0}
+  Attacking: 0
+  Moving: 0
+  Reached: 0
+  TargetPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &2888441082284513958
 PrefabInstance:
   m_ObjectHideFlags: 0

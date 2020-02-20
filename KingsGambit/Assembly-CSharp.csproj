@@ -63,16 +63,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Abilities.cs" />
-    <Compile Include="Assets\Scripts\AbilityManager.cs" />
     <Compile Include="Assets\Scripts\CustomPiece.cs" />
-    <Compile Include="Assets\Scripts\Game.cs" />
-    <Compile Include="Assets\Scripts\Grid.cs" />
-    <Compile Include="Assets\Scripts\MainMenu.cs" />
-    <Compile Include="Assets\Scripts\Piece.cs" />
-    <Compile Include="Assets\Scripts\SceneLoader.cs" />
+    <Compile Include="Assets\Scripts\Managers\Game.cs" />
+    <Compile Include="Assets\Scripts\Managers\Grid.cs" />
+    <Compile Include="Assets\Scripts\Managers\UI.cs" />
+    <Compile Include="Assets\Scripts\Movement.cs" />
+    <Compile Include="Assets\Scripts\Scene Controllers\AbilityManager.cs" />
+    <Compile Include="Assets\Scripts\Scene Controllers\MainMenu.cs" />
     <Compile Include="Assets\Scripts\Tile.cs" />
-    <Compile Include="Assets\Scripts\UI.cs" />
+    <Compile Include="Assets\Scripts\Utilities\Abilities.cs" />
+    <Compile Include="Assets\Scripts\Utilities\Piece.cs" />
+    <Compile Include="Assets\Scripts\Utilities\SceneLoader.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />

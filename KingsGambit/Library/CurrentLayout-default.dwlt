@@ -21,7 +21,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 2}
-  m_MinSize: {x: 875, y: 300}
+  m_MinSize: {x: 875, y: 542}
   m_MaxSize: {x: 10000, y: 10000}
   m_Maximized: 1
 --- !u!114 &2
@@ -46,7 +46,7 @@ MonoBehaviour:
     y: 0
     width: 2560
     height: 1357
-  m_MinSize: {x: 875, y: 300}
+  m_MinSize: {x: 875, y: 542}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &3
 MonoBehaviour:
@@ -112,10 +112,10 @@ MonoBehaviour:
     y: 30
     width: 2560
     height: 1307
-  m_MinSize: {x: 838, y: 492}
-  m_MaxSize: {x: 28003, y: 14042}
+  m_MinSize: {x: 841, y: 492}
+  m_MaxSize: {x: 28006, y: 14042}
   vertical: 0
-  controlID: 213
+  controlID: 60
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -137,10 +137,10 @@ MonoBehaviour:
     y: 0
     width: 2010
     height: 1307
-  m_MinSize: {x: 563, y: 492}
-  m_MaxSize: {x: 24003, y: 14042}
+  m_MinSize: {x: 565, y: 492}
+  m_MaxSize: {x: 24005, y: 14042}
   vertical: 1
-  controlID: 107
+  controlID: 61
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -162,10 +162,10 @@ MonoBehaviour:
     y: 0
     width: 2010
     height: 947
-  m_MinSize: {x: 402, y: 221}
-  m_MaxSize: {x: 8002, y: 4021}
+  m_MinSize: {x: 403, y: 221}
+  m_MaxSize: {x: 8003, y: 4021}
   vertical: 0
-  controlID: 108
+  controlID: 62
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -185,8 +185,8 @@ MonoBehaviour:
     y: 0
     width: 400
     height: 947
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
@@ -243,10 +243,10 @@ MonoBehaviour:
     y: 947
     width: 2010
     height: 360
-  m_MinSize: {x: 563, y: 271}
-  m_MaxSize: {x: 24003, y: 10021}
+  m_MinSize: {x: 565, y: 271}
+  m_MaxSize: {x: 24005, y: 10021}
   vertical: 0
-  controlID: 176
+  controlID: 182
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -318,8 +318,8 @@ MonoBehaviour:
     y: 0
     width: 742
     height: 360
-  m_MinSize: {x: 100, y: 100}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 102, y: 121}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 22}
   m_Panes:
   - {fileID: 22}
@@ -345,8 +345,8 @@ MonoBehaviour:
     y: 0
     width: 550
     height: 1307
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 276, y: 71}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 24}
   m_Panes:
   - {fileID: 24}
@@ -418,11 +418,11 @@ MonoBehaviour:
     m_DrawArea:
       serializedVersion: 2
       x: 0
-      y: 21
+      y: 0
       width: 1608
-      height: 905
+      height: 926
     m_Scale: {x: 1, y: 1}
-    m_Translation: {x: 804, y: 452.5}
+    m_Translation: {x: 804, y: 463}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
@@ -430,9 +430,9 @@ MonoBehaviour:
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
       x: -804
-      y: -452.5
+      y: -463
       width: 1608
-      height: 905
+      height: 926
     m_MinimalGUI: 1
   m_defaultScale: 1
   m_LastWindowPixelSize: {x: 1608, y: 926}
@@ -472,21 +472,21 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: a6ceffff72fbfffff4ffffff32340000f83500000c360000
+      m_ExpandedIDs: c0f7ffff8c350000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: Canvas
-        m_OriginalName: Canvas
+        m_Name: 
+        m_OriginalName: 
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 13816
+        m_UserData: 0
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 0
+        m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 8}
       m_SearchString: 
@@ -532,9 +532,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -2.2616847, y: 17.220438, z: -12.592307}
+    m_Target: {x: 6.4566875, y: 2.897695, z: 11.339177}
     speed: 2
-    m_Value: {x: -2.2616847, y: 17.220438, z: -12.592307}
+    m_Value: {x: 6.4566875, y: 2.897695, z: 11.339177}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -580,13 +580,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.36701098, y: 0.11507701, z: -0.032543004, w: 0.92355454}
+    m_Target: {x: -0.27259645, y: 0.29198137, z: -0.100590676, w: -0.912291}
     speed: 2
-    m_Value: {x: 0.36665332, y: 0.114964865, z: -0.03251129, w: 0.9226545}
+    m_Value: {x: -0.2721793, y: 0.2930631, z: -0.100900866, w: -0.91096187}
   m_Size:
     m_Target: 31.985697
     speed: 2
-    m_Value: 31.985697
+    m_Value: 13.823574
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -740,20 +740,20 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/2D Assets/UI Prefabs
+    - Assets/3D Assets/Charachters/Paladin
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/2D Assets/UI Prefabs
+  - Assets/3D Assets/Charachters/Paladin
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\Ezy\Desktop\Kings-Gambit\KingsGambit\KingsGambit
   m_LockTracker:
     m_IsLocked: 1
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 00390000
-    m_LastClickedID: 14592
-    m_ExpandedIDs: 00000000ea380000ec380000f238000000ca9a3b
+    m_SelectedIDs: 2e3d0000
+    m_LastClickedID: 15662
+    m_ExpandedIDs: 00000000ba390000bc390000c2390000da3900002a3d000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -781,7 +781,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000ea380000ec380000
+    m_ExpandedIDs: 00000000ba390000bc390000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -876,20 +876,20 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Resources
+    - Assets/Prefabs/White Specials
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Resources
+  - Assets/Prefabs/White Specials
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\Ezy\Desktop\Kings-Gambit\KingsGambit\KingsGambit
   m_LockTracker:
     m_IsLocked: 1
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 1a390000
-    m_LastClickedID: 14618
-    m_ExpandedIDs: 00000000ea380000ec38000000ca9a3b
+    m_SelectedIDs: e8390000
+    m_LastClickedID: 14824
+    m_ExpandedIDs: 00000000ba390000bc39000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -917,7 +917,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000ea380000ec380000
+    m_ExpandedIDs: 00000000ba390000bc390000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
