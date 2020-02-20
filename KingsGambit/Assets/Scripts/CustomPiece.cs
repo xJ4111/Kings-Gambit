@@ -9,6 +9,8 @@ public class CustomPiece : Piece
     // Start is called before the first frame update
     void Start()
     {
+        MC = GetComponent<Movement>();
+
         Tiles = Grid.M.Tiles;
 
         string[] names = name.Split(' ');
@@ -308,7 +310,7 @@ public class CustomPiece : Piece
         {
             switch (Ability)
             {
-                case "Shield Wall":
+                case "Shielded":
                     Invincible = true;
 
                     for (int i = 1; i < 3; i++)
@@ -342,7 +344,7 @@ public class CustomPiece : Piece
         {
             switch (Ability)
             {
-                case "Shield Wall":
+                case "Shielded":
 
                     if (!hit)
                     {
@@ -372,7 +374,7 @@ public class CustomPiece : Piece
         {
             switch (Ability)
             {
-                case "Shield Wall":
+                case "Shielded":
                     if (!hit)
                     {
                         if (Tiles[PosX, Offset(PosY, i)].Occupier)
@@ -787,6 +789,7 @@ public class CustomPiece : Piece
         }
         else
         {
+            Game.M.Clear();
             Game.M.NextTurn();
         }
     }

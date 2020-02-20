@@ -44,6 +44,9 @@ public class Piece : MonoBehaviour
     public System.Tuple<CustomPiece, List<Tile>> CastleRight;
     public bool FTKUsed = false;
 
+    [Header("Movement Controller")]
+    public Movement MC;
+
     public void SetPos()
     {
         for (int i = 0; i < 8; i++)
@@ -68,13 +71,13 @@ public class Piece : MonoBehaviour
         //Attack
         if (Game.M.TargetTile.Occupier)
         {
-            Game.M.Kill(Game.M.TargetTile.Occupier);
+            MC.Attack = Game.M.TargetTile.Occupier;
         }
 
         //En Passant Attack
         if(Game.M.EPTiles.ContainsKey(Game.M.TargetTile) && Game.M.EPTiles[Game.M.TargetTile].Side != Side)
         {
-            Game.M.Kill(Game.M.EPTiles[Game.M.TargetTile]);
+            MC.Attack = Game.M.EPTiles[Game.M.TargetTile];
         }
     }
 
@@ -341,7 +344,8 @@ public class Piece : MonoBehaviour
     #region Movement Checks
     public void MoveTo(Tile TargetTile)
     {
-        transform.position = TargetTile.transform.position;
+        MC.Target = TargetTile;
+        MC.Move();
         Tiles[PosX, PosY].Exit(this);
         TargetTile.Enter(this);
     }
@@ -394,7 +398,7 @@ public class Piece : MonoBehaviour
 
                     Path.Add(Tiles[x, y]);
                 }
-                else if (Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side == Side)
+                else if (Tiles[x, y].Occupier.Side == Side)
                 {
                     Tiles[x, y].Occupier.Guarded = true;
                 }
@@ -412,7 +416,7 @@ public class Piece : MonoBehaviour
                 {
                     PawnAttackTiles.Add(Tiles[x, y]);
                 }
-                else if (Tiles[x, y].Occupier && Tiles[x, y].Occupier.Side == Side)
+                else if (Tiles[x, y].Occupier.Side == Side)
                 {
                     Tiles[x, y].Occupier.Guarded = true;
                 }
@@ -697,6 +701,12 @@ public class Piece : MonoBehaviour
                 if (InRange(PosX + i, PosY + j))
                 {
                     Tile t = Grid.M.Tiles[PosX + i, PosY + j];
+
+                    if (Checker && t == Checker.Pos)
+                    {
+                        if (t.Safe && !Checker.Guarded)
+                            CheckMoveAttack(PosX + i, PosY + j);
+                    }
 
                     if(!temp.Contains(t))
                     {

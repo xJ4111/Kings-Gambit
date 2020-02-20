@@ -8,6 +8,8 @@ public class Game : MonoBehaviour
 
     private void Awake()
     {
+        Physics.queriesHitTriggers = true;
+
         if (M == null)
         {
             M = this;
@@ -97,7 +99,7 @@ public class Game : MonoBehaviour
         if(Selected && TargetTile)
         {
             Selected.Move();
-            NextTurn();
+            Clear();
         }
 
         if(Selected && AbilityTarget)
@@ -120,6 +122,7 @@ public class Game : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
+            Clear();
             NextTurn();
         }
     }
@@ -172,9 +175,8 @@ public class Game : MonoBehaviour
     #region Turn Management
     public void NextTurn()
     {
+        Debug.Log("next");
         RoundCount++;
-
-        Clear();
 
         if (turnVal + 1 < 2)
             turnVal++;
@@ -196,7 +198,9 @@ public class Game : MonoBehaviour
         TargetTile = null;
         AbilityTarget = null;
         AbilityPosition = null;
+
         NeedPos = false;
+
         SearchingPiece = false;
         SearchingPos = false;
     }
