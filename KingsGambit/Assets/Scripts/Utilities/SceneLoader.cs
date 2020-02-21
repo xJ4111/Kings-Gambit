@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
+    //Script used to load scenes with a fade in/fade out effect.
+
     public static SceneLoader M;
 
     private void Awake()

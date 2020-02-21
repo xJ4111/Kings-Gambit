@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Piece : MonoBehaviour
 {
+    //Base script for all pieces, hold normal functionality and state information
+
     [Header("Piece Info")]
     public string Side;
     public string Type;
@@ -69,8 +71,6 @@ public class Piece : MonoBehaviour
 
     protected void Attack()
     {
-        Debug.Log("Attack");
-
         //Attack
         if (Game.M.TargetTile.Occupier)
         {

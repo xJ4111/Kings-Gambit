@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    public static Game M;
+    //Script used to manage the game loop
 
+    public static Game M;
     private void Awake()
     {
         Physics.queriesHitTriggers = true;
@@ -387,12 +388,7 @@ public class Game : MonoBehaviour
 
             if(!CheckBlockable)
             {
-                Debug.Log("Checkmate");
                 UI.M.GameOver(enemy, King.Side, "Checkmate");
-            }
-            else
-            {
-                Debug.Log("Blockable");
             }
         }
     }

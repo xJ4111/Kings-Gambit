@@ -6,6 +6,8 @@ using TMPro;
 
 public class UI : MonoBehaviour
 {
+    //Global UI handler script
+
     public static UI M;
     void Awake()
     {

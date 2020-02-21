@@ -4,6 +4,8 @@ using UnityEngine;
 
 public static class Abilities
 {
+    //script used to handle ability data, read in from Excel documents
+
     public static bool Loaded;
 
     public static Dictionary<string, string> Movements = new Dictionary<string, string>();
