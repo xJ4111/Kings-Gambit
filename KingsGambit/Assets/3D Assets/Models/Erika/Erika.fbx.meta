@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b38207bd0bbd21c408ffd90147bb8aa2
+guid: db1268d1cbe68a341b695f69a49c1545
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable:
@@ -8,75 +8,45 @@ ModelImporter:
     second: mixamo.com
   externalObjects:
   - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Akai_MAT
-    second: {fileID: 2100000, guid: dc7e21c0d275c3349834ab34bdbb5c67, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Arrow_MAT
-    second: {fileID: 2100000, guid: 31b183daa08bed243b7c6f441afdb0c7, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Body_MAT
-    second: {fileID: 2100000, guid: 5cc648728476232428a8b5b7de6453dd, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Bow_MAT
-    second: {fileID: 2100000, guid: 461d5dbe2498ab447b199b7797994c74, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: EyeSpec_MAT
-    second: {fileID: 2100000, guid: 4376303245e73de4aa8c17b36055f75a, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Lashes_MAT
-    second: {fileID: 2100000, guid: 0fd7c4481ddd3634e8a63e5d0eff53ec, type: 2}
-  - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: Arrow_DIFF
-    second: {fileID: 2800000, guid: 63a8a479888203140940153f0e424ec5, type: 3}
+    second: {fileID: 2800000, guid: 36d7f3471ad58704087ccfa997547a65, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: Arrow_NM
-    second: {fileID: 2800000, guid: dab78738383e16a4795a4acadab10719, type: 3}
+    second: {fileID: 2800000, guid: eae0c90fc1ef33d46a1e844aa450e152, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: Bow_DIFF
-    second: {fileID: 2800000, guid: 6d57ad5b47ed8ef42adbb730a1d630fb, type: 3}
+    second: {fileID: 2800000, guid: 887f65746df9ab94ba6b6be4a7d32f9b, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: Bow_NM
-    second: {fileID: 2800000, guid: 2d12212dd32aebb40b4b0ea670146e84, type: 3}
+    second: {fileID: 2800000, guid: 16b224b31fa51ad4780479d0101ddcd0, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: Erika_Archer_Clothes_diffuse
-    second: {fileID: 2800000, guid: e44718d40a48cfc43baf7eb8144a9511, type: 3}
+    second: {fileID: 2800000, guid: 91ca8f5273d8498478717a225f2139e6, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: Erika_Archer_Clothes_normal
-    second: {fileID: 2800000, guid: af9d931e87eeea747bcdb30fffa28511, type: 3}
+    second: {fileID: 2800000, guid: 4e09b31ddfc15c248890f60f59f33d98, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: FemaleFitA_Body_diffuse
-    second: {fileID: 2800000, guid: 6857e8f1d41f6f74fbd6b912ef0dcd06, type: 3}
+    second: {fileID: 2800000, guid: 81f3dfb89937c1a489e8f94059d0c1a9, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: FemaleFitA_StdNM
-    second: {fileID: 2800000, guid: ec0b24b1258fdf2418344966202e7b5f, type: 3}
+    second: {fileID: 2800000, guid: 3e8ecc599111161489723cce08d74e4f, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0

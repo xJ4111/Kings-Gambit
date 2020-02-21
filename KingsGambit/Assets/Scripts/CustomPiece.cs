@@ -647,6 +647,33 @@ public class CustomPiece : Piece
         }
     }
 
+    public bool CanRevive()
+    {
+        if (Pos.Graves.Count > 0)
+        {
+            CustomPiece revive = null;
+
+            Pos.Graves.Reverse();
+
+            foreach (CustomPiece p in Pos.Graves)
+            {
+                if (p.Side == Side)
+                {
+                    revive = p;
+                }
+            }
+
+            if (revive)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
+        return false;
+    }
+
     public CustomPiece Revive(Tile to)
     {
         if(Pos.Graves.Count > 0)
@@ -663,12 +690,16 @@ public class CustomPiece : Piece
                 }
             }
 
-            revive.enabled = true;
-            revive.transform.position = to.transform.position;
-            Pos.Graves.Remove(revive);
-            Pos.Graves.Reverse();
-
-            return revive;
+            if (revive)
+            {
+                revive.enabled = true;
+                revive.transform.position = to.transform.position;
+                Pos.Graves.Remove(revive);
+                Pos.Graves.Reverse();
+                return revive;
+            }
+            else
+                return null;
         }
 
         return null;

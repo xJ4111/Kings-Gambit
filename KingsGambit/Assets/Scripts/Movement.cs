@@ -120,9 +120,10 @@ public class Movement : MonoBehaviour
     {
         //Determine Target
         TargetPos = TargetTile.transform.position;
+        Reached = transform.position == TargetPos;
 
         //Facing Target?
-        if (Vector3.Distance(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime).eulerAngles, Quaternion.LookRotation(TargetPos - transform.position).eulerAngles) > 2)
+        if (!Reached && !LookingTowards(TargetPos))
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
@@ -130,9 +131,6 @@ public class Movement : MonoBehaviour
         }
         else
         {
-            //At the target?
-            Reached = transform.position == TargetPos;
-
             //If not, keep moving
             if (!Reached)
             {
@@ -143,7 +141,7 @@ public class Movement : MonoBehaviour
                     TargetPiece.GetComponent<Movement>().Attacked(ClipTimes["Walk"] * 0.75f);
                     TargetPiece = null;
                 }
-                yield return new WaitForSeconds(ClipTimes["Walk"] * 0.75f);
+                yield return new WaitForSeconds(ClipTimes["Walk"]);
                 transform.position = TargetPos;
                 Anim.SetBool("Moving", false);
                 StartCoroutine(WarpTick());
@@ -153,7 +151,7 @@ public class Movement : MonoBehaviour
             {
                 Anim.SetBool("Moving", false);
 
-                if (Self.Ability == "Combat Medic" && Self.Pos.Graves.Count > 0)
+                if (Self.Ability == "Combat Medic" && Self.CanRevive())
                 {
                     Anim.SetBool("Casting", true);
                     yield return new WaitForSeconds(ClipTimes["Cast"] * 0.5f);
@@ -171,6 +169,11 @@ public class Movement : MonoBehaviour
                 Game.M.NextTurn();
             }
         }
+    }
+
+    bool LookingTowards(Vector3 target)
+    {
+        return Mathf.Abs(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(target - transform.position), TurnSpeed * Time.deltaTime).y - Quaternion.LookRotation(TargetPos - transform.position).y) < 0.01f;
     }
 
     public void Teleport(bool endTurn, Vector3 pos)
@@ -195,10 +198,9 @@ public class Movement : MonoBehaviour
         {
             if (Self.Side == "White")
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.identity, TurnSpeed * Time.deltaTime);
-            else if (Self.Side == "Black")
-            {
+            
+            if (Self.Side == "Black")
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 180, 0), TurnSpeed * Time.deltaTime);
-            }
         }
 
         Anim.SetBool("Injured", Self.Injured);
