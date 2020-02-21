@@ -120,11 +120,10 @@ MonoBehaviour:
   Attacking: 0
   Moving: 0
   Reached: 0
-  MovementSpeed: 5
-  TurnSpeed: 5
-  AttackDistance: 2.5
   LastPos: {fileID: 0}
   ReviveTime: 0
+  Shield: {fileID: 0}
+  Gender: Male
 --- !u!1001 &7800773898028458587
 PrefabInstance:
   m_ObjectHideFlags: 0

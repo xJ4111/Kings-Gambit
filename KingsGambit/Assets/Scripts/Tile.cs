@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    //Tile script, used to build up the grid that pieces traverse
+
     public int PosY, PosX = 0;
     public Light l;
     public CustomPiece Occupier;
@@ -11,10 +13,13 @@ public class Tile : MonoBehaviour
 
     public List<CustomPiece> Graves;
 
+    public AudioSource Audio;
+
     void Awake()
     {
         Safe = true;
         StartCoroutine(FindPosition());
+        Audio = GetComponent<AudioSource>();
     }
     IEnumerator FindPosition()
     {
@@ -66,10 +71,6 @@ public class Tile : MonoBehaviour
                     Game.M.AbilityTarget = Occupier;
                     Game.M.SearchingPiece = false;
                     Game.M.SearchingPos = true;
-                }
-                else if(Occupier)
-                {
-                    Debug.Log(Game.M.Selected.TargetValid(Occupier));
                 }
 
             }

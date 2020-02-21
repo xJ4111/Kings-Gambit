@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    //Script used to handle aesthetics of piece movement (animations, particle effects, sounds)
+
     CustomPiece Self;
     public Animator Anim;
     public Dictionary<string, float> ClipTimes = new Dictionary<string, float>();
@@ -27,7 +29,7 @@ public class Movement : MonoBehaviour
     public Tile LastPos;
     public float ReviveTime = 0f;
     public GameObject Shield;
-
+    public string Gender;
 
     private void Start()
     {
@@ -41,7 +43,6 @@ public class Movement : MonoBehaviour
             Anim.SetBool("Shielded", Self.Ability == "Shielded");
             Shield.SetActive(Self.Ability == "Shielded");
         }
-
     }
 
     // Update is called once per frame
@@ -62,8 +63,6 @@ public class Movement : MonoBehaviour
     #region Movement
     public void Move(bool walk)
     {
-        Debug.Log("move");
-
         if (!Moving && TargetTile)
         {
             Moving = true;
@@ -101,7 +100,33 @@ public class Movement : MonoBehaviour
             Anim.SetBool("Moving", false);
             Anim.SetBool("Attacking", true);
             TargetPiece.GetComponent<Movement>().Attacked(ClipTimes["Attack"] * 0.9f);
-            yield return new WaitForSeconds(ClipTimes["Attack"]);
+            yield return new WaitForSeconds(ClipTimes["Attack"] * 0.5f);
+
+            if (Self.Side == "White")
+            {
+                if (Self.Type == "Pawn")
+                    Sounds.M.Play("Sword", LastPos);
+
+                if (Self.Type == "Rook")
+                    Sounds.M.Play("Punch", LastPos);
+
+                if (Self.Type == "Queen" || Self.Type == "Bishop")
+                {
+                    ParticleLoader.M.Spawn("Explosion", Self.Pos);
+                    Sounds.M.Play("Fireball", LastPos);
+                }
+            }
+
+            if (Self.Side == "Black")
+            {
+                if (Self.Type == "Queen" || Self.Type == "Bishop")
+                {
+                    Sounds.M.Play("Bow", LastPos);
+                }
+            }
+
+            yield return new WaitForSeconds(ClipTimes["Attack"] * 0.5f);
+
             TargetPiece = null;
             Anim.SetBool("Attacking", false);
             StartCoroutine(MoveTick());
@@ -141,7 +166,14 @@ public class Movement : MonoBehaviour
                     TargetPiece.GetComponent<Movement>().Attacked(ClipTimes["Walk"] * 0.75f);
                     TargetPiece = null;
                 }
-                yield return new WaitForSeconds(ClipTimes["Walk"]);
+
+                ParticleLoader.M.Spawn("Teleport", LastPos);
+                ParticleLoader.M.Spawn("Teleport", TargetTile);
+                Sounds.M.Play("Magic", LastPos);
+                Sounds.M.Play("Magic", TargetTile);
+
+                yield return new WaitForSeconds(ClipTimes["Walk"] * 2);
+
                 transform.position = TargetPos;
                 Anim.SetBool("Moving", false);
                 StartCoroutine(WarpTick());
@@ -156,6 +188,13 @@ public class Movement : MonoBehaviour
                     Anim.SetBool("Casting", true);
                     yield return new WaitForSeconds(ClipTimes["Cast"] * 0.5f);
                     Anim.SetBool("Casting", false);
+
+                    ParticleLoader.M.Spawn("Health", Self.Pos);
+                    ParticleLoader.M.Spawn("Health", LastPos);
+
+                    Sounds.M.Play("Heal", Self.Pos);
+                    Sounds.M.Play("Heal", LastPos);
+
                     CustomPiece revived = Self.Revive(LastPos);
                     revived.MC.Anim.SetBool("Dead", false);
                     revived.MC.Anim.SetBool("Revived", true);
@@ -186,8 +225,11 @@ public class Movement : MonoBehaviour
     {
         Anim.SetBool("Teleporting", true);
         yield return new WaitForSeconds(ClipTimes["Crouch"]);
+        ParticleLoader.M.Spawn("Energy", Self.Pos);
+        Sounds.M.Play("Magic", Self.Pos);
         Anim.SetBool("Teleporting", false);
         transform.position = TargetPos;
+        yield return new WaitForSeconds(ClipTimes["Crouch"]);
         if (endTurn)
             Game.M.NextTurn();
     }
@@ -217,6 +259,9 @@ public class Movement : MonoBehaviour
     {
         yield return new WaitForSeconds(wait / 2);
         Anim.SetBool("Dead", true);
+        ParticleLoader.M.Spawn("Blood", Self.Pos);
+        Sounds.M.Play(Gender + " Hit", Self.Pos);
+
         yield return new WaitForSeconds(2f);
         Game.M.Kill(Self);
     }
@@ -254,9 +299,7 @@ public class Movement : MonoBehaviour
                     if (TargetTile.Occupier)
                     {
                         TargetTile.Occupier.MC.Attacked(0);
-                        Debug.Log("Dead");
                     }
-
 
                     TargetTile.Enter(TargetPiece);
                     TargetPiece.MC.Teleport(false, TargetTile.transform.position);

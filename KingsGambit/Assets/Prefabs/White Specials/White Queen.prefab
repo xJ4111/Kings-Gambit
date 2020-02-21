@@ -68,6 +68,7 @@ MonoBehaviour:
   Vulnerable: 1
   EPTake: 0
   AllyKing: {fileID: 0}
+  AllyQueen: {fileID: 0}
   Checker: {fileID: 0}
   FTKUsed: 0
   MC: {fileID: 0}
@@ -114,13 +115,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Anim: {fileID: 0}
-  Target: {fileID: 0}
-  Attack: {fileID: 0}
+  TargetTile: {fileID: 0}
+  TargetPiece: {fileID: 0}
   Attacking: 0
   Moving: 0
   Reached: 0
   LastPos: {fileID: 0}
   ReviveTime: 0
+  Shield: {fileID: 0}
+  Gender: Female
 --- !u!1001 &6511282370576874437
 PrefabInstance:
   m_ObjectHideFlags: 0

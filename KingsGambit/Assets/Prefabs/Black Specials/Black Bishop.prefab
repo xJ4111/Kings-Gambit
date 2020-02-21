@@ -123,6 +123,7 @@ MonoBehaviour:
   LastPos: {fileID: 0}
   ReviveTime: 0
   Shield: {fileID: 0}
+  Gender: Female
 --- !u!1001 &4519894031825405724
 PrefabInstance:
   m_ObjectHideFlags: 0

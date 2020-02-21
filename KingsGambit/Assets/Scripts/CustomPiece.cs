@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CustomPiece : Piece
 {
+    //Script used to handle all the extra abilities of pieces.
+
     public string Ability = "";
 
     // Start is called before the first frame update
@@ -145,7 +147,7 @@ public class CustomPiece : Piece
                 {
                     Game.M.AbilityPosition = Pos;
                 }
-                else
+                else if(!Game.M.SearchingPiece && !Game.M.SearchingPos)
                 {
                     if (Tiles[PosX, PosY].l.enabled)
                         Game.M.TargetTile = Tiles[PosX, PosY];
@@ -523,14 +525,7 @@ public class CustomPiece : Piece
 
     public void ACQueen()
     {
-        Debug.Log("AC Queen");
         Game.M.AbilityTarget.ACBishop();
-
-        /*
-        SwapPos(bishop);
-        MC.Teleport(false, bishop.transform.position);
-        bishop.MC.Teleport(true, transform.position);
-        */
     }
 
     public void ACBishop()
@@ -639,6 +634,7 @@ public class CustomPiece : Piece
             {
                 CustomPiece target = surrounding[Random.Range(0, surrounding.Count)];
                 target.Injured = true;
+                Sounds.M.Play(target.MC.Gender + " Hit", target.Pos);
                 target.RoundInjured = Game.M.RoundCount;
             }
 
