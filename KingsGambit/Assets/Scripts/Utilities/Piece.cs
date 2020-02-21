@@ -38,6 +38,7 @@ public class Piece : MonoBehaviour
 
     [Header("King Related")]
     public CustomPiece AllyKing;
+    public CustomPiece AllyQueen;
     public CustomPiece Checker;
     protected int startingX;
     public System.Tuple<CustomPiece, List<Tile>> CastleLeft;
@@ -71,13 +72,13 @@ public class Piece : MonoBehaviour
         //Attack
         if (Game.M.TargetTile.Occupier)
         {
-            MC.Attack = Game.M.TargetTile.Occupier;
+            MC.TargetPiece = Game.M.TargetTile.Occupier;
         }
 
         //En Passant Attack
         if(Game.M.EPTiles.ContainsKey(Game.M.TargetTile) && Game.M.EPTiles[Game.M.TargetTile].Side != Side)
         {
-            MC.Attack = Game.M.EPTiles[Game.M.TargetTile];
+            MC.TargetPiece = Game.M.EPTiles[Game.M.TargetTile];
         }
     }
 
@@ -344,8 +345,14 @@ public class Piece : MonoBehaviour
     #region Movement Checks
     public void MoveTo(Tile TargetTile)
     {
-        MC.Target = TargetTile;
-        MC.Move();
+        MC.TargetTile = TargetTile;
+        MC.LastPos = Pos;
+
+        if (Type != "Knight")
+            MC.Move(true);
+        else
+            MC.Move(false);
+
         Tiles[PosX, PosY].Exit(this);
         TargetTile.Enter(this);
     }

@@ -31,10 +31,10 @@ public class CustomPiece : Piece
     private void Update()
     {
         if(!AllyKing)
-            StartCoroutine(GetAllyKing());
+            StartCoroutine(GetAllyLeaders());
     }
 
-    IEnumerator GetAllyKing()
+    IEnumerator GetAllyLeaders()
     {
         yield return new WaitForEndOfFrame();
 
@@ -42,9 +42,11 @@ public class CustomPiece : Piece
         {
             case "White":
                 AllyKing = Game.White.King;
+                AllyQueen = Game.White.Queen;
                 break;
             case "Black":
                 AllyKing = Game.Black.King;
+                AllyQueen = Game.Black.Queen;
                 break;
         }
     }
@@ -82,7 +84,7 @@ public class CustomPiece : Piece
 
     bool CanSelect()
     {
-        return !UI.M.PromoPanel.activeSelf && !UI.M.InGameMenuPanel.activeSelf && !Game.M.SearchingPiece && !Game.M.Selected && !Game.M.CamPivotAnim.isPlaying;
+        return Game.M.Ready && !UI.M.PromoPanel.activeSelf && !UI.M.InGameMenuPanel.activeSelf && !Game.M.SearchingPiece && !Game.M.Selected && !Game.M.CamPivotAnim.isPlaying;
     }
 
     void ShowPath()
@@ -127,9 +129,6 @@ public class CustomPiece : Piece
         {
             if (Game.M.Selected && Game.M.Selected != this)
             {
-                if (Tiles[PosX, PosY].l.enabled)
-                    Game.M.TargetTile = Tiles[PosX, PosY];
-
                 if (Game.M.SearchingPiece)
                 {
                     if (Game.M.Selected.TargetValid(this) == "Valid")
@@ -141,6 +140,11 @@ public class CustomPiece : Piece
                     {
                         UI.M.Tooltip(Game.M.Selected.TargetValid(this));
                     }
+                }
+                else
+                {
+                    if (Tiles[PosX, PosY].l.enabled)
+                        Game.M.TargetTile = Tiles[PosX, PosY];
                 }
             }
         }
@@ -516,23 +520,16 @@ public class CustomPiece : Piece
     public void ACQueen(CustomPiece bishop)
     {
         SwapPos(bishop);
+        MC.Teleport(false, bishop.transform.position);
+        bishop.MC.Teleport(true, transform.position);
     }
 
     public void ACBishop()
     {
         Highlight(false);
-
-        switch (Side)
-        {
-            case "White":
-                SwapPos(Game.White.Queen);
-                break;
-            case "Black":
-                SwapPos(Game.Black.Queen);
-                break;
-        }
-
-        Game.M.NextTurn();
+        SwapPos(AllyQueen);
+        MC.Teleport(false, AllyQueen.transform.position);
+        AllyQueen.MC.Teleport(true, transform.position);
     }
 
     void SwapPos(CustomPiece target)
@@ -540,8 +537,11 @@ public class CustomPiece : Piece
         int x = PosX;
         int y = PosY;
 
-        MoveTo(target.Pos);
-        target.MoveTo(Tiles[x, y]);
+        Pos.Exit(this);
+        target.Pos.Enter(this);
+
+        target.Pos.Exit(target);
+        Tiles[x, y].Enter(target);
     }
 
     void OnMove()
@@ -573,7 +573,6 @@ public class CustomPiece : Piece
                         break;
                     case "Combat Medic":
                         Attack();
-                        Revive();
                         break;
                     case "Charge":
                         Attack();
@@ -639,15 +638,15 @@ public class CustomPiece : Piece
         }
     }
 
-    void Revive()
+    public CustomPiece Revive(Tile to)
     {
-        if(Game.M.TargetTile.Graves.Count > 0)
+        if(Pos.Graves.Count > 0)
         {
             CustomPiece revive = null;
 
-            Game.M.TargetTile.Graves.Reverse();
+            Pos.Graves.Reverse();
 
-            foreach (CustomPiece p in Game.M.TargetTile.Graves)
+            foreach (CustomPiece p in Pos.Graves)
             {
                 if (p.Side == Side)
                 {
@@ -656,12 +655,14 @@ public class CustomPiece : Piece
             }
 
             revive.enabled = true;
-            revive.MoveTo(Pos);
-            Game.M.TargetTile.Graves.Remove(revive);
+            revive.transform.position = to.transform.position;
+            Pos.Graves.Remove(revive);
+            Pos.Graves.Reverse();
 
-            Game.M.TargetTile.Graves.Reverse();
+            return revive;
         }
 
+        return null;
     }
 
     void Charge()
@@ -785,13 +786,9 @@ public class CustomPiece : Piece
         if(Ability == "For The King")
         {
             ForTheKing();
-            Game.M.Clear();
         }
-        else
-        {
-            Game.M.Clear();
-            Game.M.NextTurn();
-        }
+
+        Game.M.Clear();
     }
 
     public string TargetValid(CustomPiece target)
@@ -917,7 +914,7 @@ public class CustomPiece : Piece
 
     void Blast()
     {
-        Game.M.AbilityTarget.Injured = true;
+        MC.Cast();
     }
 
     void Deploy()
@@ -982,6 +979,7 @@ public class CustomPiece : Piece
                 break;
         }
 
+        MC.Promote();
         Game.M.CalcMovePaths();
     }
 

@@ -37,6 +37,7 @@ public class Game : MonoBehaviour
     [Header("Turn Management")]
     public string Turn = "White";
     private int turnVal = 0;
+    public bool Ready = true;
 
     [Header("Piece Management")]
     public GameObject PieceParentObj;
@@ -98,6 +99,7 @@ public class Game : MonoBehaviour
     {
         if(Selected && TargetTile)
         {
+            Ready = false;
             Selected.Move();
             Clear();
         }
@@ -106,10 +108,13 @@ public class Game : MonoBehaviour
         {
             if(NeedPos && AbilityPosition)
             {
+                Ready = false;
                 Selected.UseAbility();
+
             }
             else if(!NeedPos)
             {
+                Ready = false;
                 Selected.UseAbility();
             }
         }
@@ -175,7 +180,8 @@ public class Game : MonoBehaviour
     #region Turn Management
     public void NextTurn()
     {
-        Debug.Log("next");
+        Ready = true;
+
         RoundCount++;
 
         if (turnVal + 1 < 2)
@@ -239,7 +245,11 @@ public class Game : MonoBehaviour
                 p.EPCheck();
 
             if (p.Injured && RoundCount - p.RoundInjured == 3)
+            {
                 p.Injured = false;
+                p.MC.Anim.SetBool("Injured", p.Injured);
+            }
+                
 
             if(p.CancelEP)
                 p.EPTake = false;

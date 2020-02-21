@@ -210,6 +210,7 @@ public class UI : MonoBehaviour
         ConfirmButton.onClick.RemoveAllListeners();
         ConfirmButton.onClick.AddListener(() => PromotionTarget.Promote(Type));
         ConfirmButton.onClick.AddListener(() => TogglePromoPanel(false));
+
     }
 
     public void InGameMenu()

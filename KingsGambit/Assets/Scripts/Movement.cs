@@ -5,24 +5,45 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     CustomPiece Self;
+    public Animator Anim;
+    public Dictionary<string, float> ClipTimes = new Dictionary<string, float>();
 
-    public Tile Target;
-    public CustomPiece Attack;
+    [Header("Targets")]
+    public Tile TargetTile;
+    public CustomPiece TargetPiece;
+
+    [Header("State")]
     public bool Attacking;
-
-    private float MovementSpeed = 5;
-    private float TurnSpeed = 5;
-    private float AttackDistance = 2.5f;
-
     public bool Moving;
     public bool Reached;
+    private Vector3 TargetPos;
 
-    public Vector3 TargetPos;
+    [Header("Parameters")]
+    public float MovementSpeed = 5;
+    public float TurnSpeed = 5;
+    public float AttackDistance = 2.5f;
+
+    [Header("Specific Info")]
+    public Tile LastPos;
+    public float ReviveTime = 0f;
+    public GameObject Shield;
+
 
     private void Start()
     {
-        Self = GetComponent<CustomPiece>(); 
+        Self = GetComponent<CustomPiece>();
+        Anim = GetComponentInChildren<Animator>();
         TargetPos = transform.position;
+        GetClipTimes();
+
+        if(Shield)
+        {
+            Anim.SetBool("Shielded", Self.Ability == "Shielded");
+
+            if (Self.Ability == "Shielded")
+                Shield.SetActive(false);
+        }
+
     }
 
     // Update is called once per frame
@@ -31,56 +52,149 @@ public class Movement : MonoBehaviour
         ReturnRotate();
     }
 
-    public void Move()
+    void GetClipTimes()
     {
-        if(!Moving && Target)
+        Debug.Log(name);
+        AnimationClip[] Clips = Anim.runtimeAnimatorController.animationClips;
+
+        foreach (AnimationClip clip in Clips)
+            if (!ClipTimes.ContainsKey(clip.name))
+                ClipTimes.Add(clip.name, clip.length);
+    }
+
+    #region Movement
+    public void Move(bool walk)
+    {
+        Debug.Log("move");
+
+        if (!Moving && TargetTile)
         {
             Moving = true;
-            StartCoroutine(MoveTick());
+
+            if (walk)
+                StartCoroutine(MoveTick());
+            else
+                StartCoroutine(WarpTick());
         }
     }
 
     IEnumerator MoveTick()
     {
         //Determine Target
-        if (Attack)
-            TargetPos = Target.transform.position - ((Target.transform.position - transform.position).normalized * AttackDistance);
+        if (TargetPiece)
+            TargetPos = TargetTile.transform.position - ((TargetTile.transform.position - transform.position).normalized * AttackDistance);
         else
-            TargetPos = Target.transform.position;
+            TargetPos = TargetTile.transform.position;
 
         //At the target?
         Reached = transform.position == TargetPos;
 
         //If not, keep moving
-        if(!Reached)
+        if (!Reached)
         {
+            Anim.SetBool("Moving", true);
             transform.position = Vector3.MoveTowards(transform.position, TargetPos, MovementSpeed * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
             StartCoroutine(MoveTick());
         }
         //If we are, attack?
-        else if(Reached && Attack)
+        else if (Reached && TargetPiece)
         {
-            Attacking = true;
-            yield return new WaitForSeconds(1f);
-            Game.M.Kill(Attack);
-            Attack = null;
-            Attacking = false;
+            Anim.SetBool("Moving", false);
+            Anim.SetBool("Attacking", true);
+            TargetPiece.GetComponent<Movement>().Attacked(ClipTimes["Attack"] * 0.9f);
+            yield return new WaitForSeconds(ClipTimes["Attack"]);
+            TargetPiece = null;
+            Anim.SetBool("Attacking", false);
             StartCoroutine(MoveTick());
         }
         //No more targets? Next turn
         else if (Reached)
         {
-            Target = null;
+            Anim.SetBool("Moving", false);
+            TargetTile = null;
             Moving = false;
             Game.M.NextTurn();
         }
     }
 
+    IEnumerator WarpTick()
+    {
+        //Determine Target
+        TargetPos = TargetTile.transform.position;
+
+
+        //Facing Target?
+        if (Vector3.Distance(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime).eulerAngles, Quaternion.LookRotation(TargetPos - transform.position).eulerAngles) > 2)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+            StartCoroutine(WarpTick());
+        }
+        else
+        {
+            //At the target?
+            Reached = transform.position == TargetPos;
+
+            //If not, keep moving
+            if (!Reached)
+            {
+                Anim.SetBool("Moving", true);
+                //Attack?
+                if (TargetPiece)
+                {
+                    TargetPiece.GetComponent<Movement>().Attacked(ClipTimes["Attack"] * 0.75f);
+                    TargetPiece = null;
+                }
+                yield return new WaitForSeconds(ClipTimes["Walk"] * 0.75f);
+                transform.position = TargetPos;
+                Anim.SetBool("Moving", false);
+                StartCoroutine(WarpTick());
+            }
+            //No more targets? Next turn
+            else if (Reached)
+            {
+                Anim.SetBool("Moving", false);
+
+                if (Self.Ability == "Combat Medic" && Self.Pos.Graves.Count > 0)
+                {
+                    Anim.SetBool("Casting", true);
+                    yield return new WaitForSeconds(ClipTimes["Revive"] + 0.5f);
+                    Anim.SetBool("Casting", false);
+                    CustomPiece revived = Self.Revive(LastPos);
+                    revived.MC.Anim.SetBool("Dead", false);
+                    revived.MC.Anim.SetBool("Revived", true);
+                    yield return new WaitForSeconds(ClipTimes["Cast"] / 2);
+                    revived.MC.Anim.SetBool("Revived", false);
+                }
+
+                TargetTile = null;
+                Moving = false;
+                Game.M.NextTurn();
+            }
+        }
+    }
+
+    public void Teleport(bool endTurn, Vector3 pos)
+    {
+        TargetPos = pos;
+        StartCoroutine(TeleportTick(endTurn));
+    }
+
+    IEnumerator TeleportTick(bool endTurn)
+    {
+        Anim.SetBool("Warping", true);
+        yield return new WaitForSeconds(ClipTimes["Crouch"] + 0.5f);
+        Anim.SetBool("Warping", false);
+        transform.position = TargetPos;
+        if (endTurn)
+            Game.M.NextTurn();
+    }
+
     void ReturnRotate()
     {
-        if (!Target && !Attack)
+        if (!TargetTile && !TargetPiece)
         {
             if (Self.Side == "White")
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.identity, TurnSpeed * Time.deltaTime);
@@ -89,5 +203,65 @@ public class Movement : MonoBehaviour
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 180, 0), TurnSpeed * Time.deltaTime);
             }
         }
+    }
+
+    #endregion
+
+    public void Attacked(float animTime)
+    {
+        StartCoroutine(Die(animTime));
+    }
+
+    IEnumerator Die(float wait)
+    {
+        yield return new WaitForSeconds(wait / 2);
+        Anim.SetBool("Dead", true);
+        yield return new WaitForSeconds(2f);
+        Game.M.Kill(Self);
+    }
+
+    public void Cast()
+    {
+        TargetPiece = Game.M.AbilityTarget;
+        TargetPos = Game.M.AbilityTarget.transform.position;
+        StartCoroutine(CastingTick());
+    }
+
+    public IEnumerator CastingTick()
+    {
+        //Face Target
+        if (Vector3.Distance(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime).eulerAngles, Quaternion.LookRotation(TargetPos - transform.position).eulerAngles) > 2)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+            StartCoroutine(CastingTick());
+        }
+        else
+        {
+            Anim.SetBool("Moving", false);
+            Anim.SetBool("RangedAttacking", true);
+            yield return new WaitForSeconds(ClipTimes["Cast"] + 0.5f);
+            TargetPiece.Injured = true;
+            TargetPiece.GetComponent<Movement>().Anim.SetBool("Injured", TargetPiece.Injured);
+            TargetPiece = null;
+            Anim.SetBool("RangedAttacking", false);
+
+            Game.M.NextTurn();
+        }
+    }
+
+    public void Promote()
+    {
+        StartCoroutine(PromoteTick());
+    }
+
+    IEnumerator PromoteTick()
+    {
+        Anim.SetBool("PoweredUp", true);
+        Self.AllyKing.MC.Anim.SetBool("PoweredUp", true);
+        yield return new WaitForSeconds(ClipTimes["PoweredUp"]);
+        Anim.SetBool("PoweredUp", false);
+        Self.AllyKing.MC.Anim.SetBool("PoweredUp", false);
+        Game.M.Ready = true;
     }
 }
