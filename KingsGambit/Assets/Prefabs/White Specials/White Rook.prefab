@@ -120,12 +120,9 @@ MonoBehaviour:
   Attacking: 0
   Moving: 0
   Reached: 0
-  MovementSpeed: 5
-  TurnSpeed: 5
-  AttackDistance: 2.5
   LastPos: {fileID: 0}
   ReviveTime: 0
-  Shield: {fileID: 0}
+  Shield: {fileID: 8356347940855837260}
 --- !u!1001 &6601670378945420944
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -213,6 +210,12 @@ PrefabInstance:
 --- !u!4 &8599953648774230235 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3225972050631962187, guid: 00aece3e3dd9c964c87458e74c34c8b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6601670378945420944}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8356347940855837260 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2912261150605700316, guid: 00aece3e3dd9c964c87458e74c34c8b2,
     type: 3}
   m_PrefabInstance: {fileID: 6601670378945420944}
   m_PrefabAsset: {fileID: 0}

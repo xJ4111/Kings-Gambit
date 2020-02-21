@@ -141,6 +141,10 @@ public class CustomPiece : Piece
                         UI.M.Tooltip(Game.M.Selected.TargetValid(this));
                     }
                 }
+                else if(Game.M.SearchingPos)
+                {
+                    Game.M.AbilityPosition = Pos;
+                }
                 else
                 {
                     if (Tiles[PosX, PosY].l.enabled)
@@ -517,11 +521,16 @@ public class CustomPiece : Piece
         return false;
     }
 
-    public void ACQueen(CustomPiece bishop)
+    public void ACQueen()
     {
+        Debug.Log("AC Queen");
+        Game.M.AbilityTarget.ACBishop();
+
+        /*
         SwapPos(bishop);
         MC.Teleport(false, bishop.transform.position);
         bishop.MC.Teleport(true, transform.position);
+        */
     }
 
     public void ACBishop()
@@ -914,17 +923,12 @@ public class CustomPiece : Piece
 
     void Blast()
     {
-        MC.Cast();
+        MC.Cast("Injure");
     }
 
     void Deploy()
     {
-        Game.M.AbilityTarget.MoveTo(Game.M.AbilityPosition);
-    }
-
-    void ACQueen()
-    {
-        SwapPos(Game.M.AbilityTarget);
+        MC.Cast("Teleport");
     }
 
     void ForTheKing()

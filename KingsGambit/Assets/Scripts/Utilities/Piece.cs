@@ -69,6 +69,8 @@ public class Piece : MonoBehaviour
 
     protected void Attack()
     {
+        Debug.Log("Attack");
+
         //Attack
         if (Game.M.TargetTile.Occupier)
         {

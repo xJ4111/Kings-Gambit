@@ -440,7 +440,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2
+      value: -14
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2602,7 +2602,7 @@ PrefabInstance:
     - target: {fileID: 3684847200950483901, guid: 6c8f9b14cca50b94d9bea4b62495573e,
         type: 3}
       propertyPath: Ability
-      value: AC (Queen)
+      value: Deploy
       objectReference: {fileID: 0}
     - target: {fileID: 3684847200950483901, guid: 6c8f9b14cca50b94d9bea4b62495573e,
         type: 3}
@@ -3903,7 +3903,7 @@ PrefabInstance:
     - target: {fileID: 5931507047206630412, guid: a2bc45992e5b31040bde7831960d4f7e,
         type: 3}
       propertyPath: Ability
-      value: Blast
+      value: AC (Bishop)
       objectReference: {fileID: 0}
     - target: {fileID: 8599559263279077808, guid: a2bc45992e5b31040bde7831960d4f7e,
         type: 3}
@@ -7376,7 +7376,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 6419565998382486, guid: b4167996e721475419531fe34e8ad8aa, type: 3}
       propertyPath: m_LocalPosition.y

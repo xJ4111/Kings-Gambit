@@ -19,9 +19,9 @@ public class Movement : MonoBehaviour
     private Vector3 TargetPos;
 
     [Header("Parameters")]
-    public float MovementSpeed = 5;
-    public float TurnSpeed = 5;
-    public float AttackDistance = 2.5f;
+    private float MovementSpeed = 5;
+    private float TurnSpeed = 5;
+    private float AttackDistance = 4f;
 
     [Header("Specific Info")]
     public Tile LastPos;
@@ -39,9 +39,7 @@ public class Movement : MonoBehaviour
         if(Shield)
         {
             Anim.SetBool("Shielded", Self.Ability == "Shielded");
-
-            if (Self.Ability == "Shielded")
-                Shield.SetActive(false);
+            Shield.SetActive(Self.Ability == "Shielded");
         }
 
     }
@@ -54,7 +52,6 @@ public class Movement : MonoBehaviour
 
     void GetClipTimes()
     {
-        Debug.Log(name);
         AnimationClip[] Clips = Anim.runtimeAnimatorController.animationClips;
 
         foreach (AnimationClip clip in Clips)
@@ -124,7 +121,6 @@ public class Movement : MonoBehaviour
         //Determine Target
         TargetPos = TargetTile.transform.position;
 
-
         //Facing Target?
         if (Vector3.Distance(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime).eulerAngles, Quaternion.LookRotation(TargetPos - transform.position).eulerAngles) > 2)
         {
@@ -144,7 +140,7 @@ public class Movement : MonoBehaviour
                 //Attack?
                 if (TargetPiece)
                 {
-                    TargetPiece.GetComponent<Movement>().Attacked(ClipTimes["Attack"] * 0.75f);
+                    TargetPiece.GetComponent<Movement>().Attacked(ClipTimes["Walk"] * 0.75f);
                     TargetPiece = null;
                 }
                 yield return new WaitForSeconds(ClipTimes["Walk"] * 0.75f);
@@ -160,13 +156,14 @@ public class Movement : MonoBehaviour
                 if (Self.Ability == "Combat Medic" && Self.Pos.Graves.Count > 0)
                 {
                     Anim.SetBool("Casting", true);
-                    yield return new WaitForSeconds(ClipTimes["Revive"] + 0.5f);
+                    yield return new WaitForSeconds(ClipTimes["Cast"] * 0.5f);
                     Anim.SetBool("Casting", false);
                     CustomPiece revived = Self.Revive(LastPos);
                     revived.MC.Anim.SetBool("Dead", false);
                     revived.MC.Anim.SetBool("Revived", true);
-                    yield return new WaitForSeconds(ClipTimes["Cast"] / 2);
+                    yield return new WaitForSeconds(revived.MC.ClipTimes["Revive"]);
                     revived.MC.Anim.SetBool("Revived", false);
+
                 }
 
                 TargetTile = null;
@@ -184,9 +181,9 @@ public class Movement : MonoBehaviour
 
     IEnumerator TeleportTick(bool endTurn)
     {
-        Anim.SetBool("Warping", true);
-        yield return new WaitForSeconds(ClipTimes["Crouch"] + 0.5f);
-        Anim.SetBool("Warping", false);
+        Anim.SetBool("Teleporting", true);
+        yield return new WaitForSeconds(ClipTimes["Crouch"]);
+        Anim.SetBool("Teleporting", false);
         transform.position = TargetPos;
         if (endTurn)
             Game.M.NextTurn();
@@ -203,6 +200,8 @@ public class Movement : MonoBehaviour
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 180, 0), TurnSpeed * Time.deltaTime);
             }
         }
+
+        Anim.SetBool("Injured", Self.Injured);
     }
 
     #endregion
@@ -212,7 +211,7 @@ public class Movement : MonoBehaviour
         StartCoroutine(Die(animTime));
     }
 
-    IEnumerator Die(float wait)
+    private IEnumerator Die(float wait)
     {
         yield return new WaitForSeconds(wait / 2);
         Anim.SetBool("Dead", true);
@@ -220,31 +219,51 @@ public class Movement : MonoBehaviour
         Game.M.Kill(Self);
     }
 
-    public void Cast()
+    public void Cast(string effect)
     {
         TargetPiece = Game.M.AbilityTarget;
-        TargetPos = Game.M.AbilityTarget.transform.position;
-        StartCoroutine(CastingTick());
+        TargetTile = Game.M.AbilityPosition;
+        TargetPos = TargetTile.transform.position;
+        StartCoroutine(CastingTick(effect));
     }
 
-    public IEnumerator CastingTick()
+    private IEnumerator CastingTick(string effect)
     {
         //Face Target
         if (Vector3.Distance(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime).eulerAngles, Quaternion.LookRotation(TargetPos - transform.position).eulerAngles) > 2)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
-            StartCoroutine(CastingTick());
+            StartCoroutine(CastingTick(effect));
         }
         else
         {
             Anim.SetBool("Moving", false);
-            Anim.SetBool("RangedAttacking", true);
-            yield return new WaitForSeconds(ClipTimes["Cast"] + 0.5f);
-            TargetPiece.Injured = true;
-            TargetPiece.GetComponent<Movement>().Anim.SetBool("Injured", TargetPiece.Injured);
+            Anim.SetBool("Casting", true);
+            yield return new WaitForSeconds(ClipTimes["Cast"] * 0.8f);
+            Anim.SetBool("Casting", false);
+
+            switch (effect)
+            {
+                case "Injure":
+                    TargetPiece.Injured = true;
+                    break;
+                case "Teleport":
+                    if (TargetTile.Occupier)
+                    {
+                        TargetTile.Occupier.MC.Attacked(0);
+                        Debug.Log("Dead");
+                    }
+
+
+                    TargetTile.Enter(TargetPiece);
+                    TargetPiece.MC.Teleport(false, TargetTile.transform.position);
+
+                    yield return new WaitForSeconds(TargetPiece.MC.ClipTimes["Crouch"] * 2);
+                    break;
+            }
+
             TargetPiece = null;
-            Anim.SetBool("RangedAttacking", false);
 
             Game.M.NextTurn();
         }
@@ -255,7 +274,7 @@ public class Movement : MonoBehaviour
         StartCoroutine(PromoteTick());
     }
 
-    IEnumerator PromoteTick()
+    private IEnumerator PromoteTick()
     {
         Anim.SetBool("PoweredUp", true);
         Self.AllyKing.MC.Anim.SetBool("PoweredUp", true);
