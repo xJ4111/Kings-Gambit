@@ -176,6 +176,7 @@ public class Game : MonoBehaviour
         }
 
         CalcMovePaths();
+        UI.M.UpdateTurn();
     }
 
     #region Turn Management
@@ -236,10 +237,12 @@ public class Game : MonoBehaviour
         FTKState();
 
         EPTiles.Clear();
-
+        
+        //Reset Variables
         foreach (CustomPiece p in AllPieces)
         {
             p.Guarded = false;
+            p.Guard = null;
             p.ResetHit();
 
             if(p.Type == "Pawn")
@@ -260,14 +263,10 @@ public class Game : MonoBehaviour
         }
 
         foreach (CustomPiece p in AllPieces)
-        {
             p.CheckPath();
-        }
 
         foreach (CustomPiece p in AllPieces)
-        {
             p.CheckPinning();
-        }
 
         if (Turn == "White")
         {
@@ -412,7 +411,7 @@ public class Game : MonoBehaviour
         {
             foreach(Tile t in p.Path)
             {
-                if (AttackPath.Contains(t))
+                if (AttackPath.Contains(t) || King.Checker.Pos == t)
                     CheckBlockable = true;
             }
         }
@@ -447,7 +446,39 @@ public class Game : MonoBehaviour
         }
 
         p.Pos.Graves.Add(p);
+        p.Grave = p.Pos;
         p.enabled = false;
+    }
+
+    public void Revive(CustomPiece p, Tile location)
+    {
+        p.enabled = true;
+        p.Grave.Graves.Remove(p);
+        p.Grave = null;
+
+        AllPieces.Add(p);
+        location.Enter(p);
+
+        switch (p.Side)
+        {
+            case "White":
+                    White.All.Add(p);
+
+                p.gameObject.transform.parent = White.King.transform.parent;
+                whiteSideCount--;
+                p.gameObject.transform.position = location.transform.position;
+                break;
+
+            case "Black":
+                Black.All.Add(p);
+
+                p.gameObject.transform.parent = Black.King.transform.parent;
+                blackSideCount--;
+                p.gameObject.transform.position = location.transform.position;
+                break;
+        }
+
+
     }
 
     Vector3 SidePos(int count, int offset)

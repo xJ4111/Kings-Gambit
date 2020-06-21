@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class CustomPiece : Piece
 {
-    //Script used to handle all the extra abilities of pieces.
 
     public string Ability = "";
+    public Tile Grave;
 
     // Start is called before the first frame update
     void Start()
@@ -21,12 +21,13 @@ public class CustomPiece : Piece
         Type = names[1];
         name = Side + " " + Type;
 
-        if(AbilityManager.M && AbilityManager.M.Selected.ContainsKey(name))
-            Ability = AbilityManager.M.Selected[name];
+        if(Abilities.Selected.ContainsKey(name))
+            Ability = Abilities.Selected[name];
 
         EPTake = true;
         FirstMove = true;
         Guarded = false;
+        Guard = null;
         CancelEP = false;
     }
 
@@ -53,7 +54,7 @@ public class CustomPiece : Piece
         }
     }
 
-    private void OnMouseEnter()
+    public void Show()
     {
         if (CanSelect())
         {
@@ -61,7 +62,7 @@ public class CustomPiece : Piece
         }
     }
 
-    protected void OnMouseOver()
+    public void Select()
     {
         if (CanSelect())
         {
@@ -72,7 +73,7 @@ public class CustomPiece : Piece
         Targeting();
     }
 
-    protected void OnMouseExit()
+    public void Deselect()
     {
         if (CanSelect())
         {
@@ -325,17 +326,11 @@ public class CustomPiece : Piece
 
                     for (int i = 1; i < 3; i++)
                     {
-                        //Forward
-                        RookMovementY(i, ref hit[0]);
-
-                        //Backwards
-                        RookMovementY(-i, ref hit[1]);
-
-                        //Forward
                         RookMovementX(i, ref hit[2]);
-
-                        //Backwards
                         RookMovementX(-i, ref hit[3]);
+
+                        RookMovementY(i, ref hit[0]);
+                        RookMovementY(-i, ref hit[1]);
                     }
 
                     break;
@@ -540,11 +535,7 @@ public class CustomPiece : Piece
     {
         int x = PosX;
         int y = PosY;
-
-        Pos.Exit(this);
         target.Pos.Enter(this);
-
-        target.Pos.Exit(target);
         Tiles[x, y].Enter(target);
     }
 
@@ -656,7 +647,7 @@ public class CustomPiece : Piece
                 if (p.Side == Side)
                 {
                     revive = p;
-                }
+                } 
             }
 
             if (revive)
@@ -688,10 +679,7 @@ public class CustomPiece : Piece
 
             if (revive)
             {
-                revive.enabled = true;
-                revive.transform.position = to.transform.position;
-                Pos.Graves.Remove(revive);
-                Pos.Graves.Reverse();
+                Game.M.Revive(revive, to);
                 return revive;
             }
             else

@@ -11,7 +11,7 @@ public static class Abilities
     public static Dictionary<string, string> Movements = new Dictionary<string, string>();
     public static Dictionary<string, System.Tuple<Ability, Ability>> AllAbilities = new Dictionary<string, System.Tuple<Ability, Ability>>();//Used to query possible abilities for pieces
     public static Dictionary<string, string> AbilityDescriptions = new Dictionary<string, string>(); //Used to directly query ability descriptions
-
+    public static Dictionary<string, string> Selected = new Dictionary<string, string>();
 
     public class Ability
     {

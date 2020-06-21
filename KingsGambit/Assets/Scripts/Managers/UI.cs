@@ -111,6 +111,12 @@ public class UI : MonoBehaviour
                     break;
             }
         }
+
+        WhiteCrown.GetComponentsInChildren<TextMeshProUGUI>()[0].text = Game.White.DefencePower.ToString();
+        WhiteCrown.GetComponentsInChildren<TextMeshProUGUI>()[1].text = Game.White.InvasionPower.ToString();
+
+        BlackCrown.GetComponentsInChildren<TextMeshProUGUI>()[0].text = Game.Black.DefencePower.ToString();
+        BlackCrown.GetComponentsInChildren<TextMeshProUGUI>()[1].text = Game.Black.InvasionPower.ToString();
     }
 
     #region Selection Info

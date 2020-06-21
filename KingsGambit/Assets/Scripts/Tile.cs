@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    //Tile script, used to build up the grid that pieces traverse
+    void Awake()
+    {
+        Safe = true;
+        StartCoroutine(FindPosition());
+        Audio = GetComponent<AudioSource>();
+    }
 
+    //Tile script, used to build up the grid that pieces traverse
     public int PosY, PosX = 0;
     public Light l;
     public CustomPiece Occupier;
@@ -15,12 +21,6 @@ public class Tile : MonoBehaviour
 
     public AudioSource Audio;
 
-    void Awake()
-    {
-        Safe = true;
-        StartCoroutine(FindPosition());
-        Audio = GetComponent<AudioSource>();
-    }
     IEnumerator FindPosition()
     {
         yield return new WaitForEndOfFrame();
@@ -40,6 +40,9 @@ public class Tile : MonoBehaviour
 
     public void Enter(Piece piece)
     {
+        if(piece.Pos)
+            piece.Pos.Exit(piece);
+
         Occupier = piece.GetComponent<CustomPiece>();
         Occupier.Pos = this;
         Occupier.PosY = PosY;
@@ -53,34 +56,40 @@ public class Tile : MonoBehaviour
                 Occupier = null;
     }
 
-    private void OnMouseOver()
+    void TileSelect()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
-
             if (Game.M.Selected && !Game.M.TargetTile && !Game.M.SearchingPiece && !Game.M.SearchingPos && l.enabled)
             {
                 Game.M.TargetTile = this;
             }
 
-
-            if (Game.M.SearchingPiece && !Game.M.NeedPos)
-            {
-                if (Occupier && Game.M.Selected.TargetValid(Occupier) == "Valid")
-                {
-                    Game.M.AbilityTarget = Occupier;
-                    Game.M.SearchingPiece = false;
-                    Game.M.SearchingPos = true;
-                }
-
-            }
-            else if (Game.M.NeedPos && Game.M.SearchingPos && l.enabled)
+            if (Game.M.NeedPos && Game.M.SearchingPos && l.enabled)
             {
                 Game.M.AbilityPosition = this;
                 Game.M.SearchingPos = false;
             }
-
         }
+    }
 
+    private void OnMouseEnter()
+    {
+        if (Occupier)
+            Occupier.Show();
+    }
+
+    private void OnMouseOver()
+    {
+        if (Occupier)
+            Occupier.Select();
+            
+        TileSelect();
+    }
+
+    private void OnMouseExit()
+    {
+        if (Occupier)
+            Occupier.Deselect();
     }
 }

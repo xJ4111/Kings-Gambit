@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using UnityEngine.SceneManagement;
 
 public class AbilityManager : MonoBehaviour
 {
@@ -16,13 +13,10 @@ public class AbilityManager : MonoBehaviour
         }
         else if (M != this)
         {
+            Destroy(gameObject);
             Destroy(this);
         }
-
-        DontDestroyOnLoad(gameObject);
     }
-
-    public Dictionary<string, string> Selected = new Dictionary<string, string>();
 
     [Header("UI")]
     public TextMeshProUGUI Title;
@@ -57,9 +51,7 @@ public class AbilityManager : MonoBehaviour
     {
         StartCoroutine(SceneLoader.M.FadeOut());
         Setup();
-
         Abilities.Load();
-
         LoadPage(0);
     }
 
@@ -85,7 +77,9 @@ public class AbilityManager : MonoBehaviour
         ab1button = Ability1.GetComponentInChildren<Button>();
         ab2button = Ability2.GetComponentInChildren<Button>();
 
-        for(int i = 0; i < 2; i++)
+        //Selected.Clear();
+
+        for (int i = 0; i < 2; i++)
         {
             string side;
 
@@ -94,11 +88,11 @@ public class AbilityManager : MonoBehaviour
             else
                 side = "Black";
 
-            Selected.Add(side + " Pawn", "");
-            Selected.Add(side + " Rook", "");
-            Selected.Add(side + " Knight", "");
-            Selected.Add(side + " Bishop", "");
-            Selected.Add(side + " Queen", "");
+            Abilities.Selected.Add(side + " Pawn", "");
+            Abilities.Selected.Add(side + " Rook", "");
+            Abilities.Selected.Add(side + " Knight", "");
+            Abilities.Selected.Add(side + " Bishop", "");
+            Abilities.Selected.Add(side + " Queen", "");
         }
 
 
@@ -191,7 +185,7 @@ public class AbilityManager : MonoBehaviour
         FinalizePanel.SetActive(false);
 
         if (index == 0)
-            prev.gameObject.SetActive(false);
+            prev.gameObject.SetActive(false); 
         else
         {
             prev.gameObject.SetActive(true);
@@ -206,8 +200,8 @@ public class AbilityManager : MonoBehaviour
             side = "Black";
 
         Current.text = piece;
-        if (Selected.ContainsKey(side + " " + piece))
-            Normal.text = Abilities.Movements[piece] + "\n\nAbility: " + Selected[side + " " + piece];
+        if (Abilities.Selected.ContainsKey(side + " " + piece))
+            Normal.text = Abilities.Movements[piece] + "\n\nAbility: " + Abilities.Selected[side + " " + piece];
         else
             Normal.text = Abilities.Movements[piece] + "\n\nNo Ability Selected";
 
@@ -232,14 +226,15 @@ public class AbilityManager : MonoBehaviour
 
     void SetSelected(string piece, string ability)
     {
-        if (Selected.ContainsKey(piece))
-            Selected[piece] = ability;
+        if (Abilities.Selected.ContainsKey(piece))
+            Abilities.Selected[piece] = ability;
         else
-            Selected.Add(piece, ability);
+            Abilities.Selected.Add(piece, ability);
     }
 
     void Overview(string side, int pageNum)
     {
+        prev.gameObject.SetActive(true);
         prev.onClick.RemoveAllListeners();
         prev.onClick.AddListener(() => LoadPage(pageNum - 1));
 
@@ -259,8 +254,8 @@ public class AbilityManager : MonoBehaviour
 
             System.Tuple<Abilities.Ability, Abilities.Ability> temp = Abilities.AllAbilities[t1.text];
 
-            if (Selected[side + " " + t1.text] != "")
-                t2.text = Selected[side + " " + t1.text];
+            if (Abilities.Selected[side + " " + t1.text] != "")
+                t2.text = Abilities.Selected[side + " " + t1.text];
             else
                 t2.text = "No Ability Selected";
 
@@ -290,11 +285,13 @@ public class AbilityManager : MonoBehaviour
         prev.onClick.RemoveAllListeners();
         prev.onClick.AddListener(() => LoadPage(pageNum - 1));
 
+        overview.gameObject.SetActive(false);
+
         DetailPanel.SetActive(false);
         OverviewPanel.SetActive(false);
         FinalizePanel.SetActive(true);
 
-        for (int i = 0; i < Selected.Count; i++)
+        for (int i = 0; i < Abilities.Selected.Count; i++)
         {
             TextMeshProUGUI t1 = FinalizeSlots[i].GetComponentsInChildren<TextMeshProUGUI>()[0];
             TextMeshProUGUI t2 = FinalizeSlots[i].GetComponentsInChildren<TextMeshProUGUI>()[1];
@@ -309,8 +306,8 @@ public class AbilityManager : MonoBehaviour
             else
                 side = "Black";
 
-            if (Selected[side + " " + t1.text] != "")
-                t2.text = Selected[side + " " + t1.text];
+            if (Abilities.Selected[side + " " + t1.text] != "")
+                t2.text = Abilities.Selected[side + " " + t1.text];
             else
                 t2.text = "No Ability Selected";
 
@@ -332,8 +329,8 @@ public class AbilityManager : MonoBehaviour
 
     void StartGame()
     {
-        Selected.Add("White King", "For The King");
-        Selected.Add("Black King", "For The King");
+        Abilities.Selected.Add("White King", "For The King");
+        Abilities.Selected.Add("Black King", "For The King");
 
         SceneLoader.M.LoadScene("PlayScene");
     }

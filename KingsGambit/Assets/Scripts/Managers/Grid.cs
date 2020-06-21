@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
-    //Script to convert world space locations to a 2D array of tiles
-
-    public static Grid M;
-
-    public Vector3[,] GridPos = new Vector3[8,8];
-    public Tile[,] Tiles = new Tile[8, 8];
-
     private void Awake()
     {
         if (M == null)
@@ -24,6 +17,15 @@ public class Grid : MonoBehaviour
 
         SetGridCoords();
     }
+
+
+    //Script to convert world space locations to a 2D array of tiles
+
+    public static Grid M;
+
+    public Vector3[,] GridPos = new Vector3[8,8];
+    public Tile[,] Tiles = new Tile[8, 8];
+
 
     void SetGridCoords()
     {

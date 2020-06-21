@@ -14,13 +14,13 @@ public class SceneLoader : MonoBehaviour
         if (M == null)
         {
             M = this;
+            DontDestroyOnLoad(this);
         }
         else if (M != this)
         {
+            Destroy(gameObject);
             Destroy(this);
         }
-
-        DontDestroyOnLoad(this);
     }
 
     Animation FadePanel;

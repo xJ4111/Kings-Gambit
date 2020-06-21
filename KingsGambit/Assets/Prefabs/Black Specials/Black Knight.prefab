@@ -10,8 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1307486956678684087}
   - component: {fileID: 5081095840335517947}
-  - component: {fileID: 8930323642599812292}
-  - component: {fileID: -702948825770927883}
   - component: {fileID: 7571820818802367302}
   m_Layer: 0
   m_Name: Black Knight
@@ -73,35 +71,6 @@ MonoBehaviour:
   FTKUsed: 0
   MC: {fileID: 0}
   Ability: 
---- !u!54 &8930323642599812292
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7171025913935082823}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 116
-  m_CollisionDetection: 0
---- !u!65 &-702948825770927883
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7171025913935082823}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2, y: 1, z: 2}
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &7571820818802367302
 MonoBehaviour:
   m_ObjectHideFlags: 0

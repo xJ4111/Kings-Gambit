@@ -22,7 +22,7 @@ public class Movement : MonoBehaviour
 
     [Header("Parameters")]
     private float MovementSpeed = 5;
-    private float TurnSpeed = 5;
+    private float TurnSpeed = 200;
     private float AttackDistance = 4f;
 
     [Header("Specific Info")]
@@ -49,6 +49,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
         ReturnRotate();
+        Anim.SetBool("Injured", Self.Injured);
     }
 
     void GetClipTimes()
@@ -90,7 +91,7 @@ public class Movement : MonoBehaviour
         {
             Anim.SetBool("Moving", true);
             transform.position = Vector3.MoveTowards(transform.position, TargetPos, MovementSpeed * Time.deltaTime);
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
             StartCoroutine(MoveTick());
         }
@@ -150,9 +151,10 @@ public class Movement : MonoBehaviour
         //Facing Target?
         if (!Reached && !LookingTowards(TargetPos))
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
             StartCoroutine(WarpTick());
+            Debug.Log("Turning..." + Reached + LookingTowards(TargetPos));
         }
         else
         {
@@ -172,15 +174,17 @@ public class Movement : MonoBehaviour
                 Sounds.M.Play("Magic", LastPos);
                 Sounds.M.Play("Magic", TargetTile);
 
-                yield return new WaitForSeconds(ClipTimes["Walk"] * 2);
+                yield return new WaitForSeconds(ClipTimes["Walk"]);
 
                 transform.position = TargetPos;
                 Anim.SetBool("Moving", false);
                 StartCoroutine(WarpTick());
+                Debug.Log("teleporting...");
             }
             //No more targets? Next turn
             else if (Reached)
             {
+                Debug.Log("reached");
                 Anim.SetBool("Moving", false);
 
                 if (Self.Ability == "Combat Medic" && Self.CanRevive())
@@ -212,7 +216,7 @@ public class Movement : MonoBehaviour
 
     bool LookingTowards(Vector3 target)
     {
-        return Mathf.Abs(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(target - transform.position), TurnSpeed * Time.deltaTime).y - Quaternion.LookRotation(TargetPos - transform.position).y) < 0.01f;
+        return transform.rotation == Quaternion.LookRotation(target - transform.position);
     }
 
     public void Teleport(bool endTurn, Vector3 pos)
@@ -239,13 +243,11 @@ public class Movement : MonoBehaviour
         if (!TargetTile && !TargetPiece)
         {
             if (Self.Side == "White")
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.identity, TurnSpeed * Time.deltaTime);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.identity, TurnSpeed * Time.deltaTime);
             
             if (Self.Side == "Black")
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 180, 0), TurnSpeed * Time.deltaTime);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 180, 0), TurnSpeed * Time.deltaTime);
         }
-
-        Anim.SetBool("Injured", Self.Injured);
     }
 
     #endregion
@@ -277,9 +279,9 @@ public class Movement : MonoBehaviour
     private IEnumerator CastingTick(string effect)
     {
         //Face Target
-        if (Vector3.Distance(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime).eulerAngles, Quaternion.LookRotation(TargetPos - transform.position).eulerAngles) > 2)
+        if (Vector3.Distance(Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime).eulerAngles, Quaternion.LookRotation(TargetPos - transform.position).eulerAngles) > 2)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(TargetPos - transform.position), TurnSpeed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
             StartCoroutine(CastingTick(effect));
         }

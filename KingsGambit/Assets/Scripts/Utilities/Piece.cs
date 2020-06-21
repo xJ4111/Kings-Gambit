@@ -15,6 +15,7 @@ public class Piece : MonoBehaviour
 
     public bool Pinned;
     public bool Guarded;
+    public Piece Guard;
     public bool CanBlock;
 
     [Header("Position")]
@@ -22,7 +23,6 @@ public class Piece : MonoBehaviour
     public int PosX, PosY;
     protected Tile[,] Tiles;
     public int activeTiles;
-
 
     [Header("State")]
     public bool FirstMove = true;
@@ -355,8 +355,8 @@ public class Piece : MonoBehaviour
         else
             MC.Move(false);
 
-        Tiles[PosX, PosY].Exit(this);
         TargetTile.Enter(this);
+        Debug.Log(MC.LastPos == Pos);
     }
     protected void CheckMove(int x, int y)
     {
@@ -384,9 +384,10 @@ public class Piece : MonoBehaviour
 
                     Path.Add(Tiles[x, y]);
                 }
-                else if (Tiles[x, y].Occupier.Side == Side)
+                else if (Tiles[x, y].Occupier != this && Tiles[x, y].Occupier.Side == Side)
                 {
                     Tiles[x, y].Occupier.Guarded = true;
+                    Tiles[x, y].Occupier.Guard = this;
                 }
             }
         }
@@ -407,9 +408,10 @@ public class Piece : MonoBehaviour
 
                     Path.Add(Tiles[x, y]);
                 }
-                else if (Tiles[x, y].Occupier.Side == Side)
+                else if (Tiles[x, y].Occupier != this && Tiles[x, y].Occupier.Side == Side)
                 {
                     Tiles[x, y].Occupier.Guarded = true;
+                    Tiles[x, y].Occupier.Guard = this;
                 }
             }
         }
@@ -425,9 +427,10 @@ public class Piece : MonoBehaviour
                 {
                     PawnAttackTiles.Add(Tiles[x, y]);
                 }
-                else if (Tiles[x, y].Occupier.Side == Side)
+                else if (Tiles[x, y].Occupier != this && Tiles[x, y].Occupier.Side == Side)
                 {
                     Tiles[x, y].Occupier.Guarded = true;
+                    Tiles[x, y].Occupier.Guard = this;
                 }
             }
         }
