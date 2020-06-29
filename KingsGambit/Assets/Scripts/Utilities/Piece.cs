@@ -356,7 +356,6 @@ public class Piece : MonoBehaviour
             MC.Move(false);
 
         TargetTile.Enter(this);
-        Debug.Log(MC.LastPos == Pos);
     }
     protected void CheckMove(int x, int y)
     {
