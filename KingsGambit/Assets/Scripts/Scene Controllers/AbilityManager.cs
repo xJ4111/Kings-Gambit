@@ -104,14 +104,14 @@ public class AbilityManager : MonoBehaviour
 
         if (pageNum < 5)
         {
-            targetPos = new Vector3(0, 5, 0);
-            targetRot = Quaternion.Euler(0, 72 * pageNum, 0);
+            targetPos = new Vector3(-12 + (pageNum * 6), 5, 0);
+            targetRot = Quaternion.Euler(0,0,0);
             Title.text = "White Side \n Abilities";
         }
         else
         {
-            targetPos = new Vector3(0, 5, -100);
-            targetRot = Quaternion.Euler(0, 72 * (pageNum - 1), 0);
+            targetPos = new Vector3(12 - ((pageNum - 6) * 6), 5, 0);
+            targetRot = Quaternion.Euler(0, 180, 0);
             Title.text = "Black Side \n Abilities";
         }
 
@@ -134,8 +134,8 @@ public class AbilityManager : MonoBehaviour
                 Page("Queen", 4, pageNum);
                 break;
             case 5:
-                targetRot = Quaternion.Euler(90 - 15, 0, 0);
-                targetPos = new Vector3(0, 50, 0);
+                targetPos = new Vector3(0, 12, -5);
+                targetRot = Quaternion.Euler(15, 0, 0);
                 Overview("White", pageNum);
                 break;
             case 6:
@@ -154,13 +154,13 @@ public class AbilityManager : MonoBehaviour
                 Page("Queen", 9, pageNum);
                 break;
             case 11:
-                targetRot = Quaternion.Euler(90 - 15, 0, 0);
-                targetPos = new Vector3(0, 50, -100);
+                targetPos = new Vector3(0, 12, 5);
+                targetRot = Quaternion.Euler(15, 180, 0);
                 Overview("Black", pageNum);
                 break;
             case 12:
-                targetRot = Quaternion.Euler(90 - 15, 90, 0);
-                targetPos = new Vector3(0, 75, -50);
+                targetPos = new Vector3(-25, 20, 0);
+                targetRot = Quaternion.Euler(30, 90, 0);
                 Finalize(pageNum);
                 break;
         }
@@ -174,7 +174,7 @@ public class AbilityManager : MonoBehaviour
             overview.gameObject.SetActive(false);
         else if (pageNum < 11)
             overview.onClick.AddListener(() => LoadPage(11));
-        else if (pageNum == 11)
+        else if (pageNum >= 11)
             overview.gameObject.SetActive(false);
     }
      
