@@ -41,6 +41,8 @@ public class Piece : MonoBehaviour
     [Header("King Related")]
     public CustomPiece AllyKing;
     public CustomPiece AllyQueen;
+    public CustomPiece EnemyKing;
+    public CustomPiece EnemyQueen;
     public CustomPiece Checker;
     protected int startingX;
     public System.Tuple<CustomPiece, List<Tile>> CastleLeft;
@@ -334,8 +336,16 @@ public class Piece : MonoBehaviour
         while (InRange(x, y))
         {
             path.Add(Tiles[x, y]);
-            x += xDir;
-            y += yDir;
+
+            if (Tiles[x,y].Occupier == EnemyKing)
+            {
+                return path;
+            }
+            else
+            {
+                x += xDir;
+                y += yDir;
+            }
         }
 
         return path;

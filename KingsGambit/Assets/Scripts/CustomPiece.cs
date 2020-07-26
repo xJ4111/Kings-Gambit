@@ -46,10 +46,14 @@ public class CustomPiece : Piece
             case "White":
                 AllyKing = Game.White.King;
                 AllyQueen = Game.White.Queen;
+                EnemyKing = Game.Black.King;
+                EnemyQueen = Game.Black.Queen;
                 break;
             case "Black":
                 AllyKing = Game.Black.King;
                 AllyQueen = Game.Black.Queen;
+                EnemyKing = Game.White.King;
+                EnemyQueen = Game.White.Queen;
                 break;
         }
     }
